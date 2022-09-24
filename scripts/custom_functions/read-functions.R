@@ -1,27 +1,38 @@
 read_csv <- function(file, select_vars = NULL, filter_rows = NULL, shuffle_vars = NULL, long_format = FALSE, seed = 4858342, ...) {
   
   read_exprs <- enexprs(...)
-  read_exprs_chr <- as.character(read_exprs)
   
-  if(length(read_exprs_chr == 0)) {
+  read_exprs_chr <- names(read_exprs) |> 
+    map(function(x) {
+      paste(x, "=", read_exprs[x] |> as.character())
+    }) |> 
+    paste(collapse = ", ")
+
+  file <- ifelse(!str_detect(file, "list.files"), paste0("'", file, "'"), file)
+  
+  if(length(read_exprs_chr) == 0) {
     read_exprs_chr <- ")"
   } else {
     read_exprs_chr <- paste0(", ", read_exprs_chr, ")")
   }
   
-  
+
   select_vars <- if(is.null(select_vars)) {"tidyr::everything()"}
   filter_rows <- if(is.null(filter_rows)) {""}
   shuffle_vars <- if(is.null(shuffle_vars)) {"NULL"}
   
-  
+
   
   
   # Construct pipeline
   code <- list()
   
   code$read <-
-    paste0(file, " |> map_df(function(x) readr::read_csv(x", read_exprs_chr, "))")
+    if(str_detect(file, ",|list.files")) {
+      paste0(file, " |> map(function(x) readr::read_csv(x", read_exprs_chr)
+    } else {
+      paste0("readr::read_csv(", file, ")")
+    }
   
   code$select <-
     paste0("dplyr::select(", select_vars, ")")
@@ -31,11 +42,12 @@ read_csv <- function(file, select_vars = NULL, filter_rows = NULL, shuffle_vars 
   
   code$shuffle <-
     paste0("shuffle(data = _, shuffle_vars = '", shuffle_vars, "', long_format = ", long_format, ", seed = ", seed, ")")
-  
+
   
   pipeline_chr <- code |>
     purrr::compact() |>
-    paste(collapse = " |> ")
+    paste(collapse = " |> ") |> 
+    paste0(ifelse(str_detect(file, ",|list.files"), ")", ''))
   
   # Read data and apply manipulations
   data <- pipeline_chr |>
@@ -77,20 +89,17 @@ read_csv <- function(file, select_vars = NULL, filter_rows = NULL, shuffle_vars 
       paste(data_hash, sep = "\n") |>
       readr::write_file(".gitlog/MD5")
     
-    git_update(
+    worcs::git_update(
       message = commit_message,
       files = ".gitlog/MD5"
     )
     
-    data
-    
+    return(data)
     
   }
   
-  
-  
-  
-  
+  return(data)
+ 
 }
 
 
