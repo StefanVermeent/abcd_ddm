@@ -1,9 +1,9 @@
-
+# TODO: install jags
 
 FROM rocker/rstudio:4.1.2
 
 LABEL maintainer="p.c.s.vermeent@gmail.com"
-LABEL description="Rstudio container with HDDM Python dependencies"
+LABEL description="Rstudio container with necessary dependencies"
 
 # Install Renv and Copy Lock File
 ENV RENV_VERSION 0.15.5
