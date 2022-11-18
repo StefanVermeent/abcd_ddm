@@ -110,3 +110,81 @@ check_id_matches <- function(data) {
   glue("In trial data but not in sumset: {data_ids[!data_ids %in% nih_ids] |> length()}") |> print()
   glue("In sumset but not in trial data: {nih_ids[!nih_ids %in% data_ids] |> length()}") |> print()
 }
+
+
+
+
+# DDM fitting helpers -----------------------------------------------------
+
+fast_dm_settings <- function(task, model_version = "", method = "ml", precision = 3, zr = 0.5, d = 0, szr = 0, sv = 0, st0 = 0, p = 0, depend = "", format) {
+  
+  depend = str_c(depend, collapse = "\n")
+  
+  spec <- tribble(
+    ~param,        ~setting,                                           ~ command,
+    "method",      method,                                             "{param} {setting}",
+    "precision",   as.character(precision),                            "{param} {setting}",
+    "set zr",      as.character(zr),                                   "{param} {setting}",
+    "set d",       as.character(d),                                    "{param} {setting}",
+    "set szr",     as.character(szr),                                  "{param} {setting}",
+    "set sv",      as.character(sv),                                   "{param} {setting}",
+    "set st0",     as.character(st0),                                  "{param} {setting}",
+    "set p",       as.character(p),                                    "{param} {setting}",
+    "",            depend,                                             "{param} {setting}",
+    "format",      format,                                             "{param} {setting}",
+    "",            "load *.dat",                                       "{param} {setting}", 
+    "",            glue("log ddm_results_{task}{model_version}.lst"),  "{param} {setting}"
+  ) %>%
+    filter(setting != "") %>%
+    rowwise() %>%
+    transmute(command = glue(command)) %>%
+    glue_data("{command}")
+  
+  message("\nThe following model specification was written to the DDM folder:\n\n")
+  print(spec)
+  
+  write_file(str_c(spec, collapse = "\n"), here(glue("{task}{model_version}_ml.ctl")))
+}
+
+write_DDM_files <- function(data, vars = c("rt", "correct"), task) {
+  
+  for (i in unique(data$id)) {
+    # 1. Filter subject i and write individual data files to data folder
+    change_DDM_i <- data %>%
+      filter(id == i) %>%
+      select(all_of(vars)) %>%
+      write_delim(file = here(str_c(task, "_DDM_subject", i, ".dat")), col_names = FALSE)
+  }
+}
+
+
+execute_fast_dm <- function(task, model_version = "") {
+  # 2. Run DDM model
+  path_to_files <- paste0("pushd ", here()) %>% str_replace_all(., pattern="/", replacement="\\\\")
+  run_DDM <- str_glue(" && fast-dm.exe {task}{model_version}_ml.ctl")
+  cmd <- paste0(path_to_files, run_DDM)
+  
+  shell(cmd)
+  
+  message("The following command was sent to the shell: ", cmd)
+}
+
+
+read_DDM <- function(task, model_version = "") {
+  results <- read_table(here(str_glue("ddm_results_{task}{model_version}.lst"))) %>%
+    mutate(dataset = str_replace_all(dataset, str_c("^", task, "_DDM_subject"), "") %>% as.numeric(),
+           task = task) %>%
+    rename(id = dataset)
+  
+  return(results)
+}
+
+
+remove_DDM_files <- function() {
+  file.remove(list.files(here(), pattern = ".dat$|.lst$", full.names=TRUE))
+  
+  message("All individual data files were removed from the folder")
+}
+
+
+
