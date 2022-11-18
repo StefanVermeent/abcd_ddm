@@ -1,0 +1,81 @@
+---
+bibliography: references.bib
+csl: apa.csl
+format: 
+  docx:
+    reference-doc: reference-doc.docx
+    toc: true
+    toc-location: left
+    toc-title: Table of Contents
+output:
+  officedown::rdocx_document:
+    page_margins:
+      bottom: 1
+      footer: 0
+      gutter: 0
+      header: 0.5
+      left: 1
+      right: 1
+      top: 1
+    plots:
+      align: center
+      caption:
+        pre: 'Figure '
+        sep: '. '
+        style: Image Caption
+    tables:
+      caption:
+        pre: 'Table '
+        sep: '. '
+        style: Table Caption
+  pdf_document: default
+  word_document: default
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r include = FALSE}
+library(tidyverse)
+library(glue)
+
+
+load('C:/repositories/abcd_ddm/closed_data/tasks_clean.RData')
+```
+
+# Data access workflow
+
+# Full Project Workflow
+
+# Response Distributions of Cognitive Tasks
+
+
+
+
+# Overview of DDM Modeling Procedure
+
+For the Mental Rotation Task,
+
+The DDM models will be fit using the *hBayesDM* package [@ahn_2017].
+Each model will be fit with three Markov Chain Monte Carlo (MCMC) chains.
+Each chain will contain 2,000 burn-in samples and 100,000 additional samples.
+Of these samples, every 10th sample will be retained.
+Posterior samples of all three chains will be combined, resulting in a posterior sample of 30,000 samples.
+Model convergence will be assessed in several ways.
+First, we will visually inspect the traces, which should not contain any drifts or large jumps.
+Second, we will calculate the Gelman-Rubin convergence statistic R\^ (@gelman_1992), of which all values should be below 1.1.
+Third, we will assess whether the model provides a good fit to the participants' data.
+To do this, we will simulate 50,000 trials of RT and accuracy data using the estimated DDM parameters of each participant.
+We will then fit the DDM to these simulated data using Kolgomorov-Smirnov estimation.
+We will then compute correlations between the observed and simulated scores for RTs in the 25th, 50th and 75th percentile of the RT distribution as well as for accuracies.
+We will consider *r* \> .85 to indicate a good model fit.
+\[*Perhaps use DIC to compare models in cases where we fit several models to the data of the same task?*\]
+
+In theory, the hierarchical Bayesian framework allows simultaneously estimating DDM parameters, latent measurement models, and the regression paths between them in a single step [e.g., @schubert_2019; @vandekerckhove_2014].
+An advantage of this approach is that information regarding estimation uncertainty (e.g., of the DDM parameters) gets integrated in subsequent steps.
+However, this approach is very computationally expensive and might even be unfeasible with the current sample size.
+Therefore, we opted for a two-step estimation approach.
+
+# DDM Model Fit Assessments
+
+To come.
