@@ -1,0 +1,138 @@
+---
+bibliography: references.bib
+csl: apa.csl
+format: 
+  docx:
+    reference-doc: reference-doc.docx
+    toc: true
+    toc-location: left
+    toc-title: Table of Contents
+output:
+  officedown::rdocx_document:
+    page_margins:
+      bottom: 1
+      footer: 0
+      gutter: 0
+      header: 0.5
+      left: 1
+      right: 1
+      top: 1
+    plots:
+      align: center
+      caption:
+        pre: 'Figure '
+        sep: '. '
+        style: Image Caption
+    tables:
+      caption:
+        pre: 'Table '
+        sep: '. '
+        style: Table Caption
+  pdf_document: default
+  word_document: default
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r include = FALSE}
+library(tidyverse)
+library(glue)
+library(ggsci)
+
+load('../closed_data/tasks_clean.RData')
+load('../closed_data/power.RData')
+```
+
+# Data access workflow
+
+# Full Project Workflow
+
+# Power analysis
+
+We conducted a power analysis through simulation using the `simulateData` function of the `lavaan` package.
+On each iteration, we first specified a population model (i.e., the 'true' model) with prespecified factor loadings and regression coefficients, and a sample model.
+Factor loadings in this model were randomly generated between 0.6 and 0.8 following a uniform distribution.
+Next, we simulated data sets based on the population model.
+Finally, we fitted the sample model to the simulated data and extracted the beta coefficients and corresponding *p*-values.
+We generated population models with beta coefficients of 0.08 and 0.1, and simulated data with sample sizes ranging from 1,500, to 8,500 with steps of 1,000. Each combination of coefficients and sample sizes was repeated 500 times, for a total of 8,000 iterations.
+
+The results are shown in Figure S1. The simulations yield power \> 90% at around *N* = 3,500 for $\beta$ = 0.08 and *N* = 2,500 for $\beta$ = 0.1.
+Thus, after taking out 1,500 participants for the training set, we can create two highly powered test sets of 4,250 participants.
+The simulations indicate that the regression paths in the training set will be underpowered. 
+However, all models converged normally and showed good model fit (lowest CFI = `r round(min(power$mean_cfi, na.rm = T),3)`; highest RMSEA = `r round(max(power$mean_rmsea, na.rm = T),3)`), indicating that this sample size is sufficient for initial optimization of the models.
+
+
+```{r figureS1, fig.width=6, dpi=600, fig.id = "figureS1", fig.cap.style = "Image Caption", fig.cap='**Figure S1.** Results of the power simulations. The dashed line indicates 90% power.'}
+
+ggplot(power, aes(n, power, group = lhs, color = Type)) +
+  geom_point() +
+  geom_line() +
+  geom_hline(yintercept = 90, linetype = 'dashed') +
+  facet_wrap(~paste0("\u03B2 = ", beta)) +
+  scale_y_continuous(breaks = c(30, 40, 50, 60, 70, 80, 90, 95, 100)) +
+  scale_x_continuous(breaks = c(1500, 2500, 3500, 4500, 5500, 6500, 7500, 8500)) +
+  scale_color_uchicago() +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  labs(
+    x = "\nSample size",
+    y = "Power"
+  )
+
+```
+<br>
+
+# Response Distributions of Cognitive Tasks
+
+**Table S1.** Descriptive statistics of mean RTs and accuracy for the cognitive tasks.
+```{r}
+flextable(descriptives$task_descriptives_table, cwidth = c(2, 1, 1, 1, 1)) |> 
+  set_header_labels(task = "", mean_rt = "RT\nMean (SD)", mean_acc = "Accuracy\nMean (SD)", acc_min = "Accuracy\nMin", acc_max = "Accuracy\nMax") 
+```
+<br>
+
+# Overview of DDM Modeling Procedure
+
+The DDM models will be fit using code adopted from @johnson_2017.
+The Stan code will be adjusted to fix the starting point to 0.5 and to estimate parameters per task condition.
+Each model will be fit with three Markov Chain Monte Carlo (MCMC) chains.
+Each chain will contain 2,000 burn-in samples and 10,000 additional samples.
+Of these samples, every 10th sample will be retained.
+Posterior samples of all three chains will be combined, resulting in a posterior sample of 3,000 samples.
+If a model does not converge properly with these settings, we will increase the amount of samples
+
+Model convergence will be assessed in several ways.
+First, we will visually inspect the traces, which should not contain any drifts or large jumps.
+Second, we will calculate the Gelman-Rubin convergence statistic R\^ (@gelman_1992), of which all values should be below 1.1.
+Third, we will assess whether the model provides a good fit to the participants' data.
+To do this, we will simulate 50,000 trials of RT and accuracy data using the estimated DDM parameters of each participant.
+We will then fit the DDM to these simulated data using Kolgomorov-Smirnov estimation.
+We will then compute correlations between the observed and simulated scores for RTs in the 25th, 50th and 75th percentile of the RT distribution as well as for accuracies.
+We will consider *r* \> .85 to indicate a good model fit.
+
+In theory, the hierarchical Bayesian framework allows simultaneously estimating DDM parameters, latent measurement models, and the regression paths between them in a single step [e.g., @schubert_2019; @vandekerckhove_2014].
+An advantage of this approach is that information regarding estimation uncertainty (e.g., of the DDM parameters) gets integrated in subsequent steps.
+However, this approach is very computationally expensive and might even be unfeasible with the current sample size.
+Therefore, we opted for a two-step estimation approach.
+
+During preprocessing, we discovered that the 5-second response cut-off that was used for the Mental Rotation Task led to severe truncation of the RT distribution.
+This is problematic because the tail of the distribution holds important information about stages of processing.
+Truncation of reasonably long RTs can therefore lead to biased DDM parameter estimates.
+The hierarchical Bayesian framework allows these missing values to be imputed based on the rest of the data, which has been shown to lead to unbiased estimates.
+The procedure is described in detail in the supplemental materials of @johnson_2017. 
+We will use the code they posted on the [Open Science Framework](https://osf.io/btw5c) to compare model versions with and without imputation of missing responses.
+
+# DDM simulations: The effect of few trials per participant
+
+TBD
+
+# MNLFA procedure
+
+TBD
+
+# DDM Model Fit Assessments
+
+*Will be presented after Stage 1 in-principle acceptance*

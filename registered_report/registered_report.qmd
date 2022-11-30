@@ -38,7 +38,7 @@ library(stringr)
 library(dplyr)
 
 
-load(here::here('closed_data', 'tasks_raw.RData')) # Generated in scripts/0_data_prep/1_preprocessing.R
+load(here::here('closed_data', 'tasks_raw.RData'))   # Generated in scripts/0_data_prep/1_preprocessing.R
 load(here::here('closed_data', 'tasks_clean.RData')) # Generated in scripts/0_data_prep/2_clean_data.R
 
 
@@ -115,24 +115,25 @@ This study was approved by the Ethics Review Board of the Faculty of Social & Be
 
 # Proposal Research Highlights
 
-1. We present an analytical framework to more precisely estimate cognitive impairments and enhancements as a result of experiencing early-life adversity. \newline
-2. The approach combines cognitive modeling and Structural Equation Modeling to estimate which stages of processing are affected by specific types of adversity. \newline
-3. We will apply the analysis approach to the ABCD study, a diverse and representative sample of around 12,000 9-10 year-olds from the United States. \newline
+1. We will use Drift Diffusion Modeling (DDM) to investigate how two forms of early-life adversity---threat and deprivation---lower or improve cognitive abilities.
+2. The DDM can inform us if and where cognitive differences occur along distinct stages of cognitive processing.
+3. We will also use structural equation modeling and out-of-sample cross-validation to tease apart effects of adversity that are task-specific versus task-general.
+4. We will apply our approach to a large, representative sample of around 10,000 9- to 10 year-olds from the ABCD study.
 
 \pagebreak
 
 # Proposal Abstract
 
-the effects of early-life adversity on cognition are complex.
-Specific types of adversity may lead to cognitive deficits in some domains, but to enhanced cognitive abilities in other domains.
-However, methodological limitations prevent us from integrating these findings and understanding which cognitive processes are shaped or impaired by adversity.
-First, commonly used aggregate measures such as mean response times and accuracy are not process pure, but instead confound several stages of cognitive processing.
-Second, task performance on most tasks depends both on task-specific processes (e.g., attention shifting, inhibition) and task-general processes (e.g., general processing efficiency).
-We will address these issues through a combination of cognitive modeling (Drift Diffusion Modeling) and structural equation modeling. 
-The analysis approach will allow us to investigate (1) which *stages of cognitive processing* are enhanced or impaired by adverse experiences, and (2) to what extent these effects are *task-general* or *task-specific*.
-We will apply the framework to the Adolescent Brain Cognitive Development (ABCD) study data, which provides a large, representative, and diverse sample of 9- to 10 year-old youths.
-Specifically, we will investigate the effects of three types of early-life adversity (material deprivation, proximal threat exposure, and distal threat exposure) on performance across several executive functioning tasks, spanning inhibition, attention shifting, and visual-spatial processing.
-This computational approach will allow us to better understand the mechanisms through which adversity enhances and/or impairs cognitive abilities, which will help to build stronger developmental theories. 
+Adversity can lead to either cognitive deficits or enhancements, depending on many factors. 
+Though progress has been made, two challenges prevent us from integrating and better understanding these findings. 
+First, studies commonly use and interpret raw performance differences. 
+However, raw scores conflate different stages of cognitive processing. 
+Second, research tends to either isolate or aggregate abilities, which obscures the degree to which individual differences reflect task-specific or task-general processes. 
+We address these challenges by using Drift Diffusion Modeling (DDM) and structural equation modeling.
+Combining these techniques, we can (1) relate early-life adverse experiences to individual differences in different stages of processing and (2) investigate whether these reflect differences in specific abilities or task-general processes. 
+We examine how two forms of adversity (material deprivation and household threat) affect performance on four cognitive tasks in a large, representative sample of 9-10 year-olds from the Adolescent Brain Cognitive Development (ABCD) study. 
+This approach holds promise for both deficit and adaptation researchers. 
+It will add much-needed nuance to adversity-related performance differences, which can inform theory and intervention.
 
 *Keywords:* adversity, cognitive deficits, cognitive enhancements, drift diffusion modeling
 
@@ -140,7 +141,7 @@ This computational approach will allow us to better understand the mechanisms th
 
 # Introduction {#introduction}
 
-The effects of early adverse experiences---such as growing up in poverty or experiencing high levels of violence---on cognition are complex.
+The effects of early-life adverse experiences---such as growing up in poverty or experiencing high levels of violence---on cognition are complex.
 Different types of adversity pose different challenges and constraints, and therefore shape and impair cognitive abilities in diverse ways
 [@blair_2012]. 
 Studies linking adversity and cognitive abilities tend to adopt either a deficit-oriented framework or an adaptation-based framework---both of which are valid. 
@@ -148,23 +149,22 @@ However, these frameworks may produce complimentary or opposing predictions.
 For example, the deficit approach suggests that growing up in adverse conditions tends to have detrimental effects on cognition, such as impairing learning and memory across childhood and adolescence [@sheridan_2022; @sheridan_2014]. 
 In contrast, the adaptation-based approach suggests that people's cognitive abilities are tailored to challenges in the environment, helping youth solve real problems in their everyday lives [@frankenhuis_2013; @frankenhuis_2016; @ellis_2022].
 
-Combining these approaches, adversity might enhance cognitive abilities that help solve contextually-relevant challenges but reduce abilities that do not.
-Integrating over their complimentary insights will help the field draw a high-resolution and well-rounded map of adversity-effects [@ellis_2017; @frankenhuis_2013]. 
+Combining these approaches, adversity might enhance cognitive abilities that help solve contextually-relevant challenges but reduce abilities that do not. 
 An integrative approach will allow us to uncover more nuanced patterns of developing cognitive abilities, providing crucial insights into malleable intervention targets as well as sources of strength that can be leveraged to promote thriving across contexts [@ellis_2022; @frankenhuis_2013].
 
 Yet, before we can integrate findings and build solid theory, we need to address two methodological issues common to both deficit and adaptation approaches.
-First, most studies measure cognitive abilities using raw performance indicators, such as response times (RT) and/or accuracy.
+First, most studies measure cognitive abilities using raw performance indicators, such as mean response times (RT) and/or accuracy.
 Whether implicitly or explicitly, researchers often assume these aggregate indicators capture meaningful variation in an isolated ability.
-However, most tasks are not that pure.
+However, measures of most tasks are not that pure.
 For example, consider a basic cognitive task, such as judging whether a shape is a square or a triangle.
 An associated raw RT captures several sequential processing stages.
-The participant must visually encode the shape, sample information, and execute a response [@lo_2015; @sternberg_1969; @posner_2005; @forstmann_2016; @ratcliff_2008].
+The person must visually encode the shape, sample information, and execute a response [@lo_2015; @sternberg_1969; @posner_2005; @forstmann_2016; @ratcliff_2008].
 Any difference in raw RT could occur at any of these stages, which have different implications for inferences about cognitive abilities.
 The second problem is that studies tend to ignore how abilities are related and either look at individual tasks in isolation or collapse performance across tasks (e.g., by creating a single composite score of executive functioning).
 However, different cognitive tasks are not fully independent; performance on any cognitive task likely reflects both task-specific processes (e.g., shifting ability on an attention shifting task, working memory updating on an n-back task) and processes that are shared across tasks [@lerche_2020].
 
 In this paper, we simultaneously address both of these methodological challenges.
-First, we use modern cognitive modeling that formalizes the stages of processing underlying RT and accuracy.
+First, we use modern cognitive modeling that formalizes the stages of processing underlying RTs and accuracy.
 Second, we use analytic methods that can distinguish unique and specific abilities (e.g., attention-shifting or inhibition) from general abilities common to most tasks (e.g., general cognitive efficiency).
 We investigate the unique effects of key dimensions of adversity on these specific and general cognitive abilities to generate novel theoretical insights about the link between early adversity and cognition.
 
@@ -173,12 +173,13 @@ We investigate the unique effects of key dimensions of adversity on these specif
 Both the deficit and adaptation literature use speeded tasks, in which participants are usually instructed to respond as fast and accurate as possible.
 For example, performing well on inhibition tasks [e.g., Flanker task, go-no go task\; @farah_2006; @fields_2021; @mezzacappa_2004; @noble_2005], attention shifting tasks [e.g., Dimensional Change Card Sort\; @farah_2006; @fields_2021; @young_2022; @mittal_2015; @noble_2005], and stimulus detection tasks [@farah_2006; @noble_2005; @pollak_2008] requires fast and accurate responses.
 However, in practice, performance is often quantified using aggregated indices of speed alone (e.g., RT), accuracy alone (e.g., proportion correct), or both independently (rather than in an integrated manner).
-This is problematic because raw RT or proportion correct scores do not capture how speed and accuracy trade off with each other.
-This tradeoff holds information about each stage of cognitive processing involved in executing a task.
+However, speed and accuracy are known to trade off against each other.
+Such tradeoffs hold information about each stage of cognitive processing involved in executing a task, but are difficult to detect by looking at RTs and accuracy separately.
+This is because changes in accuracy are often subtle, even with substantial changes in RTs [@forstmann_2011; @heitz_2014; @pew_1969].
 Thus, relying on raw performance indicators alone may obscure adversity-related individual differences in performance, or perhaps worse, lead us to infer a deficit or enhancement when none might exist.
 Such inaccurate conclusions have real-world implications, given that these raw performance indicators are increasingly being used as early screening tools for youth exposed to adversity [@distefano_2021].
 
-Promising solutions to the shortcomings of aggregate cognitive performance indicators come from the field of mathematical psychology, which developed different well-established frameworks for quantifying tradeoffs between speed and accuracy.
+Promising solutions to the shortcomings of aggregate cognitive performance indicators come from the field of mathematical psychology, which developed well-established frameworks for quantifying tradeoffs between speed and accuracy.
 For speeded tasks, a popular measurement model is the Drift Diffusion Model [DDM\; @forstmann_2016; @ratcliff_1998; @ratcliff_2008; @wagenmakers_2009].
 The DDM integrates speed and accuracy on a trial-by-trial level to estimate cognitive processes at different stages.
 It is typically fitted to tasks that require people to quickly choose between two response options.
@@ -196,26 +197,26 @@ The upper boundary corresponds to the correct response, whereas the lower bounda
 Information samples collected at each timepoint can cause the process to move towards the upper boundary (leading to a correct response) or towards the lower boundary (leading to an incorrect response).
 The DDM assumes information samples are noisy, and so people sometimes make mistakes (i.e., reach the lower decision boundary), even on simple tasks.
 
-```{r figure1, fig.width=6, dpi=600, fig.id = "figure1", fig.cap.style = "Image Caption", fig.cap='**Figure 1.** A visual overview of the Drift Diffusion Model (DDM). The DDM assumes that decision making on cognitive tasks with two forced response options advances through three stages: First, people go through a preparation phase in which they engage in initial stimulus encoding. Second, people gather information for one of two response options until the accumulation process terminates at one of the decision boundaries. Each jiggly line  represents the evidence accumulation process on a single trial. Third, a motor response is triggered in the execution phase. The model estimates four parameters that reflect distinct cognitive processes (printed in italic): 1. The *drift rate* represents the rate at which evidence accumulation drifts towards the decision boundary and is a measure of processing speed. 2. The *non-decision time* represents the combined time spent on task preparation and response execution. 3. The *boundary separation* represents the width of the decision boundaries and is a measure of response caution. 4. The *starting point* represents the starting point of the decision process and can be used to model response biases.'}
+```{r figure1, fig.width=6, dpi=600, fig.id = "figure1", fig.cap.style = "Image Caption", fig.cap='**Figure 1.** A visual overview of the Drift Diffusion Model (DDM). The DDM assumes that decision making on cognitive tasks with two forced response options advances through three stages: First, people go through a preparation phase in which they engage in initial stimulus encoding. Second, people gather information for one of two response options until the accumulation process terminates at one of the decision boundaries. Each jiggly line  represents the evidence accumulation process on a single trial. Third, a motor response is triggered in the execution phase. The model estimates four parameters that reflect distinct cognitive processes (printed in italic): (1) The *drift rate* represents the rate at which evidence accumulation drifts towards the decision boundary and is a measure of processing speed. (2) The *non-decision time* represents the combined time spent on task preparation and response execution. (3) The *boundary separation* represents the width of the decision boundaries and is a measure of response caution. (4) The *starting point* represents the starting point of the decision process and can be used to model response biases.'}
 knitr::include_graphics("images/fig1.png")
 ```
 
 <br>
 
-DDM estimates a set of parameters for each participant that map onto distinct cognitive processes [@voss_2004]. The *drift rate* represents the speed of information uptake [@schmiedek_2007; @voss_2013]. 
+DDM estimates a set of parameters for each participant that map onto distinct cognitive processes [@voss_2004]. The *drift rate* (*v*) represents the speed of information uptake [@schmiedek_2007; @voss_2013]. 
 People with a higher drift rate are faster and make fewer errors. 
-The *non-decision time* includes initial preparatory processes such as visually encoding the stimulus and processes after the decision is made, such as the motor response (e.g., pressing a button). 
+The *non-decision time* (*t0*) includes initial preparatory processes such as visually encoding the stimulus and processes after the decision is made, such as the motor response (e.g., pressing a button). 
 All else being equal, longer non-decision times reflect slower processing but without a cost nor benefit in accuracy. 
 However, for complex tasks, the non-decision time may capture other processes required to execute a task. 
-Examples are the time taken to rotate an image on a mental rotation task [@feldman_2021], filtering out distracting information on a Flanker task [@ong_2017], and updating task rules held in working memory [@schmitz_2012; @schmitz_2014].
-The *boundary separation* represents the distance between the two decision boundaries.
+Examples are the time taken to rotate an image on a mental rotation task [@feldman_2021], and updating task rules held in working memory [@schmitz_2012; @schmitz_2014].
+The *boundary separation* (*a*) represents the distance between the two decision boundaries.
 A larger boundary separation means the person collects more information before making a decision, providing a measure of how cautious the person is in their decision-making.
 In contrast to non-decision time, larger boundary separation leads to slower but more accurate responses. 
 In effect, it captures the speed-accuracy tradeoff. 
-Finally, the *starting point* represents a person's initial bias towards one of the two decision options (e.g., a tendency to classify facial expressions as angry that extends to neutral faces).
+Finally, the *starting point* (*z*) represents a person's initial bias towards one of the two decision options (e.g., a tendency to classify facial expressions as angry that extends to neutral faces).
 Note that allowing the starting point to vary only makes sense if the different response options differ in valence (e.g., happy and angry faces), and requires the data to be coded in a slightly different way.
 
-There are studies that focus on changes in DDM parameters in the context of situational threats and anxiety [e.g., @mcfadyen_2022; @tipples_2018; @thompson_2021]. no such studies exist in the childhood adversity literature.
+Though there are studies that focus on changes in DDM parameters in the context of situational threats and anxiety [e.g., @mcfadyen_2022; @tipples_2018; @thompson_2021], no such studies exist in the childhood adversity literature.
 As mentioned, many of the cognitive measures used in the adversity literature rely on aggregated indices of speed and/or accuracy.
 For example, physically abused youth have been shown to be faster and more accurate at detecting angry faces compared to happy faces [@pollak_2008; @pollak_2009; @gibb_2009].
 This important finding could reflect differences at various stages of cognitive processing.
@@ -235,18 +236,19 @@ Building on this first advantage, DDM offers a second advantage, which we discus
 
 ## Are deficit and enhancement patterns task-specific or task-general? {#intro_sub2}
 
-An additional advantage of the DDM is that it is a general measurement model. As such, it makes a minimal set of assumptions that applies to a wide range of cognitive tasks (provided that they have certain basic properties, e.g., that task performance only consists of a single decision-making process\; for more details, see @frischkorn_2018; @voss_2013).
+An additional advantage of the DDM is that it is a general measurement model. As such, it makes a minimal set of assumptions that applies to a wide range of cognitive tasks [provided that they have certain basic properties, e.g., that task performance only consists of a single decision-making process\; for more details, see @frischkorn_2018; @voss_2013].
 In fact, the DDM was originally developed for basic perceptual tasks [@ratcliff_1998; @wagenmakers_2009], but recent studies have shown that it can be applied to more complex tasks as long as the task requires a single decision process [@lerche_2020].
-Thus, the general properties of DDM allow relating drift rates, non-decision times, and boundary separation across a wide range of tasks (e.g., inhibition, attention shifting, working memory updating, visual processing).
+Thus, the general properties of DDM allow investigating individual differences in drift rates, non-decision times, and boundary separation across a wide range of tasks.
 
 Previous studies show that DDM parameters of executive functioning reflect both task-general and task-specific processes.
 For example, RTs on executive functioning tasks are substantially confounded with general processing efficiency [@frischkorn_2019; @lerche_2020; @loffler_2022]. These processes can be separated using structural equation modeling (SEM). 
 For example, @lerche_2020 found that covariances between drift rates were stronger for tasks with the same content domain (numerical, figural, verbal). 
-Drift rates of executive tasks may reflect *only* processing speed, and after accounting for task-general processes little may remain that can be attributed to task-specific abilities [@loffler_2022].
+Drift rates of executive tasks may even reflect *only* processing speed, with little task-specific variance remaining after accounting for task-general processes [@loffler_2022].
 These findings tie into a broader literature in cognitive science that questions the psychometric properties of many common measures of executive functioning [e.g., @von_bastian_2020; @draheim_2018; @draheim_2021; @hedge_2018; @rouder_2019].
-Although this is an ongoing debate, it is clear that accounting for task-general processes is critical if we want to build a comprehensive understanding of the developmental effects of adverse experiences on specific abilities.
+Although this is an ongoing debate, it is clear that accounting for task-general processes is critical if we want to build a comprehensive understanding of the developmental effects of early-life on specific abilities.
 
-Structural equation models (SEMs) allow accounting for task-general processes on a latent level. Controlling for the variance of task-general processes yields more precise estimates of task-specific processes.
+Structural equation models (SEMs) allow accounting for task-general processes on a latent level. 
+Controlling for the variance of task-general processes yields more precise estimates of task-specific processes.
 Imagine comparing the drift rates between an attention-shifting and a Flanker task.
 Drift rates of both tasks will rely to a large degree on a person's general processing efficiency since both require the rapid processing of visual information [@lerche_2020; @schubert_2016; @loffler_2022]. 
 After accounting for this shared variance, the remaining unique task variance may reflect individual differences in process parameters that are specific to the task. 
@@ -256,49 +258,33 @@ It is important to separate specific abilities and general processes, both for o
 
 ## The current study {#intro_current}
 
-In this study, we will use the Adolescent Brain Cognitive Development (ABCD) study data ([http://abcdstudy.org](http://abcdstudy.org)) to map key dimensions of adversity to general and task-specific DDM parameters of four cognitive tasks.
+In this study, we will use the Adolescent Brain Cognitive Development (ABCD) study data ([http://abcdstudy.org](http://abcdstudy.org)) to map key dimensions of adversity to general and task-specific DDM parameters covering attention shifting, inhibition and mental rotation.
 The ABCD study is ideal because it provides a large, representative, and diverse sample of 9- to 10 year-olds.
-The dataset contains several measures of developmental exposure to threat and deprivation and several well-known cognitive tasks.
-
-\<
-- Zijn er adversity effecten gevonden voor al deze abilities? Of voor sommigen? En voor welke dan?
-  - Fields, shifting en flanker in 6 t/m 12
-- Verschillen in EF gevonden voor deze leeftijdsgroep
-- Wat is er bekend over hoe EF in die leeftijdsgroep is.
-\>
-
-Here, we focus on four tasks measuring processing speed, attention shifting, inhibition and mental rotation.
-Our choice of these tasks was guided in part by previous work documenting enhanced attention shifting in people who grew up in an unpredictable environment [@fields_2021; @mittal_2015; @young_2022], but impaired inhibition abilities [e.g., @farah_2006; @fields_2021; @mezzacappa_2004; @noble_2005].
-However, it was primarily guided by the fact that these tasks are widely used in developmental science and adhere to DDM assumptions.
+Executive functions are still actively developing at this age, which lasts until early adulthood [@luna_2009; @tervo_clemmens_2022].
+However, effects of early-life adversity on executive functions are already visible at this age.
+For example, children with more adverse experiences typically show worse inhibitory abilities around this age [e.g., @fields_2021; @tibu_2016].
+In contrast, attention shifting has been found to be enhanced in children and (young) adults with more caregiver unpredictability [@fields_2021; @mittal_2015; @young_2022].
+Thus, our choice of this dataset was guided in part by previous work documenting deficit and impairment effects in inhibition and attention shifting, respectively.
+However, it was also guided by the fact that these tasks are widely used in developmental science and adhere to DDM assumptions.
 As we currently know very little about the effects of adversity on different stages of cognitive processing, here, we present an exploratory study systematically comparing the links between a range of adversity exposures and a diverse set of abilities.
-
-The DDM is well-suited for uncovering deficits and enhancements for two main reasons.
-First, the DDM can identify in which stage of cognitive processing a deficit or enhancement occurs.
-Second, we can estimate whether deficits and/or enhancements are *task-general* or *task-specific* [e.g., @lerche_2020; @schubert_2016; @loffler_2022].
-Specifically, we use DDM within a SEM framework to separate unique and shared variance across tasks.
-By combining DDM and SEM, we can identify links between types of adversity and cognitive abilities from which we can build stronger developmental theories.
 
 # Methods {#methods}
 
 ## Sample {#meth_sample}
 
-The ABCD study ([http://abcdstudy.org](http://abcdstudy.org); Data Release 4.0), is a prospective, longitudinal study of approximately 12,000 youth across the United States.
+The ABCD study ([http://abcdstudy.org](http://abcdstudy.org)), is a prospective, longitudinal study of approximately 12,000 youth across the United States.
 We focus on the baseline assessment, which has the largest collection of cognitive tasks suitable for DDM [@luciana_2018]. 
 At baseline, the study included 11,878 youths (aged between 9 and 10 years old, measured in months) recruited across 21 sites. 
 The study used multi-stage probability sampling to obtain a nationally representative sample [@heeringa_2010]. 
 Baseline assessments were completed between September 1^st^ 2016 and August 31^st^ 2018 [see @garavan_2018].
-Of the total sample at baseline, `r descriptives$precleaning_n$full_n_nihtb` had cognitive data available.
-However, `r prettyNum(str_remove(descriptives$precleaning_n$full_n_nihtb, ",") |> as.numeric() - str_remove(descriptives$precleaning_n$full_n_trial, ",") |> as.numeric(), big.mark = ",")` were missing trial-level data due to either data entry errors or data management issues in ABCD Data Release 4.0 for two sites.
-As a consequence, our analysis sample included `r descriptives$precleaning_n$full_n_trial` participants who had trial-level data available on all four^1^ cognitive tasks.
+Our analysis sample includes `r descriptives$precleaning_n$full_n_trial` participants who had trial-level data available on all four^1^ cognitive tasks.
 We will provide descriptive statistics of the youth included in the final sample (i.e., age, income-to-needs ratio, parent education level, ethnicity) in Stage 2 of this Registered Reports submission.
 
 ## Open Science Statement {#meth_os}
 
-All scripts and materials needed to reproduce the findings are available on the article's Github repository [(https://anonymous.4open.science/r/anon-255D/)](https://anonymous.4open.science/r/anon-255D/) We also include instructions on how to reproduce each step of our analyses (see [https://anonymous.4open.science/r/anon-255D/](https://anonymous.4open.science/r/anon-255D/)).
+All scripts, materials, and instructions needed to reproduce the findings are available on the article's Github repository [(https://anonymous.4open.science/r/anon-255D/README.md)](https://anonymous.4open.science/r/anon-255D/README.md). 
 The raw study data cannot be shared on public repositories.
 Personal access to the ABCD dataset is required to fully reproduce our analyses [https://nda.nih.gov](https://nda.nih.gov).
-One well-established strategy for ensuring computational reproducibility is to provide synthetic data files [(https://anonymous.4open.science/r/anon-255D/synthetic_data)](https://anonymous.4open.science/r/anon-255D/synthetic_data) with the same characteristics as the raw data.
-Readers who reproduce results for our synthetic data will know what we did at each step and, if they have access to the ABCD dataset, can reproduce the results of our actual analyses.
 
 We obtained access to the full ABCD data repository and performed initial data cleaning and analyses *prior* to stage 1 submission.
 However, we only preprocessed cognitive task data in isolation to prevent biasing the analyses involving independent variables.
@@ -321,23 +307,11 @@ The Processing Speed Task did not have a programmed time-out.
 Instead, we cut-off responses \> 10 seconds (`r exclusions$pcps_trial$ex_RT_above_10`% of trials) to remove extreme outliers.
 This step was not preregistered as we did not anticipate these extreme outliers.
 
-Next, we removed trials with: 1) RTs \< 300 ms (ranging from `r min(exclusions$lmt_trial$ex_fast_RT,exclusions$flanker_trial$ex_fast_RT,exclusions$dccs_trial$ex_fast_RT,exclusions$pcps_trial$ex_fast_RT,exclusions$picvoc_trial$ex_fast_RT)`% to `r max(exclusions$lmt_trial$ex_fast_RT,exclusions$flanker_trial$ex_fast_RT,exclusions$dccs_trial$ex_fast_RT,exclusions$pcps_trial$ex_fast_RT,exclusions$picvoc_trial$ex_fast_RT)`% of trials across tasks); 2) response times \> 3 *SD* above the participant-level average log-transformed mean RT (ranging from `r min(exclusions$lmt_trial$ex_slow_RT,exclusions$flanker_trial$ex_slow_RT,exclusions$dccs_trial$ex_slow_RT,exclusions$pcps_trial$ex_slow_RT,exclusions$picvoc_trial$ex_slow_RT)`% to `r max(exclusions$lmt_trial$ex_slow_RT,exclusions$flanker_trial$ex_slow_RT,exclusions$dccs_trial$ex_slow_RT,exclusions$pcps_trial$ex_slow_RT,exclusions$picvoc_trial$ex_slow_RT)`% of trials across tasks); 3) trials with missing response times and/or accuracy data (\< 0.01% for all tasks except Mental Rotation, see below).
+Next, we removed trials with: 1) RTs \< 300 ms (ranging from `r min(as.numeric(c(exclusions$lmt_trial$ex_fast_RT,exclusions$flanker_trial$ex_fast_RT,exclusions$dccs_trial$ex_fast_RT,exclusions$pcps_trial$ex_fast_RT,exclusions$picvoc_trial$ex_fast_RT)))`% to `r max(as.numeric(c(exclusions$lmt_trial$ex_fast_RT,exclusions$flanker_trial$ex_fast_RT,exclusions$dccs_trial$ex_fast_RT,exclusions$pcps_trial$ex_fast_RT,exclusions$picvoc_trial$ex_fast_RT)))`% of trials across tasks); 2) RTs \> 3 *SD* above the participant-level average log-transformed mean RT (ranging from `r min(as.numeric(c(exclusions$lmt_trial$ex_slow_RT,exclusions$flanker_trial$ex_slow_RT,exclusions$dccs_trial$ex_slow_RT,exclusions$pcps_trial$ex_slow_RT,exclusions$picvoc_trial$ex_slow_RT)))`% to `r max(as.numeric(c(exclusions$lmt_trial$ex_slow_RT,exclusions$flanker_trial$ex_slow_RT,exclusions$dccs_trial$ex_slow_RT,exclusions$pcps_trial$ex_slow_RT,exclusions$picvoc_trial$ex_slow_RT)))`% of trials across tasks; the same thing was done for RTs < 3 SD on the Processing Speed Task (not preregistered) to remove several fast outliers); 3) trials with missing response times and/or accuracy data (\< 0.01% for all tasks except Mental Rotation). We found that the response time-out of 5 seconds on the Mental Rotation Task led to missing responses on 10.55% of trials. This truncated the right-hand tail of the RT distribution, which can bias DDM estimation. Therefore, we decided to impute these values during DDM estimation instead of removing them (see the Supplemental materials for more information).
 
-Some additional trial-level decisions were not preregistered.
-We found that the response time-out of 5 seconds on the Mental Rotation Task led to missing responses on `r exclusions$lmt_trial$ex_missing_response`% of trials. 
-This truncated the right-hand tail of the RT distribution.
-Such truncation can bias DDM parameter estimation because there is meaningful information in the tail of the RT distribution.
-Therefore, we decided to impute these values instead of removing them (see the Supplemental materials for more information).
-In addition, for the Processing Speed task we removed trials \< 3 *SD* below the intra-individual mean of log-transformed RTs to get rid of a number of fast outliers (`r exclusions$pcps_trial$ex_fast_intra_RT`%).
-Fast outliers are particularly problematic for DDM because they can substantially bias parameter estimation (@voss_2013).
-
-Next, we excluded participants who 1) had suffered possible mild traumatic brain injury or worse (*n* = `r exclusions$lmt_participant$ex_tbi`); 2) showed a response bias of \> 80% on two or more tasks (*n* = `r exclusions$response_bias`); 3) had a low number of trials left after trial-level exclusions, defined as \< 20 trials for Mental Rotation and Attention Shifting (*n* = `r exclusions$lmt_participant$ex_below_20_trials` and `r exclusions$dccs_participant$ex_below_20_trials`, respectively) and \< 15 trials for Flanker and Processing Speed (*n* = `r exclusions$flanker_participant$ex_below_15_trials` and `r exclusions$pcps_participant$ex_below_15_trials`, respectively).
-Finally, we excluded one participant with 0% accuracy on the Processing Speed Task and one participant with 0% accuracy on the Mental Rotation Task (not preregistered).
-
-We deviated from the preregistration in how we made some case-wise exclusions.
-We initially planned to exclude participants who performed at chance level, but we later learned that this was not necessary for the DDM (the DDM can handle performance at or below chance) and would lead to the exclusion of almost half the sample.
-In addition, we planned to use 20 trials as the cut-off for all tasks, but this turned out to be an overly strict criterium for the Processing Speed and Flanker Task.
-Finally, we ended up not excluding participants with missing data one one or more tasks, as the main analyses can account for missing data points.
+Next, we excluded participants who 1) had suffered possible mild traumatic brain injury or worse (*n* = `r exclusions$lmt_participant$ex_tbi`); 2) showed a response bias of \> 80% on a task (ranging between *n* = `r min(as.numeric(c(exclusions$lmt_participant$ex_response_biases,exclusions$flanker_participant$ex_response_biases,exclusions$pcps_participant$ex_response_biases,exclusions$dccs_participant$ex_response_biases)))` and `r max(as.numeric(c(exclusions$lmt_participant$ex_response_biases,exclusions$flanker_participant$ex_response_biases,exclusions$pcps_participant$ex_response_biases,exclusions$dccs_participant$ex_response_biases)))`; deviating from the preregistration); 3) had a low number of trials left after trial-level exclusions, defined as \< 20 trials for Mental Rotation and Attention Shifting (*n* = `r exclusions$lmt_participant$ex_below_20_trials` and `r exclusions$dccs_participant$ex_below_20_trials`, respectively) and \< 15 trials for Flanker and Processing Speed (*n* = `r exclusions$flanker_participant$ex_below_15_trials` and `r exclusions$pcps_participant$ex_below_15_trials`, respectively, deviating from the preregistration).
+Finally, we excluded task data of several participants based on data inspection (not preregistered): `r exclusions$lmt_participant$ex_0_accuracy` participant with 0% accuracy on the Mental Rotation Task; `r exclusions$pcps_participant$ex_decreasing_effort` participants who showed a sharp decline in accuracy over time on the Processing Speed Task; `r exclusions$dccs_participant$ex_switching_bias` participants on the Attention Shifting Task who (almost) only made switches across all trials, even on repeat trials.
+We ended up not excluding participants with missing data one one or more tasks, as the main analyses can account for missing data points.
 
 The final sample consisted of `r descriptives$postcleaning_n$full_n_trial` participants.
 
@@ -345,31 +319,31 @@ The final sample consisted of `r descriptives$postcleaning_n$full_n_trial` parti
 
 ### Cognitive Tasks {#meth_cogtasks}
 
-**Flanker Task.** The NIH Toolbox Flanker task is typically used as a measure of cognitive control and attention [@zelazo_2014].
+**Flanker Task.** The NIH Toolbox Flanker task is a measure of cognitive control and attention [@zelazo_2014].
 On each trial, participants saw five arrows that were positioned side-by-side.
-The four flanking arrows always point in the same direction, either left or right.
-The central arrow either points in the same direction (congruent trials) or in the opposite direction (incongruent trials).
+The four flanking arrows always pointed in the same direction, either left or right.
+The central arrow either pointed in the same direction (congruent trials) or in the opposite direction (incongruent trials).
 Participants were instructed to always ignore the flanking arrows and to indicate whether the central arrow is pointing left or right.
 After 4 practice trials, participants completed 20 test trials, of which 12 were congruent (*Mean~RT~* = `r descriptives$flanker$mean_rt_congruent` seconds, *SD* = `r descriptives$flanker$sd_rt_congruent`) and 8 were incongruent (*Mean~RT~* = `r descriptives$flanker$mean_rt_incongruent` seconds, *SD* = `r descriptives$flanker$sd_rt_incongruent`).
-\[Standard outcome measure\] 
+The standard outcome measure is a normative composite of accuracy and RT. 
+For more information on the exact calculation, see @slotkin_2012. 
+
+
 
 **Processing Speed Task.** The NIH Toolbox Pattern Comparison Processing Speed task [@carlozzi_2015] is a measure of visual processing.
-On each trial, participants saw two images and must judge whether the images are the same or different.
+On each trial, participants saw two images and judged whether the images were the same or different.
 When images were different, they varied on one of three dimensions: color, adding or taking something away, or containing more or less of a particular item.
-Participants had 90 s to complete as many trials as possible.
-Performance is typically quantified as the number of correct trials completed.
-On average, participants completed `r pcps_clean |> count(subj_idx) |> summarise(n = mean(n))` trials (*Mean~RT~* = `r descriptives$pcps$mean_rt` seconds, *SD* = `r descriptives$pcps$sd_rt`).
+The standard outcome measure is the number of items answered correctly in 90 seconds (normalized).
+On average, participants completed `r pcps_clean |> count(subj_idx) |> summarise(n = mean(n)) |> summarise(mean = mean(n)) |> pull(mean) |> round(2)` trials (*Mean~RT~* = `r descriptives$pcps$mean_rt` seconds, *SD* = `r descriptives$pcps$sd_rt`).
 
 
 **Attention Shifting Task.** The NIH Toolbox Dimensional Change Card Sort Task is a measure of attention shifting or cognitive flexibility [@zelazo_2006; @zelazo_2014].
-At the bottom of the screen, participants saw an image of a white rabbit and a green boat.
-On each trial, a third object was presented at the center of the screen. 
-Participants had to match it by the shape or color of the two images below.
-Participants first completed 4 practice trials sorting only based on shape, followed by 4 practice trials sorting only based on color. 
-Finally, they performed 30 test trials which required them to alternate between shape and color in pseudo-random order.
-All participants were presented with 23 *repeat* trials (i.e., the sorting rule was the same as on the previous trial; *Mean~RT~* = `r descriptives$dccs$mean_rt_repeat` seconds, *SD* = `r descriptives$dccs$sd_rt_repeat`) and 7 *switch* trials (i.e., the sorting rule was different than on the previous trial; *Mean~RT~* = `r descriptives$dccs$mean_rt_switch` seconds, *SD* = `r descriptives$dccs$sd_rt_switch`).
-M
-\[Standard outcome measure\] 
+A white rabbit and green boat were presented at the bottom of the screen.
+Participants matched a third object to the rabbit or boat based on either color or shape.
+After 8 practice trials, participants completed 30 test trials alternating between shape and color in pseudo-random order.
+Of these, 23 were *repeat* trials (i.e., the sorting rule was the same as on the previous trial; *Mean~RT~* = `r descriptives$dccs$mean_rt_repeat` seconds, *SD* = `r descriptives$dccs$sd_rt_repeat`) and 7 were *switch* trials (i.e., the sorting rule was different than on the previous trial; *Mean~RT~* = `r descriptives$dccs$mean_rt_switch` seconds, *SD* = `r descriptives$dccs$sd_rt_switch`).
+The standard outcome measure is a normative composite of accuracy and RT.
+For more information on the exact calculation, see @slotkin_2012) 
 
 **Mental Rotation Task.** The Little Man task (referred to in this article as the Mental Rotation task) is a measure of visual-spatial processing [@luciana_2018].
 Participants saw a simple picture of a male figure holding a briefcase in his left or right hand.
@@ -377,7 +351,7 @@ They had to indicate whether the briefcase was in the left or right hand.
 The image could have one of four orientations: right side up or upside down, and facing towards or away from the participant.
 Thus, on half of the trials, participants had to mentally rotate the image in order to make the decision.
 Participants first completed 3 practice trials and then completed 32 test trials (*Mean~RT~* = `r descriptives$lmt$mean_rt`, *SD* = `r descriptives$lmt$sd_rt`).
-\[Standard outcome measure\]
+The standard outcome measure is an efficiency measure, calculated as the percentage correct divided by the average RT.
 
 ### Adversity measures {#meth_adversity}
 
@@ -385,117 +359,97 @@ Participants first completed 3 practice trials and then completed 32 test trials
 These items originate from the Parent-Reported Financial Adversity Questionnaire [@diemer_2012].
 The items assess whether or not (1 = Yes, 0 = No) the youth's family experienced several economic hardships over the 12 months prior to the assessment (e.g., 'Needed food but couldn't afford to buy it or couldn't afford to go out to get it').
 
-<!--# Add information about MNLFA in supplement or refer to Meriahs supplement -->
-
-We will use a previously created composite score of this measure derived from moderated nonlinear factor analysis (MNLFA\; @bauer_2017), which empirically adjusts for measurement non-invariance across sociodemographic characteristics.
+We will use a previously created composite score of this measure derived from moderated nonlinear factor analysis [MNLFA\; @bauer_2017], which empirically adjusts for measurement non-invariance across sociodemographic characteristics.
 In short, MNLFA scores assume a common scale of measurement across groups and age, as well as adjust for measurement biases that would have otherwise biased our substantive analyses.
-@dejoseph_2022 provide describe how this score was computed.
+@dejoseph_2022 describe how this score was computed.
 Higher scores indicate more material deprivation.
 
-**Proximal threat exposure.** We will compute threat experienced in the youth's home using the Family Conflict subscale of the ABCD Family Environment Scale [@moos_1994; @zucker_2018].
+**Household threat.** We will compute threat experienced in the youth's home using the Family Conflict subscale of the ABCD Family Environment Scale [@moos_1994; @zucker_2018].
 The subscale consisted of 9 items assessing conflict with family members (e.g., 'We fight a lot in our family').
 Items were endorsed with either 1 (True) or 0 (False).
 Two items are positively valenced and will therefore be reverse-scored.
-Similar to material deprivation, we will use a previously-created composite score of this measure derived from MNLFA, empirically adjusted for measurement non-invariance across several sociodemographic variables (see below).
-See @dejoseph_2022 for more information on how this score was generated.
-Higher scores indicate more proximal threat exposure.
+Similar to material deprivation, we will use a previously-created composite score of this measure derived from MNLFA.
+Higher scores indicate more threat exposure.
 
-**Distal neighborhood threat exposure.** We will compute the level of distal neighborhood threat exposure of the youth using two questionnaires.
-First, we will use the parent-reported neighborhood safety/crime questionnaire including three items: (a) 'I feel safe walking in my neighborhood', (b) 'Violence is not a problem in my neighborhood', and (c) 'My neighborhood is safe from crime' [@phenx_2016a].
-Neighborhood was defined as the area within about a 20-minute walk of the youth's home, and items were endorsed on a scale of 1 (Strongly disagree) to 5 (Strongly agree).
+**Sociodemographic covariates.** Several sociodemographic covariates will be included in the SEM models (see [Planned Main Analyses](#meth_proposed)) that use the MNLFA scores representing material deprivation and household threat exposure.
+This is because MNLFA scores are adjusted for these covariates.
+Thus, it is recommended that variation in these covariates is also adjusted for in dependent variables [@bauer_2017].
 
-Second, we used the parent-reported diagnostic interview for DMS-5 relating to traumatic events [@clark_2010].
-Items assessed whether or not (1 = True; 0 = False) the youth had experienced several events (e.g., 'Witnessed someone shot or stabbed in the community').
-
-A composite score of neighborhood threat exposure will be generated using Principal Components Analysis (PCA) that captures an aggregated weighted function of the included items. Higher scores represent more traumatic experiences.
-
-**Sociodemographic covariates.** Several sociodemographic covariates were included in substantive models (see [Planned Main Analyses](#meth_proposed)) that used the MNLFA scores representing material deprivation and proximal threat exposure.
-This is because MNLFA scores represent expected a posteriori estimates.
-In other words, individual scores on the adversity measures are adjusted for these covariates.
-Thus, it is recommended that variation in these covariates is adjusted for in models using MNLFA scores (@bauer_2017).
-
-We calculated Income-to-needs ratios (INR) by first taking the average of each binned income (\< \$5000, \$5,000--\$11,999, \$12,000--\$15,999, \$16,000--\$24,999, \$25,000--\$34,999, \$35,000--\$49,999, \$50,000--\$74,999, \$75,000--\$99,999, \$100,000--\$199,999, \≥ \$200,000) as a rough approximation of the family's total reported income.
-Then we divided income by the federal poverty threshold for the year at which a family was interviewed (range = \$12,486--\$50,681), adjusted for the number of persons in the home.
-Highest education (in years) out of the two caregivers (or one if a second caregiver was not provided) was used as a continuous variable.
-Informed by group base rates (see Sample section above), youth race was collapsed into 4 levels (White, Black, Hispanic, Other) and subsequently dummy-coded with White (the most numerous racial group) serving as the reference category in all models.
-We dichotomized youth sex such that 1 = Female and 0 = Male.
-Youth age (in months) was used as a continuous variable and centered on the mean.
+We will calculate Income-to-needs ratios (INR) by first taking the average of each binned income (\< \$5000, \$5,000--\$11,999, \$12,000--\$15,999, \$16,000--\$24,999, \$25,000--\$34,999, \$35,000--\$49,999, \$50,000--\$74,999, \$75,000--\$99,999, \$100,000--\$199,999, \≥ \$200,000) as a rough approximation of the family's total reported income.
+Then we will divide income by the federal poverty threshold for the year at which a family was interviewed (range = \$12,486--\$50,681), adjusted for the number of persons in the home.
+We will use highest education (in years) out of the two caregivers (or one if a second caregiver was not provided) as a continuous variable.
+We will collapse youth race into 4 levels (White, Black, Hispanic, Other) and subsequently dummy-code with White (the most numerous racial group) serving as the reference category in all models.
+We will dichotomize youth sex such that 1 = Female and 0 = Male.
+We will use youth age (in months) as a continuous variable and centered on the mean.
 
 ## Proposed Analysis Pipeline {#meth_analyses}
 
 ### Initial Analyses (Prior to Stage 1 Submission) {#meth_initial}
 
-See Table 1 for an overview of mean RTs and accuracy for all cognitive tasks.
-
 \[Add simulation results later\].
-
-**Table 1.** Descriptive statistics of mean RTs and accuracy for the cognitive tasks
-
-```{r}
-descriptives$task_descriptives |> 
-  flextable(cwidth = c(2, 1, 1, 1, 1)) |> 
-  set_header_labels(task = "", mean_rt = "RT\nMean (SD)", mean_acc = "Accuracy\nMean (SD)", acc_min = "Accuracy\nMin", acc_max = "Accuracy\nMax") 
-```
 
 ### Planned main analyses {#meth_proposed}
 
 Before conducting analyses, we will split the full sample up in a training set (*n* = 1,500) and a test set (*n* \≈ 8,500).
-Once the sample is divided, we will conduct our main analyses in three steps.
-First, we will fit the DDM to the cognitive task data of the training set using the *hBayesDM* package [@ahn_2017].
-Second, we will fit SEM models testing the effect of adversity on DDM parameters in the training set.
-These models will estimate the effect of adversity on both task-specific and task-general variance of each DDM parameter using the *blavaan* package [@merkle_2021].
-All variables will be *z*-standardized before being intered into SEMs.
-We will fit nine SEM models in total; model per dimension of adversity (3 dimensions) and DDM parameter (3 parameters) combination (see below for details of model specifications).
-In the third and final step, we will do an out-of-sample validation of our SEM models on the test set.
-This allows us to evaluate the robustness of our models and the effects of adversity on DDM parameters.
+We will conduct our main analyses in three steps (each discussed in more detail below): (1) fit the DDM to the cognitive task data; (2) fit the SEM model to the adversity and DDM data and optimize it where necessary based on the training set; (3) Refit the model to the test data and interpret the regression coefficients.
 All analyses will be conducted in R.
 The source code can be found on the Github repository ([https://anonymous.4open.science/r/anon-255D/scripts](https://anonymous.4open.science/r/anon-255D/scripts)).
 
-```{r figure2, fig.width=6, dpi=600, fig.id = "figure2", fig.cap.style = "Image Caption", fig.cap='**Figure 2.**. Overview of the planned data analysis steps. '}
+```{r figure2, fig.width=6, dpi=600, fig.id = "figure2", fig.cap.style = "Image Caption", fig.cap='**Figure 2.** Visualization of the full structural equation model. Dotted grey lines represent covariances. Dashed black lines represent factor loadings. Solid black lines represent regression paths. The general latent factors and manifest indicators involving the same task are allowed to covary. The factor loadings to each of the Processing Speed Task indicators are fixed to 1. The unique variances of each manifest indicator are captured in additional latent factors (U), one per indicator. To this end, the factor loadings are fixed to 0 and the residual variances of the manifest indicators are fixed to 0. For model identification reasons, we do not estimate regression paths to the unique variances of the Processing Speed Task. The sociodemographic covariates that are included in the MNLFA scores (see Measures section) are controlled for in the SEM. These paths are not shown in the Figure for improve readability. PS = Processing Speed Task; AS = Attention Shifting Task; MR = Mental Rotation Task; FL = Flanker Task; *v* = Drift rate; *a* = Boundary separation; *t0* = Non-decision time; U = unique variance.'}
 knitr::include_graphics("images/fig2.png")
 ```
 
 <br>
 
 **Step 1: DDM estimation.** The DDM will be fit to each cognitive task in a hierarchical Bayesian framework which estimates DDM parameters both on the individual and group level [@vandekerckhove_2011; @wiecki_2013].
+We use code provided by @johnson_2017.
 The benefit of this approach is that group-level information is leveraged to estimate individual-level estimates.
 This differs from classic DDM estimation approaches where the model is fitted to the data of each participant separately [@voss_2013].
-Thus, the model capitalizes on information available in the full sample, requiring fewer trials per participant [@lerche_2017].
 This is particularly useful in developmental samples like the ABCD dataset which have a limited number of trials per participant but substantially larger sample sizes than is typical in the DDM literature.
 
-All models will freely estimate the drift rate, non-decision time, and boundary separation while constraining response bias to 0.5 (i.e., assuming no bias towards a particular response option).
 See the supplement for more information about model fitting procedures.
-For the Flanker and Attention Shifting Task, we will compare model versions that separately estimate drift rate and non-decision-time per condition (congruent vs. incongruent and switch vs. repeat trials, respectively) or collapse across conditions.
-For the Processing Speed Task and the Mental Rotation Task, we estimate DDM parameters across all trials.
+All models will freely estimate the drift rate, non-decision time, and boundary separation while constraining response bias to 0.5 (i.e., assuming no bias towards a particular response option).
+For the Flanker and Attention Shifting Task, we will compare model versions that separately estimate drift rate and non-decision-time per task condition or collapse across conditions.
 Boundary separation will be constrained to be the same across conditions.
-This assumes that people are unable to change their response strategy (i.e., move their decision boundaries) between trials when they cannot anticipate the condition of the next trial.
+For the Processing Speed Task and the Mental Rotation Task, we estimate DDM parameters across all trials.
 The best-fitting model of each task will be used to estimate participant-level DDM parameters.
 
-**Step 2: SEM estimation.** Next, we will construct several Bayesian SEMs based on the training set.
-All SEMs will have the same basic structure (See Figure 2, step 2).
-Specifically, each SEM will specify a measurement model and a structural model.
-In the measurement model, all manifest indicators of a particular DDM parameter across all tasks (e.g., all drift rates) will be loaded on a single latent factor.
-To identify the model, the factor loading on the DDM estimate of the Processing Speed Task will be fixed to 1.
-This latent factor will provide an estimate of shared processes for each DDM parameter.
-When applied to the drift rate, for example, the factor would capture general cognitive efficiency that plays a role across all tasks.
+**Step 2: Model optimization in training set.** We will first estimate and (where necessary) optimize the SEM using the training set using the *lavaan* package.
+This goal of this step is to investigate whether we need to adjust the model specification in any way to achieve good model fit.
+For this reason, the model fitted in step 2 will not be interpreted to address our research aims.
+
+See Figure 2 for the *a-priori* specification of the model.
+In the measurement model, all three DDM parameters across all tasks (i.e., drift rates, non-decision times, and boundary separations) will be loaded on separate latent factors for each parameter type.
 Unique (residual) variances of the manifest DDM parameters will be captured in additional latent factors (one per parameter).
-To achieve this, these factor loadings will be fixed to 1, and the variances of the manifest variables will be fixed to 0.
-These task-specific variances reflect variance to each task after accounting for shared variance.
-
-The structural model will estimate regression paths going from each adversity measure (see [Adversity measures](#meth_adversity)) to the general latent factor and to the unique variances of the DDM parameters of the Attention Shifting, Flanker, and Mental Rotation Task.
-For model identification reasons, we will not estimate a regression path to the unique variance of the Processing Speed Task (see above).
-
-In addition, we will control for several sociodemographic covariates that are included in the MNLFA scores (see Measures section above). 
-We do not interpret these effects.
-This is because effects of these covariates were not central to our aims and alone are confounded with structural inequalities in the United States.
-Therefore, they do not adequately represent the specific constructs of adversity we examine here.
-
-Goodness-of-fit will be assessed using Bayesian analogs of the root mean square error of approximation (RMSEA) and the comparative fit index (CFI) [@garnier-villarreal_2020].
+The structural model will estimate regression paths going from each adversity measure (see [Adversity measures](#meth_adversity)) to the general latent factors and to the unique variances of the DDM parameters of each task.
+For model identification reasons, we will not estimate regression paths to the unique variances of the Processing Speed Task.
+The measurement parts of each model will be estimated and optimized step-by-step.
+This will allow us to detect sources of potential badness of fit more efficiently.
+In addition, clustering of siblings and twins within families will be accounted for using the *lavaan.survey* package [@oberski_2014].
+Finally, the sociodemographic covariates that are included in the MNLFA scores (see Measures section above) will be controlled for in the SEM. 
+We do not interpret these effects here nor in the final models fitted at step 3.
+Goodness-of-fit will be assessed using the root mean square error of approximation (RMSEA) and the comparative fit index (CFI).
 Following @hu_1999, CFI values \> .90 and RMSEA values \< .08 will be interpreted as acceptable model fit and CFI values \> .95 and RMSEA values \≤ .06 as good model fit.
-In case of poor model fit, we use the training set to explore alternatives in a data-driven manner.
-The robustness of the SEM findings (with and without potential changes to the model structure) will be tested in the test set in step 3.
 
-**Step 3: Out-of-sample validation.** TBD
+**Step 3: Model validation in test set.** After optimizing the model based on the training set, we will refit it to the test data.
+Model fit will be assessed the same way as at step 2.
+The regression coefficients of these models will be interpreted to address our research questions.
+
+## Planned Secondary Analyses
+
+We plan to fit two additional models including neighborhood threat and exposure to severe physical threat as predictors.
+Neighborhood threat will be measured using the parent-reported neighborhood safety/crime questionnaire including three items: (a) 'I feel safe walking in my neighborhood', (b) 'Violence is not a problem in my neighborhood', and (c) 'My neighborhood is safe from crime' [@phenx_2016a].
+Severe physical threat will be measured with the parent-reported diagnostic interview for DMS-5 relating to traumatic events [@clark_2010].
+Items assessed whether or not (1 = True; 0 = False) the youth had experienced several events (e.g., 'Witnessed someone shot or stabbed in the community').
+We add these models as secondary analyses because the adversity measures have less desirable measurement characteristics yet are interesting from a conceptual perspective.
+Specifically, neighborhood crime is only measured by three items, and endorsement of individual traumatic events items is very low.
+A composite score of neighborhood threat will be calculated by averaging the three questionnaire items.
+A composite score of severe physical threat will be calculated by summing across all items.
+
+## Timeline
+
+All data required for the study have already been collected.
+We estimate we will need three months after Stage 1 in-principle acceptance to fit all the DDM models, run the analyses and finish the Stage 2 report.
 
 \pagebreak
 
