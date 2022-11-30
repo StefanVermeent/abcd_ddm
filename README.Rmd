@@ -6,34 +6,37 @@ output: github_document
 
 
 ```{r setup, include=F, echo=F}
+library(tidyverse)
+library(gert)
+library(flextable)
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
-source('scripts/dependencies.R')
+#source('scripts/dependencies.R')
 ```
 
 This repository contains data, code, and output for a manuscript entitled "Cognitive deficits and enhancements in youth from adverse conditions: An integrative assessment using Drift Diffusion Modeling in the ABCD study" submitted as a Registered Report at  *Developmental Science*.
 
 
-```{r}
-knitr::kable(
-  gert::git_log() |> 
-  select(commit, author, time, message) |>
-  (function(.) filter(., str_detect(string = .$message, pattern = "^\\[\\[")))() |> 
-  separate(message, into = c("Message", "Data Hash", 'Code'), sep = "\n") |> 
-  separate(Message, into = c("Milestone", "Description"), sep = "\\]\\]\\s") %>% 
-  mutate(
-    Milestone = map_chr(Milestone, function(Milestone) {
-      Milestone |> 
-        str_remove("\\[\\[") |>
-        str_replace("_", " ") |> 
-        str_to_title()
-    })
-  ) |> 
-  select(Time=time, Milestone, Description, Code, `Data Hash`) |> 
-  mutate(
-    Code = str_replace_all(Code, "\\|\\>", "\\|\\>\\\n")
-  )
-)
-```
+#```{r}
+#knitr::kable(
+#  gert::git_log() |> 
+#  select(commit, author, time, message) |>
+#  (function(.) filter(., str_detect(string = .$message, pattern = "^\\[\\[")))() |> 
+#  separate(message, into = c("Message", "Data Hash", 'Code'), sep = "\n") |> 
+#  separate(Message, into = c("Milestone", "Description"), sep = "\\]\\]\\s") %>% 
+#  mutate(
+#    Milestone = map_chr(Milestone, function(Milestone) {
+#      Milestone |> 
+#        str_remove("\\[\\[") |>
+#        str_replace("_", " ") |> 
+#        str_to_title()
+#    })
+#  ) |> 
+#  select(Time=time, Milestone, Description, Code, `Data Hash`) |> 
+#  mutate(
+#    Code = str_replace_all(Code, "\\|\\>", "\\|\\>\\\n")
+#  )
+#)
+#```
 
 ## Open Science Workflow {#openscience}
 
