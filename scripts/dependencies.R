@@ -12,11 +12,16 @@ pkgs <-
     "rjags",
     "coda",
     "rstan",
-    "hBayesDM"
+    "hBayesDM",
+    "htmltools",
+    "gt",
+    "flextable",
+    "lavaan", 
+    "lavaan.survey"
   )
 
 # The date of which we want to install and load the package versions
 date <- "2022-10-15"
 
 # Using the groundhog package, we install and load the project dependencies
-groundhog.library(pkg = pkgs, date = date)
+groundhog.library(pkg = pkgs, date = date, force.install = TRUE)

@@ -10,7 +10,7 @@ source('scripts/dependencies.R')
 
 source('scripts/custom_functions/read-functions.R')
 source('scripts/custom_functions/general-functions.R')
-load('closed_data/tasks_raw.Rdata')
+
 
 data_folder <- "closed_data"
 
@@ -23,7 +23,7 @@ nih_ref_ids <- read_delim('closed_data/abcd_tbss01.txt') |>
   pull(subjectkey)
 
 exclusions <- list()
-demographics <- list()
+descriptives <- list()
 
 # 1. Little Man Task ------------------------------------------------------
 
@@ -68,8 +68,6 @@ assertthat::assert_that(all(lmt_raw |> group_by(subj_idx) |> count() |> pull() =
 # 2. NIH Toolbox tasks -------------------------------------------------------
 
 ## 2.1 File preparations ----
-
-## TODO: unzip files automatically
 
 # Fix file names
 list.files(glue("{data_folder}/abcd_tb_tlb01/NIHTB/NIHTB"), full.names = TRUE) |> 
@@ -330,11 +328,20 @@ picvoc_raw <- picvoc_raw |>
 glue("Pre-cleaning PIC VOC sample size: {picvoc_raw |> pull(subj_idx) |> unique() |> length()} participants.")
 
 
-
-demographics <- list()
+# Remove subjects from lmt that do not have NIH TB data because of technical issues.
+lmt_raw <- lmt_raw |> 
+  filter(
+    subj_idx %in% unique(
+      c(
+        flanker_raw |> pull(subj_idx) |> unique(),
+        dccs_raw |> pull(subj_idx) |> unique(),
+        pcps_raw |> pull(subj_idx) |> unique()
+      )
+    )
+  )
 
 # Sample size information for manuscript
-demographics$precleaning_n <- 
+descriptives$precleaning_n <- 
   list(
     lmt     = lmt_raw |> pull(subj_idx) |> unique() |> length(),
     flanker = flanker_raw |> pull(subj_idx) |> unique() |> length(),
@@ -358,21 +365,11 @@ demographics$precleaning_n <-
       )  |> length()
   )
 
-demographics$precleaning_n <- demographics$precleaning_n |> 
+descriptives$precleaning_n <- descriptives$precleaning_n |> 
   map(function(x) prettyNum(x, big.mark = ","))
 
 
-# Remove subjects from lmt that do not have NIH TB data because of technical issues.
-lmt_raw <- lmt_raw |> 
-  filter(
-    subj_idx %in% unique(
-      c(
-        flanker_raw |> pull(subj_idx) |> unique(),
-        dccs_raw |> pull(subj_idx) |> unique(),
-        pcps_raw |> pull(subj_idx) |> unique()
-      )
-    )
-  )
+
 
 save(
   lmt_raw, 
@@ -380,7 +377,7 @@ save(
   dccs_raw,
   pcps_raw,
   
-  demographics,
+  descriptives,
   
   file = glue('{data_folder}/tasks_raw.RData')
   )

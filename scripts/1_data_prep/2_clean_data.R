@@ -3,6 +3,7 @@
 
 source('scripts/dependencies.R')
 source('scripts/custom_functions/read-functions.R')
+source('scripts/custom_functions/general-functions.R')
 
 data_folder <- "closed_data"
 
@@ -23,8 +24,7 @@ exclusions <- list()
 
 ## 1.1 Trial-level exclusions ----
 
-ggplot(lmt_raw, aes(RT)) +
-  geom_histogram()
+plot_RTs(lmt_raw |> rename(correct = response), title = "Mental Rotation - Raw data RTs")
 
 # Trials of the Little Man Task timed out after 5 s. So, we start out by removing trials that have RTs > 5s,
 # which should not be possible.
@@ -98,10 +98,61 @@ lmt_clean <- lmt_clean |>
   mutate(task = 1) |> 
   ungroup() 
 
+# Check RT and accuracy distribution
+plot_meanRTs(lmt_clean, title = "Mental Rotation - RT After initial cleaning")
+plot_meanAcc(lmt_clean, title = "Mental Rotation -  Accuracy after initial cleaning")
+
+# Check for response biases
+lmt_response_bias <- lmt_clean |> 
+  group_by(subj_idx) |> 
+  mutate(
+    correct_response = case_when(
+      lmt_response == "leftButton" & correct == 1 ~ 1,
+      lmt_response == "rightButton" & correct == 1 ~ 2,
+      lmt_response == 'leftButton' & correct == 0 ~ 2,
+      lmt_response == "rightButton" & correct == 0 ~ 1
+    )
+  ) |> 
+  summarise(
+    actual_bias = sum(correct_response == 1) / n()*100,
+    response    = sum(lmt_response == "leftButton")/n()*100,
+    acc         = sum(correct == 1) / n()) |> 
+  ungroup() |> 
+  mutate(
+    actual_bias = ifelse(actual_bias < 50, 100 - actual_bias, actual_bias),
+    response = ifelse(response < 50, 100 - response, response),
+  ) |> 
+  ungroup() |> 
+  filter(response > 70) |> 
+  arrange(desc(response)) 
+
+# Additional exclusions
+lmt_clean <- lmt_clean |> 
+  mutate(
+    ex_response_biases = ifelse(subj_idx %in% unique(lmt_response_bias$subj_idx), TRUE, FALSE)
+  ) 
+
+exclusions$lmt_participant <- exclusions$lmt_participant |> 
+  mutate(
+    ex_response_biases = lmt_clean |> select(subj_idx, ex_response_biases) |> distinct() |> filter(ex_response_biases) |> nrow()
+  )
+
+# Exclude participants with response bias
+lmt_clean <- lmt_clean |> 
+  filter(if_all(starts_with("ex"), ~. == FALSE))
+
+# Check RT and accuracy distribution
+plot_meanRTs(lmt_clean, title = "LMT - RT After response bias removal")
+plot_meanAcc(lmt_clean, title = "LMT -  Accuracy after response bias removal")
+
+
 
 # 2. Flanker Task ---------------------------------------------------------
 
 ## 2.1 Trial-level exclusions ----
+
+
+plot_RTs(flanker_raw, title = "Flanker - Raw data RTs")
 
 ggplot(flanker_raw, aes(RT)) +
   geom_histogram()
@@ -176,21 +227,55 @@ flanker_clean <- flanker_clean |>
   ungroup()
 
 
+# Check RT and accuracy distribution
+plot_meanRTs(flanker_clean, title = "Flanker - RT After initial cleaning")
+plot_meanAcc(flanker_clean, title = "Flanker -  Accuracy after initial cleaning")
+
+# Check for response biases
+flanker_response_bias <- flanker_clean |> 
+  group_by(subj_idx) |> 
+  mutate(
+    correct_response = case_when(
+      Response == 1 & correct == 1 ~ 1,
+      Response == 2 & correct == 1 ~ 2,
+      Response == 1 & correct == 0 ~ 2,
+      Response == 2 & correct == 0 ~ 1
+    )
+  ) |> 
+  summarise(
+    actual_bias = sum(correct_response == 1) / n()*100,
+    response    = sum(Response == 1)/n()*100,
+    acc         = sum(correct == 1) / n()) |> 
+  ungroup() |> 
+  mutate(
+    actual_bias = ifelse(actual_bias < 50, 100 - actual_bias, actual_bias),
+    response = ifelse(response < 50, 100 - response, response),
+  ) |> 
+  ungroup() |> 
+  filter(response > 70) |> 
+  arrange(desc(response)) 
+
+# Only one participant with a response bias 72.2% while the actual bias was 61.1%
+# Does not look like an odd data point, so we'll leave it alone.
+
+exclusions$flanker_participant <- exclusions$flanker_participant |> 
+  mutate(ex_response_biases = 0)
 
 
 # 3. Processing Speed Task ------------------------------------------------
 
 ## 3.1 Trial-level exclusions ----
 
-ggplot(pcps_raw, aes(RT)) +
-  geom_histogram(bins = 1000) +
-  coord_cartesian(xlim = c(0, 25))
+plot_RTs(pcps_raw, title = "PCPS - Raw data RTs")
+
+# Several severe outliers, even extending the 90 seconds that the task is
+# supposed to take.
 
 quantile(pcps_raw$RT, c(0, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.995, 1))
 
 # Based on the full distribution of RTs, we first filter all trials with a
 # RT > 10 s to get rid of extremely long RTs.
-pcps_clean <- pcps_raw |> 
+pcps_clean1 <- pcps_raw |> 
   left_join(tbi) |> 
   filter(RT < 10) |> 
   mutate(
@@ -202,23 +287,19 @@ pcps_clean <- pcps_raw |>
   mutate(ex_slow_RT = ifelse(scale(log(RT)) |> as.numeric() > 3, TRUE, FALSE)) |> 
   ungroup()
 
-pcps_clean |> 
-  ggplot(aes(RT, group = factor(correct), fill = factor(correct))) +
-  geom_density(alpha = 0.6)
+plot_RTs(pcps_clean1, title = "PCPS - RTs After first trial-level exclusions")
 
 # The plot shows a number of fast outliers on incorrect trials, 
 # which can bias the analyses. Therefore, we also exclude trials
 # < -3 SD from the intra-individual mean
 
-pcps_clean <- pcps_clean |> 
+pcps_clean2 <- pcps_clean1 |> 
   group_by(subj_idx) |> 
   mutate(ex_fast_intra_RT = ifelse(scale(log(RT))|> as.numeric() < -3, TRUE, FALSE)) |> 
   ungroup()
 
-
-
 exclusions$pcps_trial <- 
-  pcps_clean |> 
+  pcps_clean2 |> 
   summarise(
     ex_missing_response = (sum(ex_missing_response == TRUE) / n()) * 100,
     ex_fast_RT          = (sum(ex_fast_RT == TRUE, na.rm = T) / n()) * 100,
@@ -229,13 +310,14 @@ exclusions$pcps_trial <-
 
 
 # Apply trial-level exclusions
-pcps_clean <- pcps_clean |> 
+pcps_clean <- pcps_clean2 |> 
   filter(if_all(c(ex_missing_response, ex_fast_RT, ex_slow_RT, ex_fast_intra_RT), ~ . == FALSE)) |> 
   select(-starts_with('ex'))
 
-pcps_clean |> 
-  ggplot(aes(RT, group = factor(correct), fill = factor(correct))) +
-  geom_density(alpha = 0.6)
+plot_RTs(pcps_clean, title = "PCPS - RTs After trial-level exclusions")
+
+# Number of fast outliers is reduced, but not fully.
+
 
 ## 3.2 Case-wise exclusions ----
 
@@ -246,12 +328,10 @@ pcps_clean |>
   geom_histogram() +
   labs(title = "Number of trials for PCPS")
 
-pcps_clean |> 
-  group_by(subj_idx) |> 
-  summarise(acc = sum(correct == 1)/n()*100) |> 
-  ggplot(aes(acc)) +
-  geom_histogram() +
-  labs(title = "Accuracy for PCPS")
+# Check RT and accuracy distribution
+plot_meanRTs(pcps_clean, title = "PCPS - Mean RT before case-wise exclusions")
+plot_meanAcc(pcps_clean, title = "PCPS -  Mean Accuracy before case-wise exclusions")
+
 
 
 exclusions$pcps_participant <- 
@@ -284,13 +364,69 @@ pcps_clean <- pcps_clean |>
   mutate(task = 4) |> 
   ungroup()
 
+# Check RT and accuracy distribution
+plot_meanRTs(pcps_clean, title = "PCPS - mean RT After case-wise cleaning")
+plot_meanAcc(pcps_clean, title = "PCPS -  mean Accuracy after case-wise cleaning")
+
+# Check for response biases
+pcps_response_bias <- pcps_clean |> 
+  group_by(subj_idx) |> 
+  mutate(
+    correct_response = case_when(
+      Response == 1 & correct == 1 ~ 1,
+      Response == 2 & correct == 1 ~ 2,
+      Response == 1 & correct == 0 ~ 2,
+      Response == 2 & correct == 0 ~ 1
+    )
+  ) |> 
+  summarise(
+    actual_bias = sum(correct_response == 1) / n()*100,
+    response    = sum(Response == 1)/n()*100,
+    acc         = sum(correct == 1) / n()) |> 
+  ungroup() |> 
+  mutate(
+    actual_bias = ifelse(actual_bias < 50, 100 - actual_bias, actual_bias),
+    response = ifelse(response < 50, 100 - response, response),
+  ) |> 
+  ungroup() |> 
+  filter(response > 70) |> 
+  arrange(desc(response)) 
+
+# Additional case-wise exclusions
+
+pcps_clean <- pcps_clean |> 
+  mutate(
+    ex_response_biases = ifelse(subj_idx %in% unique(pcps_response_bias$subj_idx), TRUE, FALSE)
+    ) |> 
+  group_by(subj_idx) |> 
+  mutate(
+    ex_decreasing_effort = ifelse((sum(correct == 1)/n() * 100) < 40, TRUE, FALSE)
+  )
+
+exclusions$pcps_participant <- exclusions$pcps_participant |> 
+  mutate(
+    ex_response_biases = pcps_clean |> select(subj_idx, ex_response_biases) |> distinct() |> filter(ex_response_biases) |> nrow(),
+    ex_decreasing_effort = pcps_clean |> select(subj_idx, ex_decreasing_effort) |> distinct() |> filter(ex_decreasing_effort) |> nrow()
+  )
+
+# Exclude participants with response bias
+pcps_clean <- pcps_clean |> 
+  filter(if_all(starts_with("ex"), ~. == FALSE))
+
+# Check RT and accuracy distribution
+plot_meanRTs(pcps_clean, title = "PCPS - RT After response bias removal")
+plot_meanAcc(pcps_clean, title = "PCPS -  Accuracy after response bias removal")
+
+
+
 
 # 4. Attention Shifting task ----------------------------------------------
 
 ## 4.1 Trial-level exclusions ----
 
-ggplot(dccs_raw, aes(RT)) +
-  geom_histogram() 
+
+plot_RTs(dccs_raw, title = "DCCS - Raw data RTs")
+
 
 quantile(dccs_raw$RT, c(0, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.995, 1))
 
@@ -335,6 +471,12 @@ dccs_clean |>
   ggplot(aes(n)) +
   geom_histogram()
 
+# Check RT and accuracy distribution
+plot_meanRTs(dccs_clean, title = "DCCS - Mean RT before case-wise exclusions")
+plot_meanAcc(dccs_clean, title = "DCCS -  Mean Accuracy before case-wise exclusions")
+
+
+
 
 exclusions$dccs_participant <- 
   dccs_clean |> 
@@ -364,52 +506,73 @@ dccs_clean <- dccs_clean |>
   ungroup()
 
 
-# 5. Response bias -----------------------------------------------------------
-# Calculate response bias as exclusion criterium
+# Check RT and accuracy distribution
+plot_meanRTs(dccs_clean, title = "DCCS - mean RT After case-wise cleaning")
+plot_meanAcc(dccs_clean, title = "DCCS -  mean Accuracy after case-wise cleaning")
 
-response_bias_ids <- list('dccs_clean', 'flanker_clean', 'pcps_clean') |> 
-  map_df(function(x) {
-    
-      x |> 
-      rlang::parse_expr() |>
-      rlang::eval_tidy() |> 
-      group_by(subj_idx) |> 
-      summarise(response = sum(Response == 1)/n()*100) |> 
-      ungroup() |> 
-      mutate(
-        response = ifelse(response < 50, 100 - response, response),
-        task     = x
-      )
-  }) |> 
+# Check for response biases
+dccs_response_bias <- dccs_clean |> 
   group_by(subj_idx) |> 
+  mutate(
+    correct_response = case_when(
+      Response == 1 & correct == 1 ~ 1,
+      Response == 2 & correct == 1 ~ 2,
+      Response == 1 & correct == 0 ~ 2,
+      Response == 2 & correct == 0 ~ 1
+    )
+  ) |> 
+  summarise(
+    actual_bias = sum(correct_response == 1) / n()*100,
+    response    = sum(Response == 1)/n()*100,
+    acc         = sum(correct == 1) / n()) |> 
+  ungroup() |> 
+  mutate(
+    actual_bias = ifelse(actual_bias < 50, 100 - actual_bias, actual_bias),
+    response = ifelse(response < 50, 100 - response, response),
+  ) |> 
+  ungroup() |> 
   filter(response > 70) |> 
-  mutate(n = n()) |> 
-  filter(n >1) |>   
-  distinct(subj_idx) |> 
-  pull(subj_idx) 
+  arrange(desc(response)) 
 
-exclusions$response_bias <- 
-  tibble(
-    response_bias = response_bias_ids |> 
-      length()
-  )
-  
+# Additional case-wise exclusions
 
+# Several participants showed (near) perfect accuracy on the switch trials, but
+# (close to) 0 accuracy on the easier repeat trials. Thus, they made switches
+# on all or nearly all trials.
+dccs_n_switches <- dccs_clean |> 
+  group_by(subj_idx, condition) |> 
+  summarise(acc = sum(correct == 1)/n()*100) |> 
+  pivot_wider(names_from = 'condition', values_from = 'acc') |> 
+  group_by(`repeat`, switch) |> 
+  mutate(n = n())
 
+ggplot(dccs_n_switches,aes(x = `repeat`, y = switch)) + geom_point(aes(size = n))
 
-# 6. Final cleaning across all tasks --------------------------------------
+# We decided to remove participants with < 25% accuracy on repeat trials combined
+# with > 75% accuracy on switch trials.
 
-lmt_clean <- lmt_clean |> 
-  filter(!subj_idx %in% response_bias_ids)
-
-flanker_clean<- flanker_clean|> 
-  filter(!subj_idx %in% response_bias_ids)
-
-pcps_clean <- pcps_clean |> 
-  filter(!subj_idx %in% response_bias_ids) 
 
 dccs_clean <- dccs_clean |> 
-  filter(!subj_idx %in% response_bias_ids)
+  mutate(
+    ex_response_biases = ifelse(subj_idx %in% unique(pcps_response_bias$subj_idx), TRUE, FALSE),
+    ex_switching_bias = ifelse(subj_idx %in% unique(dccs_n_switches |> filter(`repeat` < 25 & switch > 75) |> pull(subj_idx)), TRUE, FALSE)
+  ) 
+
+exclusions$dccs_participant <- exclusions$dccs_participant |> 
+  mutate(
+    ex_response_biases = dccs_clean |> select(subj_idx, ex_response_biases) |> distinct() |> filter(ex_response_biases) |> nrow(),
+    ex_switching_bias = dccs_clean |> select(subj_idx, ex_switching_bias) |> distinct() |> filter(ex_switching_bias) |> nrow()
+  )
+
+# Exclude participants with response bias
+dccs_clean <- dccs_clean |> 
+  filter(if_all(starts_with("ex"), ~. == FALSE))
+
+# Check RT and accuracy distribution
+plot_meanRTs(dccs_clean, title = "DCCS - RT After response bias removal")
+plot_meanAcc(dccs_clean, title = "DCCS -  Accuracy after response bias removal")
+
+
 
 # Task distributions after cleaning
 list(pcps_clean, flanker_clean, lmt_clean, dccs_clean) |> 
@@ -428,7 +591,7 @@ list(pcps_clean, flanker_clean, lmt_clean, dccs_clean) |>
 
 
 
-demographics$postcleaning_n <- 
+descriptives$postcleaning_n <- 
   list(
     lmt     = lmt_clean |> pull(subj_idx) |> unique() |> length(),
     flanker = flanker_clean |> pull(subj_idx) |> unique() |> length(),
@@ -458,7 +621,7 @@ demographics$postcleaning_n <-
              )) |> length()
   )
 
-demographics$postcleaning_n <- demographics$postcleaning_n |> 
+descriptives$postcleaning_n <- descriptives$postcleaning_n |> 
   map(function(x) prettyNum(x, big.mark = ","))
 
 # Subjects that have data available on all tasks
@@ -482,7 +645,67 @@ shared_ids <-
 
 # Task-descriptives -------------------------------------------------------
 
-demographics$task_descriptives <- 
+get_descriptives <- function(data, conditions = FALSE) {
+  
+  if(!conditions) {
+    return(
+      data |> 
+      group_by(subj_idx) |> 
+      summarise(
+        mean_RT = mean(RT, na.rm = T),
+        sd_RT   = sd(RT, na.rm = T),
+        acc     = sum(correct == 1) / n() * 100
+      ) |> 
+      ungroup() |> 
+      summarise(
+        mean_rt  = round(mean(mean_RT, na.rm = T), 2),
+        sd_rt    = round(sd(mean_RT, na.rm = T), 2),
+        mean_acc = round(mean(acc, na.rm = T), 2),
+        sd_acc   = round(sd(acc, na.rm = T), 2)
+      ) |> 
+      as.list()
+    )
+  }
+  
+  if(conditions) {
+    return(
+    data |> 
+      group_by(subj_idx, condition) |> 
+      summarise(
+        mean_RT = mean(RT, na.rm = T),
+        sd_RT   = sd(RT, na.rm = T),
+        acc     = sum(correct == 1) / n() * 100
+      ) |> 
+      group_by(condition) |> 
+      summarise(
+        mean_rt  = round(mean(mean_RT, na.rm = T), 2),
+        sd_rt    = round(sd(mean_RT, na.rm = T), 2),
+        mean_acc = round(mean(acc, na.rm = T), 2),
+        sd_acc   = round(sd(acc, na.rm = T), 2)
+      ) |> 
+      pivot_longer(c(mean_rt, sd_rt, mean_acc, sd_acc), names_to = 'stat', values_to = 'value') |> 
+      mutate(stat = paste0(stat, "_", condition)) |> 
+      select(-condition) |> 
+      pivot_wider(names_from = 'stat', values_from = 'value') |> 
+      as.list()
+    )
+  }
+}
+
+descriptives$lmt <- 
+  get_descriptives(lmt_clean)
+
+descriptives$flanker <- 
+  get_descriptives(flanker_clean, conditions = TRUE)
+
+descriptives$pcps <- 
+  get_descriptives(pcps_clean)
+
+descriptives$dccs <- 
+  get_descriptives(dccs_clean, conditions = TRUE)
+
+
+descriptives$task_descriptives_table <- 
   list(pcps_clean, flanker_clean, lmt_clean, dccs_clean) |> 
   map_df(function(x) {
     
@@ -525,7 +748,7 @@ save(
   dccs_clean, 
   
   exclusions,
-  demographics,
+  descriptives,
   
   file = glue('{data_folder}/tasks_clean.RData'))
 
