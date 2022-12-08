@@ -145,3 +145,12 @@ plot_meanAcc <- function(data, title = ''){
     )
 }
 
+
+smallNum <- function(number){
+  
+  if(as.numeric(number) < 11) {
+    return(english::words(as.numeric(number)))
+  } else {
+    return(number)
+  }
+}

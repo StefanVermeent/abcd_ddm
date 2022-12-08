@@ -1,7 +1,6 @@
 library(groundhog)
 
 # Dependencies for this project
-
 pkgs <- 
   c(
     "tidyverse",
@@ -25,3 +24,9 @@ date <- "2022-10-15"
 
 # Using the groundhog package, we install and load the project dependencies
 groundhog.library(pkg = pkgs, date = date, force.install = TRUE)
+
+
+# Data folder
+# Set this to `synthetic_data` if you want to reproduce the analyses
+# using the synthetic data files.
+data_folder <- 'closed_data'
