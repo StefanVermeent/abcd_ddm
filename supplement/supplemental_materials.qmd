@@ -39,49 +39,56 @@ editor:
 library(tidyverse)
 library(glue)
 library(ggsci)
+library(flextable)
 
 load('../closed_data/tasks_clean.RData')
-load('../closed_data/power.RData')
+load('../synthetic_data/staged_sim_results_supp.RData')
+
+
+
+knitr::opts_chunk$set(
+  echo = F,
+  fig.align = "center",
+  fig.pos = "!t", 
+  out.extra = "",
+  fig.show = "asis",
+  message = FALSE,
+  tab.topcaption = T,
+  warning = FALSE
+)
+
+# set up flextable for tables
+set_flextable_defaults(
+  font.family = "Times", 
+  font.size = 10,
+  font.color = "black",
+  line_spacing = 1,
+  padding.bottom = 1, 
+  padding.top = 1,
+  padding.left = 1,
+  padding.right = 1
+)
 ```
 
 # Data access workflow
 
-# Full Project Workflow
+
 
 # Power analysis
 
-We conducted a power analysis through simulation using the `simulateData` function of the `lavaan` package.
+We conducted a power analysis through simulation using the *simulateData* function of the *lavaan* package.
 On each iteration, we first specified a population model (i.e., the 'true' model) with prespecified factor loadings and regression coefficients, and a sample model.
 Factor loadings in this model were randomly generated between 0.6 and 0.8 following a uniform distribution.
 Next, we simulated data sets based on the population model.
 Finally, we fitted the sample model to the simulated data and extracted the beta coefficients and corresponding *p*-values.
 We generated population models with beta coefficients of 0.08 and 0.1, and simulated data with sample sizes ranging from 1,500, to 8,500 with steps of 1,000. Each combination of coefficients and sample sizes was repeated 500 times, for a total of 8,000 iterations.
 
-The results are shown in Figure S1. The simulations yield power \> 90% at around *N* = 3,500 for $\beta$ = 0.08 and *N* = 2,500 for $\beta$ = 0.1.
-Thus, after taking out 1,500 participants for the training set, we can create two highly powered test sets of 4,250 participants.
-The simulations indicate that the regression paths in the training set will be underpowered. 
-However, all models converged normally and showed good model fit (lowest CFI = `r round(min(power$mean_cfi, na.rm = T),3)`; highest RMSEA = `r round(max(power$mean_rmsea, na.rm = T),3)`), indicating that this sample size is sufficient for initial optimization of the models.
+The results are shown in Figure S1. The simulations yield power \> 90% at around *N* = 2,500 for $\beta$ = 0.1 and *N* = 6,500 for $\beta$ = 0.06.
+Thus, after taking out 1,500 participants for the training set, the test set will be highly powered.
 
 
-```{r figureS1, fig.width=6, dpi=600, fig.id = "figureS1", fig.cap.style = "Image Caption", fig.cap='**Figure S1.** Results of the power simulations. The dashed line indicates 90% power.'}
-
-ggplot(power, aes(n, power, group = lhs, color = Type)) +
-  geom_point() +
-  geom_line() +
-  geom_hline(yintercept = 90, linetype = 'dashed') +
-  facet_wrap(~paste0("\u03B2 = ", beta)) +
-  scale_y_continuous(breaks = c(30, 40, 50, 60, 70, 80, 90, 95, 100)) +
-  scale_x_continuous(breaks = c(1500, 2500, 3500, 4500, 5500, 6500, 7500, 8500)) +
-  scale_color_uchicago() +
-  theme_classic() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  ) +
-  labs(
-    x = "\nSample size",
-    y = "Power"
-  )
-
+```{r figureS1, fig.width=6, fig.height = 2.5, dpi=600, fig.id = "figureS1", fig.cap.style = "Image Caption", fig.cap='**Figure S1.** Results of the power simulations. The dashed line indicates 90% power.'}
+staged_sim_results_supp$power_plot
 ```
 <br>
 
@@ -89,20 +96,20 @@ ggplot(power, aes(n, power, group = lhs, color = Type)) +
 
 **Table S1.** Descriptive statistics of mean RTs and accuracy for the cognitive tasks.
 ```{r}
-flextable(descriptives$task_descriptives_table, cwidth = c(2, 1, 1, 1, 1)) |> 
+flextable(descriptives$task_descriptives_table, cwidth = c(2, 1.2, 1.2, 1.2, 1.2)) |> 
   set_header_labels(task = "", mean_rt = "RT\nMean (SD)", mean_acc = "Accuracy\nMean (SD)", acc_min = "Accuracy\nMin", acc_max = "Accuracy\nMax") 
 ```
 <br>
 
 # Overview of DDM Modeling Procedure
 
-The DDM models will be fit using code adopted from @johnson_2017.
-The Stan code will be adjusted to fix the starting point to 0.5 and to estimate parameters per task condition.
+The hierarchical DDM models will be fit using the *runjags* package [@denwood_2016] with JAGS code adapted from @johnson_2017.
+The JAGS code will be adjusted to fix the starting point to 0.5 and to estimate parameters per task condition for the Flanker and Attention Shifting Task.
 Each model will be fit with three Markov Chain Monte Carlo (MCMC) chains.
 Each chain will contain 2,000 burn-in samples and 10,000 additional samples.
-Of these samples, every 10th sample will be retained.
+Of these samples, every 10th sample will be retained to reduce the size of the model object.
 Posterior samples of all three chains will be combined, resulting in a posterior sample of 3,000 samples.
-If a model does not converge properly with these settings, we will increase the amount of samples
+If a model does not converge properly with these settings, we will increase the amount of samples drawn stepwise up to 100,000.
 
 Model convergence will be assessed in several ways.
 First, we will visually inspect the traces, which should not contain any drifts or large jumps.
@@ -111,7 +118,7 @@ Third, we will assess whether the model provides a good fit to the participants'
 To do this, we will simulate 50,000 trials of RT and accuracy data using the estimated DDM parameters of each participant.
 We will then fit the DDM to these simulated data using Kolgomorov-Smirnov estimation.
 We will then compute correlations between the observed and simulated scores for RTs in the 25th, 50th and 75th percentile of the RT distribution as well as for accuracies.
-We will consider *r* \> .85 to indicate a good model fit.
+We will consider *r* \> .80 to indicate a good model fit.
 
 In theory, the hierarchical Bayesian framework allows simultaneously estimating DDM parameters, latent measurement models, and the regression paths between them in a single step [e.g., @schubert_2019; @vandekerckhove_2014].
 An advantage of this approach is that information regarding estimation uncertainty (e.g., of the DDM parameters) gets integrated in subsequent steps.
@@ -123,16 +130,98 @@ This is problematic because the tail of the distribution holds important informa
 Truncation of reasonably long RTs can therefore lead to biased DDM parameter estimates.
 The hierarchical Bayesian framework allows these missing values to be imputed based on the rest of the data, which has been shown to lead to unbiased estimates.
 The procedure is described in detail in the supplemental materials of @johnson_2017. 
-We will use the code they posted on the [Open Science Framework](https://osf.io/btw5c) to compare model versions with and without imputation of missing responses.
+In short, it involves two steps. 
+First, responses are sampled probabilistically for each missing trial based on the overall accuracy of the participant.
+For example, if a participant has an overall accuracy of 80%, each missing response has a probability of .80 to be assigned a 1 (i.e., correct response).
+Second, responses are assigned to three bins.
+The first bin contains incorrect (imputed) RTs slower than 5 seconds (coded as -5).
+The second bin contains the observed data, ranging between -5 and 5 seconds.
+The third bin contains correct (imputed) RTs slower than 5 seconds (coded as 5).
+JAGS then imputes the response times for missing trials based on these thresholds.
+We will compare model versions with and without imputation of missing responses.
 
 # DDM simulations: The effect of few trials per participant
 
-TBD
+The number of trials that is available for each of the cognitive tasks is substantially lower than is typical for DDM analyses.
+This is especially true for the Flanker Task (8 incongruent trials, 12 congruent trials) and the Attention Shifting Task (7 switch trials, 23 repeat trials).
+While each participant completed a small number of trials, the hierarchical Bayesian framework can use information from the full sample to estimate and constrain individual estimates.
+Here, we report simulation studies that aimed to assess whether it would be possible to accurately recover parameter estimates.
+The analyses are modeled on the Flanker Task, which is the task with the lowest number of trials.
+For simulations involving two conditions, we assume (like we do in the real data) that the drift rate and non-decision time differ (and are correlated) across conditions, and that the boundary separation is the same across conditions.
+This latter assumption reflects the fact that conditions are randomly shuffled on a trial-by-trial basis, which prohibits participants from adapting their strategy for different conditions.
+The starting point is fixed to the mid-point (0.5) for all simulations.
 
-# MNLFA procedure
+## DDM simulation 1: Single condition with eight trials ---
 
-TBD
+First, we simulated task data for 1,500 with eight trials per participant.
+We used the first 2,000 samples as burn-in, and then took an additional 10,000 samples.
+Every 10th sample was discarded to reduce the size of final model object. 
+We sampled across three chains, which were subsequently combined, for a total of 3,000 samples.
+The model converged normally (Figure S2). 
+Parameter recovery was decent for Drift Rate (*r* = XX) and Non-Decision Time (*r* = XX), but not for Boundary Separation (*r* = XX).
+
+```{r figureS2, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS2", fig.cap.style = "Image Caption", fig.cap="**Figure S2.** Convergence of the model in simulation 1. Plots should resemble a 'fat, hairy caterpillar'."}
+staged_sim_results_supp$ddm_sim1_traces_plot
+```
+
+<br>
+
+```{r figureS3, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS3", fig.cap.style = "Image Caption", fig.cap='**Figure S3.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+staged_sim_results_supp$ddm_sim1_traces_plot
+```
+
+<br> 
+
+As discussed above, boundary Separation will be fixed across conditions for the models reported in the manuscript.
+This means that the number of trials that can be used to estimate Boundary Separation will be larger for tasks with two conditions (20 trials for the Flanker Task and 32 trials for the Attention Shifting Task).
+Therefore, we ran a second simulation adding realistic condition effects.
+
+
+## DDM simulation 2: Two conditions; Boundary Separation fixed across conditions ----
+
+We again simulated task data for 1,500 participants.
+Mirroring the real Flanker task, we simulated two conditions, one with 8 trials (incongruent) and one with 12 trials (congruent).
+On average, drift rates were lower and non-decision times were longer for incongruent trials.
+Boundary separation was fixed within subjects to be equal across conditions.
+Non-decision times correlated .70 between conditions, and drift rates correlated .30 between conditions.
+
+As the model converged without issues in simulation 1, we tried reducing the number of samples (2,000 burn-in with an additional 2,000 samples) to save time, without applying thinning.
+The model converged normally (Figure S4). 
+Correlations between simulated and recovered parameter estimates was high, ranging between *r* = `r staged_sim_results_supp$ddm_sim2_cor$v` for the drift rate and `r staged_sim_results_supp$ddm_sim2_cor$t` for the non-decision time (see Figure S5).
+
+```{r figureS4, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS4", fig.cap.style = "Image Caption", fig.cap="**Figure S2.** Convergence of the model in simulation 2. Plots should resemble a 'fat, hairy caterpillar'."}
+staged_sim_results_supp$ddm_sim2_traces_plot
+```
+
+<br>
+
+```{r figureS5, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS3", fig.cap.style = "Image Caption", fig.cap='**Figure S5.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+staged_sim_results_supp$ddm_sim2_recov
+```
+
+<br> 
+
+Simulation 1 and 2 involved data of 1,500 simulated subjects.
+However, the sample size of our real data set is roughly 10,000.
+Thus, in the real data there is substantially more group-level data to inform and constrain the individual parameter estimates.
+we ran a third simulation to investigate if---and to what extent---the parameter estimates would improve moving from 1,500 to 10,000 participants.
+
+## DDM simulation 3: Two conditions; 10,000 subjects
+
+We simulated task data for 10,000 participants.
+All other simulation settings were identical to simulation 2.
+
 
 # DDM Model Fit Assessments
 
-*Will be presented after Stage 1 in-principle acceptance*
+*Will be presented after Stage 1 in-principle acceptance.*
+
+# SEM Fit
+
+*Will be presented after Stage 1 in-principle acceptance.*
+
+# References
+
+<div>
+
+</div>
