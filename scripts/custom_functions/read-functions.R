@@ -17,9 +17,9 @@ read_csv <- function(file, select_vars = NULL, filter_rows = NULL, shuffle_vars 
   }
   
   
-  select_vars <- if(is.null(select_vars)) {"tidyr::everything()"}
-  filter_rows <- if(is.null(filter_rows)) {""}
-  shuffle_vars <- if(is.null(shuffle_vars)) {"NULL"}
+  select_vars <- if(is.null(select_vars)) {"tidyr::everything()"} else str_c(select_vars, collapse = ",")
+  filter_rows <- if(is.null(filter_rows)) {""}  else filter_rows
+  shuffle_vars <- if(is.null(shuffle_vars)) {"NULL"}  else shuffle_vars
   
   
   code <- create_code_list(file, type = "read_csv", read_exprs_chr, select_vars, filter_rows, shuffle_vars, long_format, seed)
@@ -77,9 +77,9 @@ read_delim <- function(file, select_vars = NULL, filter_rows = NULL, shuffle_var
   }
   
   
-  select_vars <- if(is.null(select_vars)) {"tidyr::everything()"}
-  filter_rows <- if(is.null(filter_rows)) {""}
-  shuffle_vars <- if(is.null(shuffle_vars)) {"NULL"}
+  select_vars <- if(is.null(select_vars)) {"tidyr::everything()"} else str_c(select_vars, collapse = ",")
+  filter_rows <- if(is.null(filter_rows)) {""}  else filter_rows
+  shuffle_vars <- if(is.null(shuffle_vars)) {"NULL"}  else shuffle_vars
   
   
   code <- create_code_list(file, type = "read_delim", read_exprs_chr, select_vars, filter_rows, shuffle_vars, long_format, seed)
