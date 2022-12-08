@@ -340,44 +340,10 @@ lmt_raw <- lmt_raw |>
     )
   )
 
-# Sample size information for manuscript
-descriptives$precleaning_n <- 
-  list(
-    lmt     = lmt_raw |> pull(subj_idx) |> unique() |> length(),
-    flanker = flanker_raw |> pull(subj_idx) |> unique() |> length(),
-    dccs    = dccs_raw |> pull(subj_idx) |> unique() |> length(),
-    pcps    = pcps_raw |> pull(subj_idx) |> unique() |> length(),
-   # picvoc  = picvoc_raw |> pull(subj_idx) |> unique() |> length(),
-    
-    # N participants with summary score cognitive data
-    full_n_nihtb = nih_ref_ids |> length(),
-    
-    # N participants with trial-level cognitive data
-    full_n_trial = 
-      unique(
-        c(
-          lmt_raw |> pull(subj_idx) |> unique(),
-          flanker_raw |> pull(subj_idx) |> unique(),
-          dccs_raw |> pull(subj_idx) |> unique(),
-          pcps_raw |> pull(subj_idx) |> unique()
-         # picvoc_raw |> pull(subj_idx) |> unique()
-        )
-      )  |> length()
-  )
-
-descriptives$precleaning_n <- descriptives$precleaning_n |> 
-  map(function(x) prettyNum(x, big.mark = ","))
-
-
-
-
 save(
   lmt_raw, 
   flanker_raw,
   dccs_raw,
   pcps_raw,
-  
-  descriptives,
-  
   file = glue('{data_folder}/tasks_raw.RData')
   )
