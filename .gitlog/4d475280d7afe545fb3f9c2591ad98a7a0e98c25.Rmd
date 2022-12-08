@@ -1,0 +1,24 @@
+---
+title: 'Data access event'
+output: github_document
+---
+
+
+### Date: 2022-10-11 12:03:50
+
+### Description: Read NIH Toolbox trial-level data part 1 -- incl. files that previously got dropped by accident.
+
+
+### For more information on this commit, go to https://github.com/StefanVermeent/abcd_ddm/commit/4d475280d7afe545fb3f9c2591ad98a7a0e98c25
+
+
+
+### Below is the full code that was used to access the data:
+
+
+list.files(glue('{data_folder}/abcd_tb_tlb01/NIHTB/NIHTB'), full.names = TRUE) |>
+str_subset(pattern = 'Narrow_Structure') |>
+map(function(x) readr::read_csv(x) |>
+dplyr::select(tidyr::everything()) |>
+dplyr::filter() |>
+shuffle(data = _, shuffle_vars = 'NULL', long_format = FALSE, seed = 4858342))

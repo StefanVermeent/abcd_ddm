@@ -1,0 +1,23 @@
+---
+title: 'Data access event'
+output: github_document
+---
+
+
+### Date: 2022-09-26 10:45:23
+
+### Description: read all Little Man Task data.
+
+
+### For more information on this commit, go to https://github.com/StefanVermeent/abcd_ddm/commit/f2c4b1e6808bd216eb096dd0be45bb2882570072
+
+
+
+### Below is the full code that was used to access the data:
+
+
+list.files(file.path(data_folder, 'LMT/baseline_year_1_arm_1'), full.names = TRUE) |>
+map(function(x) readr::read_csv(x) |>
+dplyr::select(tidyr::everything()) |>
+dplyr::filter() |>
+shuffle(data = _, shuffle_vars = 'NULL', long_format = FALSE, seed = 4858342))
