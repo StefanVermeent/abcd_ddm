@@ -104,10 +104,10 @@ flextable(descriptives$task_descriptives_table, cwidth = c(2, 1.2, 1.2, 1.2, 1.2
 # Overview of DDM Modeling Procedure
 
 The hierarchical DDM models will be fit using the *runjags* package [@denwood_2016] with JAGS code adapted from @johnson_2017.
-The JAGS code will be adjusted to fix the starting point to 0.5 and to estimate parameters per task condition for the Flanker and Attention Shifting Task.
+The JAGS code will be adjusted to fix the starting point to 0.5 and to estimate parameters separately for each condition of the Flanker and Attention Shifting Task.
 Each model will be fit with three Markov Chain Monte Carlo (MCMC) chains.
 Each chain will contain 2,000 burn-in samples and 10,000 additional samples.
-Of these samples, every 10th sample will be retained to reduce the size of the model object.
+Of these samples, every 10th sample will be retained.
 Posterior samples of all three chains will be combined, resulting in a posterior sample of 3,000 samples.
 If a model does not converge properly with these settings, we will increase the amount of samples drawn stepwise up to 100,000.
 
@@ -146,8 +146,8 @@ The number of trials that is available for each of the cognitive tasks is substa
 This is especially true for the Flanker Task (8 incongruent trials, 12 congruent trials) and the Attention Shifting Task (7 switch trials, 23 repeat trials).
 While each participant completed a small number of trials, the hierarchical Bayesian framework can use information from the full sample to estimate and constrain individual estimates.
 Here, we report simulation studies that aimed to assess whether it would be possible to accurately recover parameter estimates.
-The analyses are modeled on the Flanker Task, which is the task with the lowest number of trials.
-For simulations involving two conditions, we assume (like we do in the real data) that the drift rate and non-decision time differ (and are correlated) across conditions, and that the boundary separation is the same across conditions.
+The analyses are modeled on the Flanker Task, which is the task with the lowest number of trials (*N* = 20). 
+For simulations involving two conditions, we assume (as we do in the real data) that the drift rate and non-decision time differ (and are correlated) across conditions, and that the boundary separation is the same across conditions.
 This latter assumption reflects the fact that conditions are randomly shuffled on a trial-by-trial basis, which prohibits participants from adapting their strategy for different conditions.
 The starting point is fixed to the mid-point (0.5) for all simulations.
 
@@ -219,6 +219,8 @@ All other simulation settings were identical to simulation 2.
 # SEM Fit
 
 *Will be presented after Stage 1 in-principle acceptance.*
+
+\pagebreak
 
 # References
 
