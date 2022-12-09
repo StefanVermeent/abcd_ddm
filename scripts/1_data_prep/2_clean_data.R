@@ -596,8 +596,11 @@ save(
   pcps_clean, 
   dccs_clean, 
 
+  nih_ref_ids,
   exclusions,
-  file = glue('{data_folder}/tasks_clean.RData'))
+  
+  file = glue('{data_folder}/tasks_clean.RData')
+  )
 
 
 

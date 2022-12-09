@@ -2,15 +2,9 @@
 # Libraries and functions -------------------------------------------------
 
 source('scripts/dependencies.R')
-
-# Running multiverse list
-# 1. Exclude participants with < 20 trials or include all
-# 2. Exclude participants at chance level, or include all
-
-
 source('scripts/custom_functions/read-functions.R')
-source('scripts/custom_functions/general-functions.R')
-
+  
+)
 
 data_folder <- "closed_data"
 
@@ -345,5 +339,7 @@ save(
   flanker_raw,
   dccs_raw,
   pcps_raw,
+  
+  nih_ref_ids,
   file = glue('{data_folder}/tasks_raw.RData')
   )

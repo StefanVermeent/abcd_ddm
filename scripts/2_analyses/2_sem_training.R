@@ -291,20 +291,34 @@ model_full <- '
   # STRUCTURAL MODEL
   
   # Task-general association
-  v_general     ~ threat
-  a_general     ~ threat
-  t0_general    ~ threat
+  v_general     ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  a_general     ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  t0_general    ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  
+  v_general     ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c 
+  a_general     ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  t0_general    ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
 
   # Task-specific associations
-  flanker_v_l   ~ threat
-  flanker_a_  l ~ threat
-  flanker_t0_l  ~ threat
-  dccs_v_l      ~ threat
-  dccs_a_l      ~ threat
-  dccs_t0_l     ~ threat
-  rotation_v_l  ~ threat
-  rotation_a_l  ~ threat
-  rotation_t0_l ~ threat
+  flanker_v_l   ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  flanker_a_  l ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  flanker_t0_l  ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  dccs_v_l      ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  dccs_a_l      ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  dccs_t0_l     ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  rotation_v_l  ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  rotation_a_l  ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  rotation_t0_l ~ thr_home + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  
+  flanker_v_l   ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  flanker_a_  l ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  flanker_t0_l  ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  dccs_v_l      ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  dccs_a_l      ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  dccs_t0_l     ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  rotation_v_l  ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  rotation_a_l  ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
+  rotation_t0_l ~ mat_dep + inr + edu_high + race_dummy1 + race_dummy2 + race_dummy3 + sex_dummy + age_c
 '
 
 model_full <- sem(model = model_full, data = training_data, missing = 'ML')
