@@ -1,6 +1,8 @@
+data_folder <- 'closed_data'
 load(glue('{data_folder}/tasks_raw.RData'))
 load(glue('{data_folder}/tasks_clean.RData'))
 
+descriptives <- list()
 
 # Sample Size Information -------------------------------------------------
 
@@ -171,3 +173,14 @@ descriptives$task_descriptives_table <-
     acc_max  = as.character(round(acc_max,2))
   ) |> 
   select(task, mean_rt, mean_acc, acc_min, acc_max)
+
+
+save(
+  flanker_clean,
+  dccs_clean,
+  lmt_clean,
+  pcps_clean,
+  descriptives,
+  exclusions,
+  file = "registered_report/staged_results.RData"
+)

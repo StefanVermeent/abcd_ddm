@@ -39,8 +39,7 @@ library(dplyr)
 library(english)
 
 source("../scripts/custom_functions/general-functions.R")
-load('../closed_data/tasks_raw.RData')   # Generated in scripts/0_data_prep/1_preprocessing.R
-load('../closed_data/tasks_clean.RData') # Generated in scripts/0_data_prep/2_clean_data.R
+load("staged_results.RData")
 
 
 knitr::opts_chunk$set(
@@ -146,7 +145,7 @@ The effects of early-life adversity---such as growing up in poverty or experienc
 Different types of adversity pose different challenges and constraints, and therefore shape and impair cognitive abilities in diverse ways
 [@blair_2012]. 
 Studies linking adversity and cognitive abilities tend to adopt either a deficit-oriented framework or an adaptation-based framework---both of which offer a valuable lens. 
-However, these frameworks may produce complimentary or opposing predictions. 
+However, these frameworks may produce complementary or opposing predictions. 
 For example, the deficit approach suggests that growing up in adverse conditions tends to have detrimental effects on cognition, such as impairing learning and memory across childhood and adolescence [@sheridan_2022; @sheridan_2014]. 
 In contrast, the adaptation-based approach suggests that people's cognitive abilities are tailored to challenges in the environment, helping youth solve real problems in their everyday lives [@frankenhuis_2013; @frankenhuis_2016; @ellis_2022].
 
@@ -410,29 +409,28 @@ knitr::include_graphics("images/fig2.png")
 We use code provided by @johnson_2017.
 The benefit of this approach is that group-level information is leveraged to estimate individual-level estimates.
 This differs from classic DDM estimation approaches where the model is fitted to the data of each participant separately [@voss_2013].
-This is particularly useful in developmental samples like the ABCD dataset which have a limited number of trials per participant but substantially larger sample sizes than is typical in the DDM literature.
+This is particularly useful in developmental samples like the ABCD dataset which have a limited number of trials per participant but substantially larger sample sizes than is typical in the DDM literature^2^.
 
 All models will freely estimate the drift rate, non-decision time, and boundary separation while constraining response bias to 0.5 (i.e., assuming no bias towards a particular response option).
-For the Flanker and Attention Shifting Task, we will compare model versions that separately estimate drift rate and non-decision-time per task condition or collapse across conditions.
+For the Flanker and Attention Shifting Task, we will compare model versions that separately estimate drift rate and non-decision-time per task condition or collapsed across conditions.
 Boundary separation will be constrained to be the same across conditions.
 For the Processing Speed Task and the Mental Rotation Task, we estimate DDM parameters across all trials.
 The best-fitting model of each task will be used to estimate participant-level DDM parameters.
 See the supplement for more information about model fitting procedures.
 
-**Step 2: Model optimization in training set.** We will first estimate and (where necessary) optimize the SEM using the training set using the *lavaan* package.
-This goal of this step is to investigate whether we need to adjust the model specification in any way to achieve good model fit.
-For this reason, the model fitted in Step 2 will not be interpreted to address our research aims.
+**Step 2: Model optimization in training set.** We will first estimate and (where necessary) optimize the SEM in the training set using the *lavaan* package [@rosseel_2012].
+This goal of this step is to investigate whether we need to adjust the model specification in any way (e.g., add residual correlations, introduce or reduce constraints of factor loadings, etc.) to achieve good model fit.
+For this reason, the model fitted in this step will not be interpreted to address our research aims.
 
-See Figure 2 for the *a-priori* specification of the model.
-In the measurement model, all three DDM parameters across all tasks (i.e., drift rates, non-decision times, and boundary separations) will be loaded on separate latent factors for each parameter type.
+See Figure 3 for the *a-priori* specification of the model.
+In the measurement model, all three DDM parameters across all tasks (i.e., drift rates, non-decision times, and boundary separations) will load on separate latent factors for each parameter type.
 Unique (residual) variances of the manifest DDM parameters will be captured in additional latent factors (one per parameter).
 The structural model will estimate regression paths going from each adversity measure (see [Adversity measures](#meth_adversity)) to the general latent factors and to the unique variances of the DDM parameters of each task.
 For model identification reasons, we will not estimate regression paths to the unique variances of the Processing Speed Task.
-The measurement parts of each model will be estimated and optimized step-by-step.
-This will allow us to detect sources of potential badness of fit more efficiently.
+We will first estimate and optimize the measurement models separately for each diffusion model parameter, which will allow us to efficiently detect sources of potential badness of fit.
+Once measurement models provide an adequate account of the data, we will integrate them into the structural model shown in Figure 3.
 In addition, clustering of siblings and twins within families will be accounted for using the *lavaan.survey* package [@oberski_2014].
 Finally, the sociodemographic covariates that are included in the MNLFA scores (see Measures section above) will be controlled for in the SEM. 
-We do not interpret these effects here nor in the final models fitted at Step 3.
 Goodness-of-fit will be assessed using the root mean square error of approximation (RMSEA) and the comparative fit index (CFI).
 Following @hu_1999, CFI values \> .90 and RMSEA values \< .08 will be interpreted as acceptable model fit and CFI values \> .95 and RMSEA values \≤ .06 as good model fit.
 
@@ -470,6 +468,8 @@ We estimate we will need three months after Stage 1 in-principle acceptance to f
 ^1^ The preregistration also included the Picture Vocabulary Task.
 However, after accessing the data we realized that this task was implemented using computerized adaptive testing [@luciana_2018].
 This makes it unsuitable for DDM, as the model assumes the level of difficulty is the same across trials.
+
+^2^ We ran parameter recovery studies simulating the data for the Flanker Task, which has the lowest overall number of trials. Parameter recovery was excellent for the scenario that we plan in our main analyses (all *r*s \≥ .84. See the supplemental materials for more details.
 
 \pagebreak
 
