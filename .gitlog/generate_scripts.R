@@ -23,7 +23,7 @@ gert::git_log() |>
           ---\n\n
           ### Date: {time}\n
           ### Description: {description}\n\n
-          ### For more information on this commit, go to {url}\n\n\n
+          ### For more information on this commit, see the README file, or go to {url}\n
           ### Below is the full code that was used to access the data:\n\n
           {code}"
         )
@@ -33,19 +33,3 @@ gert::git_log() |>
   })
 
 
-
-
-  
-  mutate(
-    Milestone = map_chr(Milestone, function(Milestone) {
-      Milestone |> 
-        str_remove("\\[\\[") |>
-        str_replace("_", " ") |> 
-        str_to_title()
-    })
-  ) |> 
-  select(Time=time, Milestone, Description, Code, `Data Hash`) |> 
-  mutate(
-    Code = str_replace_all(Code, "\\|\\>", "\\|\\>\\\n")
-  ) |>
-  glue_data("  - *{Time}*, {Milestone}, {Description}")
