@@ -41,8 +41,8 @@ library(glue)
 library(ggsci)
 library(flextable)
 
-load('../closed_data/tasks_clean.RData')
-load('../synthetic_data/staged_sim_results_supp.RData')
+
+load('../supplement/staged_sim_results_supp.RData')
 
 
 
@@ -72,7 +72,31 @@ set_flextable_defaults(
 
 # Data access workflow
 
+Prior to Stage 1 submission of the Registered Report, we accessed the cognitive task data for a couple of [preregistered](https://github.com/stefanvermeent/abcd_ddm/preregistrations/2022-09-20_preregistration_DDM.md) data checks.
+By only accessing the cognitive task data, these steps did not bias or substantive analyses involving measures of adversity.
+To transparently show when we accessed which data, we created an open science workflow that would automate this process. The main aim of this workflow was to create a transparent log of every major milestone of the project, such as accessing new data, submitting preregistrations, and finalizing analyses. 
 
+The main ingredient of this workflow is a set of custom functions that we created for reading in data files.
+These are wrappers for the read functions in the *readr* package. 
+Whenever one of these functions (e.g., *read_csv*) was called, it went through a couple of internal processes.
+First, the specified data file would be read into R. 
+This could be a single file, or a list of individual data files that would first be combined into a single dataframe.
+Second, any specified manipulations would be applied to the data.
+This could be selecting specific variables, filtering specific rows, or randomly shuffling values (e.g., participant IDs).
+Third, An MD5 hash of the final R object would be generated using the *digest* package. 
+An MD5 hash is a unique, 32-digit string that maps directly onto the content of the R object.
+The same R object will always generate the same MD5 hash, but as soon as anything changes (e.g., a variable is added, a value is rounded), the MD5 hash changes.
+Fourth, this MD5 hash would be compared to previously generated hashes.
+
+If the newly generated MD5 hash was not recognized, this triggered an automatic commit to GitHub.
+At this point, the user gets the choice to abort the process or to continue.
+If opting to continue, the user could supply an informative message (e.g., "accessed Flanker data"), which would be added to the Git commit.
+The Git commit message stored other relevant meta-data as well, such as the object hash and the code used to read and manipulate the data.
+Committing and pushing to Git was handled using the *gert* package.
+
+Thus, any accessing of raw data was automatically tracked via GitHub. 
+Using this same approach, we also logged other major milestones, such as submitting preregistrations and finalizing analyses.
+For an overview of all milestones, see the [Data Access History](https://github.com/stefanvermeent/abcd_ddm/data_access_history.md).
 
 # Power analysis
 
@@ -96,7 +120,7 @@ staged_sim_results_supp$power_plot
 
 **Table S1.** Descriptive statistics of mean RTs and accuracy for the cognitive tasks.
 ```{r}
-flextable(descriptives$task_descriptives_table, cwidth = c(2, 1.2, 1.2, 1.2, 1.2)) |> 
+flextable(staged_sim_results_supp$descriptives, cwidth = c(2, 1.2, 1.2, 1.2, 1.2)) |> 
   set_header_labels(task = "", mean_rt = "RT\nMean (SD)", mean_acc = "Accuracy\nMean (SD)", acc_min = "Accuracy\nMin", acc_max = "Accuracy\nMax") 
 ```
 <br>
@@ -153,12 +177,13 @@ The starting point is fixed to the mid-point (0.5) for all simulations.
 
 ## DDM simulation 1: Single condition with eight trials ---
 
-First, we simulated task data for 1,500 with eight trials per participant.
+First, we simulated task data for 1,500 participants with eight trials per participant.
 We used the first 2,000 samples as burn-in, and then took an additional 10,000 samples.
 Every 10th sample was discarded to reduce the size of final model object. 
 We sampled across three chains, which were subsequently combined, for a total of 3,000 samples.
 The model converged normally (Figure S2). 
-Parameter recovery was decent for Drift Rate (*r* = XX) and Non-Decision Time (*r* = XX), but not for Boundary Separation (*r* = XX).
+Relative parameter recovery was decent for Boundary Separation (*r* = `ddm_sim1_cor$a`) and Non-Decision Time (*r* = `ddm_sim1_cor$t`), but not for Drift rate (*r* = `ddm_sim1_cor$v`). 
+However, estimates of Boundary Separation and Non-Decision Time showed bias.
 
 ```{r figureS2, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS2", fig.cap.style = "Image Caption", fig.cap="**Figure S2.** Convergence of the model in simulation 1. Plots should resemble a 'fat, hairy caterpillar'."}
 staged_sim_results_supp$ddm_sim1_traces_plot
@@ -167,11 +192,12 @@ staged_sim_results_supp$ddm_sim1_traces_plot
 <br>
 
 ```{r figureS3, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS3", fig.cap.style = "Image Caption", fig.cap='**Figure S3.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
-staged_sim_results_supp$ddm_sim1_traces_plot
+staged_sim_results_supp$ddm_sim1_recov
 ```
 
 <br> 
 
+As discussed above, the models reported in this manuscript will have more information to go on
 As discussed above, boundary Separation will be fixed across conditions for the models reported in the manuscript.
 This means that the number of trials that can be used to estimate Boundary Separation will be larger for tasks with two conditions (20 trials for the Flanker Task and 32 trials for the Attention Shifting Task).
 Therefore, we ran a second simulation adding realistic condition effects.
