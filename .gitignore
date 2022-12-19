@@ -39,4 +39,12 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-closed_data/
+# ABCD data should not be tracked by Git
+/data/abcd_lmtlb01
+/data/LMT
+/data/*.txt
+/data/*.RData
+
+/analysis_objects/test_set.csv
+/analysis_objects/training_set.csv
+/analysis_objects/tasks_clean.RData
