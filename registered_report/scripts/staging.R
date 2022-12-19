@@ -1,6 +1,6 @@
 data_folder <- 'closed_data'
-load(glue('{data_folder}/tasks_raw.RData'))
-load(glue('{data_folder}/tasks_clean.RData'))
+load('data/tasks_raw.RData')
+load('analysis_objects/tasks_clean.RData')
 
 descriptives <- list()
 

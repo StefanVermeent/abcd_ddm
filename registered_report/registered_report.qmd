@@ -85,7 +85,7 @@ set_flextable_defaults(
 
 # Data Availability
 
-All scripts and materials needed to reproduce the findings are available on the article's Github repository [(https://anonymous.4open.science/r/anon-255D/)](https://anonymous.4open.science/r/anon-255D/).
+All scripts and materials needed to reproduce the findings are available on the article's Github repository [(https://anonymous.4open.science/r/anon-255D/README.md)](https://anonymous.4open.science/r/anon-255D/README.md).
 We also include instructions on how to reproduce each step of our analyses.
 To ensure computational reproducibility, we provide synthetic (i.e., simulated) data files with the same characteristics as the raw data.
 The raw data supporting the findings of this study will be made available upon after Stage 2 via [https://doi.org/10.15154/1528297](https://doi.org/10.15154/1528297).
@@ -142,7 +142,7 @@ It will add much-needed nuance to adversity-related performance differences, whi
 #### Cognitive deficits and enhancements in youth from adverse conditions: An integrative assessment using Drift Diffusion Modeling in the ABCD study
 
 The effects of early-life adversity---such as growing up in poverty or experiencing high levels of violence---on cognition are complex.
-Different types of adversity pose different challenges and constraints, and therefore shape and impair cognitive abilities in diverse ways
+Different types of adversity pose different challenges and constraints, and therefore shape developing cognitive abilities in diverse ways
 [@blair_2012]. 
 Studies linking adversity and cognitive abilities tend to adopt either a deficit-oriented framework or an adaptation-based framework---both of which offer a valuable lens. 
 However, these frameworks may produce complementary or opposing predictions. 
@@ -232,15 +232,14 @@ This interpretation usually rests on a RT difference score between repeat trials
 However, we do not know which DDM parameter can account for the RT difference. 
 The same thing is true for many deficit findings, such as the typical finding that adversity exposure is associated with lowered inhibition [@farah_2006; @fields_2021; @mezzacappa_2004; @noble_2005], as indicated by slower RTs when distractors are present versus not present.
 Thus, the adversity literature has relied on speed and/or accuracy, but not their integration.
-With DDM, we can learn about the crucial question how childhood adversity shapes different stages of cognitive processing.
+With DDM, we can disentangle the ways in which childhood adversity shapes different stages of cognitive processing.
 
 ## Are deficit and enhancement patterns task-specific or task-general? {#intro_sub2}
 
 Performance on cognitive tasks might partially rely on shared cognitive processes and partially reflect unique abilities.
-Indeed, previous studies show this to be true for DDM parameters of executive functioning.
 For example, RTs on executive functioning tasks are substantially confounded with general processing efficiency [@frischkorn_2019; @lerche_2020; @loffler_2022]. 
 These processes can be separated using structural equation modeling (SEM). 
-For example, @lerche_2020 found that covariances between drift rates were stronger for tasks with the same content domain (numerical, figural, verbal). 
+For example, @lerche_2020 found that covariances between drift rates were stronger for intelligence tasks with the same content domain (numerical, figural, verbal). 
 Drift rates of executive tasks may even reflect *only* processing speed, with little task-specific variance remaining after accounting for task-general processes [@loffler_2022].
 These findings tie into a broader literature in cognitive science that questions the psychometric properties of many common measures of executive functioning [e.g., @von_bastian_2020; @draheim_2018; @draheim_2021; @hedge_2018; @rouder_2019].
 Although this is an ongoing debate, it is clear that accounting for task-general processes is critical if we want to build a comprehensive understanding of the developmental effects of early-life experiences on specific abilities.
@@ -254,7 +253,7 @@ This suggests that modeling these tasks with DDM could shed light on where these
 
 To illustrate, imagine comparing the drift rates between an attention-shifting and a Flanker task.
 Drift rates of both tasks will rely to a large degree on a person's general processing efficiency because both require rapid visual processing [@lerche_2020; @schubert_2016; @loffler_2022]. 
-After accounting for this shared variance, the remaining unique task variance may reflect individual differences in cognitive functions specific to the task. 
+After accounting for this shared variance at the latent level, the remaining unique task variance may reflect individual differences in cognitive functions specific to the task. 
 For the attention shifting task, this might be how effectively someone switches from one classification rule to the other (e.g., switching from color to shape) [@schmitz_2012; @schmitz_2014]. 
 For the Flanker task, it might be the speed with which attention isolates the target arrow [@white_2011; @white_2018b].
 It is important to separate specific abilities and general processes, both for deficit-oriented approaches (e.g., does adversity impair broad domains such as memory and learning, or specific domains such as verbal language?), for adaptation-oriented approaches (does environmental unpredictability lead to specialized attention shifting skills?) and for real-world interventions based on those deficit- and adaptation theories (e.g., if a school-based learning intervention is designed to target the specific ability).
@@ -262,17 +261,26 @@ It is important to separate specific abilities and general processes, both for d
 ## The current study {#intro_current}
 
 In this study, we will use the Adolescent Brain Cognitive Development (ABCD) study data ([http://abcdstudy.org](http://abcdstudy.org)).
-The ABCD study is ideal because it provides a large, representative, and diverse sample of 9- to 10 year-olds.
+The ABCD study is ideal because it provides a large, representative, and diverse sample of 9- to 10 year-olds---a particularly salient developmental period characterized by rapid growth in cognitive abilities [@blakemore_2006]
 We will map two key dimensions of adversity---household threat and material deprivation---to general and task-specific DDM parameters covering attention shifting, inhibition, and mental rotation.
-Threat and deprivation have been widely studied in their relation to cognitive outcomes from both deficit and adaptation perspectives [e.g., @bignardi_2022; @schafer_2022; @sheridan_2022; @young_2022] and are at the center of contemporary conceptualizations of adversity [e.g., @mclaughlin_2021; @sheridan_2014].
+Threat and deprivation have been widely studied in their relation to cognitive outcomes from both deficit and adaptation perspectives [e.g., @bignardi_2022; @fields_2021; @schafer_2022; @sheridan_2022; @young_2022] and are at the center of contemporary conceptualizations of adversity [e.g., @mclaughlin_2021; @sheridan_2014].
+However, it remains an open question as to whether and how each adversity dimension shapes individual differences in youth's cognitive processing.
 Executive functions are still actively developing at this age, which lasts until early adulthood [@luna_2009; @tervo_clemmens_2022].
 However, effects of early-life adversity on executive functions are already visible at this age.
 For example, children with more adverse experiences typically show worse inhibitory abilities around this age [e.g., @fields_2021; @tibu_2016].
 In contrast, attention shifting has been found to be enhanced in children and (young) adults with more caregiver unpredictability [@fields_2021; @mittal_2015; @young_2022].
 Thus, our choice of this dataset was guided in part by previous work documenting deficit and impairment effects in inhibition and attention shifting, respectively.
 However, it was also guided by the fact that these tasks are widely used in developmental science and adhere to DDM assumptions.
-We currently know very little about the effects of adversity on different stages of cognitive processing.
-We address this gap with an exploratory study to systematically compare the links between two types of adversity exposures and four cognitive abilities.
+
+In line with adaptation-based theories [@frankenhuis_2013; @frankenhuis_2016; @ellis_2022] and empirical findings by @bignardi_2022, we predict that any enhancements in cognitive abilities as a result of adverse experiences will manifest on a task-specific level, but not on a task-general level.
+In contrast, deficit patterns may emerge on both a task-general and task-specific level.
+As very little is known about the effects of adversity on different stages of cognitive processing, we refrain from predicting specific patterns for different DDM parameters.
+However, we will interpret associations between the types of adversity and DDM parameters as follows:
+For drift rates, positive associations will be interpreted as *better* speed of information processing at higher levels of adversity, and negative associations as *worse* speed of information processing.
+Task-specific drift rates will be interpreted as specific cognitive abilities, as the drift rate reflects the efficiency with which a task was completed.
+For non-decision time, positive associations will be interpreted as *worse* (i.e., slower) task preparation and execution at higher levels of adversity, and negative associations will be interpreted as *better* (i.e., faster) task-preparation and execution.
+For boundary separation, positive associations will be interpreted as more cautious responding at higher levels of adversity, and negative associations as less cautious responding.
+Potential associations between adversity and boundary separation reflect differences in strategies, not cognitive abilities.
 
 # Methods {#methods}
 
@@ -360,7 +368,7 @@ The standard outcome measure is an efficiency measure, calculated as the percent
 
 ### Adversity measures {#meth_adversity}
 
-**Material deprivation.** We will compute material deprivation with seven items from the parent-reported ABCD Demographics Questionnaire.
+**Material deprivation.** We will assess material deprivation with seven items from the parent-reported ABCD Demographics Questionnaire.
 These items originate from the Parent-Reported Financial Adversity Questionnaire [@diemer_2012].
 The items assess whether or not (1 = Yes, 0 = No) the youth's family experienced several economic hardships over the 12 months prior to the assessment (e.g., 'Needed food but couldn't afford to buy it or couldn't afford to go out to get it').
 
@@ -369,18 +377,18 @@ In short, MNLFA scores assume a common scale of measurement across groups and ag
 @dejoseph_2022 describe how this score was computed.
 Higher scores indicate more material deprivation.
 
-**Household threat.** We will compute threat experienced in the youth's home using the Family Conflict subscale of the ABCD Family Environment Scale [@moos_1994; @zucker_2018].
+**Household threat.** We will assess threat experienced in the youth's home using the Family Conflict subscale of the ABCD Family Environment Scale [@moos_1994; @zucker_2018].
 The subscale consisted of nine items assessing conflict with family members (e.g., 'We fight a lot in our family').
 Items were endorsed with either 1 (True) or 0 (False).
 Two items are positively valenced and will therefore be reverse-scored.
-Similar to material deprivation, we will use a previously-created composite score of this measure derived from MNLFA.
+Similar to material deprivation, we will use a previously-created composite score of this measure derived from MNLFA [@dejoseph_2022].
 Higher scores indicate more threat exposure.
 
 **Sociodemographic covariates.** Several sociodemographic covariates will be included in the SEM models (see [Planned Main Analyses](#meth_proposed)) that use the MNLFA scores representing material deprivation and household threat exposure.
 This is because MNLFA scores are adjusted for these covariates.
 Thus, it is recommended that variation in these covariates is also adjusted for in dependent variables [@bauer_2017].
 
-We will calculate Income-to-needs ratios by first taking the average of each binned income (\< \$5000, \$5,000--\$11,999, \$12,000--\$15,999, \$16,000--\$24,999, \$25,000--\$34,999, \$35,000--\$49,999, \$50,000--\$74,999, \$75,000--\$99,999, \$100,000--\$199,999, \≥ \$200,000) as a rough approximation of the family's total reported income.
+We will calculate income-to-needs ratios by first taking the average of each binned income (\< \$5000, \$5,000--\$11,999, \$12,000--\$15,999, \$16,000--\$24,999, \$25,000--\$34,999, \$35,000--\$49,999, \$50,000--\$74,999, \$75,000--\$99,999, \$100,000--\$199,999, \≥ \$200,000) as a rough approximation of the family's total reported income.
 Then we will divide income by the federal poverty threshold for the year at which a family was interviewed (range = \$12,486--\$50,681), adjusted for the number of persons in the home.
 We will use highest education (in years) out of the two caregivers (or one if a second caregiver was not provided) as a continuous variable.
 We will collapse youth race into 4 levels (White, Black, Hispanic, Other) and subsequently dummy-code with White (the most numerous racial group) serving as the reference category in all models.
@@ -443,18 +451,6 @@ knitr::include_graphics("images/fig3.png")
 **Step 3: Model validation in test set.** After optimizing the model based on the training set, we will refit it to the test data.
 Model fit will be assessed the same way as at Step 2.
 The regression coefficients of these models will be interpreted to address our research questions.
-
-## Planned Secondary Analyses
-
-We plan to explore three additional models including different predictor variables: (1) neighborhood threat, (2) severe threat, and (3) SES.
-Neighborhood threat will be measured using the parent-reported neighborhood safety/crime questionnaire including three items: (a) 'I feel safe walking in my neighborhood', (b) 'Violence is not a problem in my neighborhood', and (c) 'My neighborhood is safe from crime' [@phenx_2016a].
-Severe physical threat will be measured with the parent-reported diagnostic interview for DMS-5 relating to traumatic events [@clark_2010].
-Items assessed whether or not (1 = True; 0 = False) the youth had experienced several events (e.g., 'Witnessed someone shot or stabbed in the community').
-SES will be measured using 
-We add these models as secondary analyses because the adversity measures have less desirable measurement characteristics yet are interesting from a conceptual perspective.
-Specifically, neighborhood crime is only measured by three items, and endorsement of individual traumatic events items is very low.
-A composite score of neighborhood threat will be calculated by averaging the three questionnaire items.
-A composite score of severe physical threat will be calculated by summing across all items.
 
 ## Timeline
 
