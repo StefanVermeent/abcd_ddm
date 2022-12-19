@@ -1,61 +1,30 @@
-# TODO: install jags
+## This is a Docker Container that can be used to make the scripts in this repository fully reproducible ##
+## Docker makes sure that all the project dependencies (e.g., software/R package versions, operating system) 
+## are identical to the versions that were used when creating the project.
+## Thus, it ensures full computational reproducibility even when any of the dependencies have broken due to updates or deprecations.
+## For more information on how to use Docker to reproduce the analyses, see the README file.
 
+# Initiate RStudio cloud environment with version 4.1.2
 FROM rocker/rstudio:4.1.2
 
 LABEL maintainer="p.c.s.vermeent@gmail.com"
 LABEL description="Rstudio container with necessary dependencies"
 
-# Install Renv and Copy Lock File
-ENV RENV_VERSION 0.15.5
-RUN R -e "install.packages('remotes', repos = c(CRAN = 'https://cloud.r-project.org'))"
-RUN R -e "remotes::install_github('rstudio/renv@${RENV_VERSION}')"
 
+# Install the 'groundhog' package for package management, and install correct versions of packages
+WORKDIR c:/repositories/abcd_ddm
 
-WORKDIR c:/repositories/attention_pilot
-COPY renv.lock renv.lock
+ADD /scripts/ /scripts/
 
-ENV RENV_PATHS_LIBRARY renv/library/R-4.2
+RUN R -e "install.packages('groundhog')"
+RUN Rscript /scripts/dependencies.R
 
-RUN mkdir -p renv
-COPY .Rprofile .Rprofile
-COPY renv/activate.R renv/activate.R
-COPY renv/settings.dcf renv/settings.dcf
-
-#RUN R -e "renv::restore()"
-
-
-# Install base utilities
-RUN apt-get update && \
-    apt-get install -y && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install miniconda
-ENV CONDA_DIR /opt/conda
-#RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py38_4.12.0-Linux-x86_64.sh -O ~/miniconda.sh && \
-     /bin/bash ~/miniconda.sh -b -p /opt/conda
-
-# Put conda in path so we can use conda activate
-ENV PATH=$CONDA_DIR/bin:$PATH
-
-# Create conda environment with python 3.8
-RUN conda create --name py38 python=3.8
-
-# Make RUN commands use the new environment:
-SHELL ["conda", "run", "-n", "py38", "/bin/bash", "-c"]
-
-# Install HDDM dependencies
-RUN pip install cython
-RUN conda install pymc==2.3.8
-RUN conda install -c anaconda git
-RUN pip install git+https://github.com/hddm-devs/kabuki
-RUN conda install h5py
-RUN conda install -c conda-forge netcdf4
-#RUN pip install git+https://github.com/hddm-devs/hddm
-RUN pip install HDDM==0.8.0
-
-
-
-
-
+# Install JAGS and the wiener module
+RUN apt-get update && . /etc/environment \
+  && wget sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Source/JAGS-4.2.0.tar.gz  -O jags.tar.gz \
+  && tar -xf jags.tar.gz \
+  && cd JAGS* && ./configure && make -j4 && make install \
+  && wget sourceforge.net/projects/jags-wiener/files/JAGS-WIENER-MODULE-1.1.tar.gz -O JAGS-WIENER-MODULE-1.1.tar.gz \
+  && tar -xf JAGS-WIENER-MODULE-1.1.tar.gz \
+  && cd JAGS* && ./configure && make -j4 && make install
 
