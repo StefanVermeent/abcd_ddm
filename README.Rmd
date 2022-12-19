@@ -8,11 +8,9 @@ editor_options:
 
 ```{r setup, include=F, echo=F}
 library(tidyverse)
-library(gert)
-library(flextable)
-library(glue)
-knitr::opts_chunk$set(echo = F, message = F, warning = F)
 #source('scripts/dependencies.R')
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
 ```
 
 This repository contains data, code, and output for a manuscript entitled "Cognitive deficits and enhancements in youth from adverse conditions: An integrative assessment using Drift Diffusion Modeling in the ABCD study" submitted as a Registered Report at *Developmental Science*.
@@ -21,21 +19,44 @@ This repository contains data, code, and output for a manuscript entitled "Cogni
 
 ## Open Science Workflow {#openscience}
 
+Prior to Stage 1 submission of the Registered Report, we accessed the cognitive task data for a couple of [preregistered](https://github.com/stefanvermeent/abcd_ddm/preregistrations/2022-09-20_preregistration_DDM.md) data checks.
+By only accessing the cognitive task data, these steps did not bias or substantive analyses involving measures of adversity.
+To transparently show when we accessed which data, we created an open science workflow that would automate this process. The main aim of this workflow was to create a transparent log of every major milestone of the project, such as accessing new data, submitting preregistrations, and finalizing analyses. 
 
-[TBD]
+The main ingredient of this workflow is a set of custom functions that we created for reading in data files.
+These are wrappers for the read functions in the `readr` package, sourced from `scripts/custom_functions/read-functions.R`. 
+Whenever one of these functions (e.g., `read_csv`) was called, it went through a couple of internal processes.
+First, the specified data file would be read into R. 
+This could be a single file, or a list of individual data files that would first be combined into a single dataframe.
+Second, any specified manipulations would be applied to the data.
+This could be selecting specific variables, filtering specific rows, or randomly shuffling values (e.g., participant IDs).
+Third, An MD5 hash of the final R object would be generated using the `digest` package. 
+An MD5 hash is a unique, 32-digit string that maps directly onto the content of the R object.
+The same R object will always generate the same MD5 hash, but as soon as anything changes (e.g., a variable is added, a value is rounded), the MD5 hash changes.
+Fourth, this MD5 hash would be compared to previously generated hashes stored in `.gitlog/MD5`. 
+
+If the newly generated MD5 hash was not recognized, this triggered an automatic commit to GitHub.
+At this point, the user gets the choice to abort the process or to continue.
+If opting to continue, the user could supply an informative message (e.g., "accessed Flanker data"), which would be added to the Git commit.
+The Git commit message stored other relevant meta-data as well, such as the object hash and the code used to read and manipulate the data.
+Committing and pushing to Git was handled using the `gert` package.
+
+Thus, any accessing of raw data was automatically tracked via GitHub. 
+Using this same approach, we also logged other major milestones, such as submitting preregistrations and finalizing analyses.
+For an overview of all milestones, see the [Data Access History](data_access_history.md).
 
 ## Directory Structure {#structure}
 
 The names of each folder are intended to be self-explanatory.
 There are six top-level folders to organize the inputs and outputs of this project:
 
-1.  `codebooks/`: lists of variable names, labels, and value labels (where applicable).
-2.  `synthetic_data/`: synthetic (i.e., simulated) data, stored as an `.Rdata` file and `.csv` files.
-3.  `open_data/`: Empty folder in which real ABCD data can be placed to make the analyses fully reproducible. Note that we cannot openly share the raw data on the open repository.
-4.  `preregistrations/`: The preregistration(s) for the analyses done prior to Stage 1 submission.
-5.  `registered_report/`: The Registered Report written in R markdown for submission to a journal.
-6.  `scripts/`: R-scripts that read, analyze, and produce all analysis objects.
-7.  `supplement/`: a supplemental text (to be submitted with the manuscript) documenting all secondary analyses in detail.
+1.  `preregistrations/`: The preregistration(s) for the analyses done prior to Stage 1 submission.
+2.  `registered_report/`: The Registered Report written in R markdown for submission to a journal.
+3.  `scripts/`: R-scripts that read, analyze, and produce all analysis objects.
+4.  `supplement/`: a supplemental text (to be submitted with the manuscript) documenting all secondary analyses in detail.
+5.  `data/`: Folder in which real ABCD data can be placed to make the analyses fully reproducible. Note that we cannot openly share the raw data on the open repository. Contains synthetic data to facilitate computational reproducibility in the absence of ABCD access.
+6.  `codebooks/`: lists of variable names, labels, and value labels (where applicable).
+
 
 Below is a simple visualization of the full directory structure.
 
@@ -45,42 +66,28 @@ fs::dir_tree(".", regexp = "^README|.Rproj$|log$|tex$|_files|resources|closed_da
 
 Each of the top-level folders are explained in more detail below:
 
-## Codebooks
-
-These are lists of variable names, labels, and value labels (where applicable) (see [synthetic_data](#synthetic_data) below).
-
-## Synthetic Data {#synthetic_data}
-
-ABCD data cannot be shared on open repositories.
-Therefore, interested readers can only fully reproduce our analyses with personal access to the ABCD data repository.
-To facilitate computational reproducibility, we provide synthetic data files.
-These files contain simulated data with the same variables as the original data and with the same basic characteristics.
-Thus, these files can be used as input to the analyses scripts.
-Note that, because the values are not identical to the real data, the output will deviate from the statistics described in the manuscript.
-
-The synthetic data files resemble the data after preprocessing (as done in `/scripts/0_data_prep`).
-
 ## Preregistrations
 
-## Manuscript
+This directory contains the preregistrations for this project.
+
+## Registered Report
 
 This directory contains the manuscript for this project.
 It was written in R Markdown and is 100% reproducible.
-The `.Rmd` fie contains the written text with all figures, tables, and in-text statistics.
-All outputs reported in the manuscript were staged prior to compiling into a `.docx` document and stored in a `.Rdata` file called `staged-objects.Rdata`.
-The R Markdown document reads these staged files to make the overall document easier to read.
-The scripts that produce the staged objects are located in the `manuscript/scripts/` directory and are named to be self-explanatory.
-The `rmd-staging.R` script reads necessary data/objects from the `multiverse-objects/` directory and sources the other scripts to produce the objects needed for the manuscript.
-
+The `.qmd` file contains the written text with all figures, tables, and in-text statistics.
+All outputs reported in the manuscript were staged prior to compiling into a `.docx` document and stored in a `.Rdata` file called `staged_results.Rdata`.
+The Quarto document reads these staged files to make the overall document easier to read.
+The scripts that produce the staged objects are located in the `registered_report/scripts/` directory and are named to be self-explanatory.
+The `staging.R` script reads necessary data/objects from the `analysis-objects/` directory and sources the other scripts to produce the objects needed for the manuscript.
 
 ## Data Processing Scripts
 
 There are four types of R-scripts in this repository, each with a separate folder.
 
--   `0-functions/`: Custom R-functions written for this project
--   `1-data-prep/`: Data processing scripts
--   `2-primary-analyses/`: Primary analysis scripts
--   `3-secondary-analyses/`: Secondary analysis scripts
+-   `custom_functions/`: Custom R-functions written for this project
+-   `0_simulations/`: Simulation scripts for power and DDM analyses
+-   `1_data_prep/`: Data processing scripts
+-   `2_analyses/`: Primary analysis scripts
 
 Each script takes an input(s) and produces output(s).
 The tables below provides an overview of the inputs and outputs of each script.
@@ -90,12 +97,12 @@ file_list <- list.files("scripts", pattern = ".R$", full.names = T, recursive = 
   map_df(function(x){
     script_text <- 
       read_lines(x) %>% 
-      str_subset("load\\(\".*Rdata\"\\)|save.image\\(.*\\)|file = .*Rdata|filename = .*pdf|write_csv.*csv") %>% 
-      str_remove_all(" |\"|\\(|\\)|,") %>% 
+      str_subset("load.*(RData|csv)|save.image\\(.*\\)|file = .*RData|filename = .*pdf|write_csv.*csv") %>% 
+      str_remove_all("glue|\\{.*\\}| |\"|\\(|\\)|,") %>% 
       str_c(collapse = " ") %>% 
       str_replace_all("load","input: ") %>% 
-      str_replace("write_csv|save.imagefile=|save.image|filename=|file=","~output: ") %>% 
-      str_replace_all("write_csv|save.imagefile=|save.image|filename=|file=","output: ") %>% 
+      str_replace("save.*file=|write_csv|save.imagefile = |save.image|filename = |file = ","~output: ") %>% 
+      str_replace_all("save.*file=|write_csv|save.imagefile = |save.image|filename = |file = ","output: ") %>% 
       str_split("~", simplify = T)
     
     tibble(
@@ -114,13 +121,32 @@ file_list <- list.files("scripts", pattern = ".R$", full.names = T, recursive = 
   }) 
 ```
 
+### Simulations
+
+```{r, results='asis'}
+simulations <- 
+  file_list %>% 
+  select(dir, script, input, output) %>% 
+  filter(dir == "0_simulations") %>% 
+  select(-dir) 
+cat(
+  "|script|input|output|",
+  "|------|-----|------|",
+  glue::glue_data(
+    simulations,
+    "|{script}|{input}|{output}|"
+  ),
+  sep = "\n"
+)
+```
+
 ### Data Prep
 
 ```{r, results='asis'}
 data_prep <- 
   file_list %>% 
   select(dir, script, input, output) %>% 
-  filter(dir == "data-prep") %>% 
+  filter(dir == "1_data_prep") %>% 
   select(-dir) 
 cat(
   "|script|input|output|",
@@ -133,43 +159,41 @@ cat(
 )
 ```
 
-### Primary Analyses
+### Analyses
 
 ```{r, results='asis'}
-primary_analyses <- 
+analyses <- 
   file_list %>% 
   select(dir, script, input, output) %>% 
-  filter(dir == "primary-analyses") %>% 
+  filter(dir == "2_analyses") %>% 
   select(-dir)
 cat(
   "|script|input|output|",
   "|------|-----|------|",
   glue::glue_data(
-    primary_analyses,
+    analyses,
     "|{script}|{input}|{output}|"
   ),
   sep = "\n"
 )
 ```
 
-### Secondary Analyses
+## Codebooks
 
-```{r, results='asis'}
-secondary_analyses <- 
-  file_list %>% 
-  select(dir, script, input, output) %>% 
-  filter(dir == "secondary-analyses") %>% 
-  select(-dir)
-cat(
-  "|script|input|output|",
-  "|------|-----|------|",
-  glue::glue_data(
-    secondary_analyses,
-    "|{script}|{input}|{output}|"
-  ),
-  sep = "\n"
-)
-```
+These are lists of variable names, labels, and value labels (where applicable) (see [data](#data) below).
+
+## Data {#data}
+
+This folder contains all the data that serves as input for the analysis scripts.
+ABCD data cannot be shared on open repositories.
+Therefore, interested readers can only fully reproduce our analyses with personal access to the ABCD data repository.
+To facilitate computational reproducibility, we provide synthetic data files.
+These files contain simulated data with the same variables as the original data and with the same basic characteristics.
+Thus, these files can be used as input to the analyses scripts.
+Note that, because the values are not identical to the real data, the output will deviate from the statistics described in the manuscript.
+
+The synthetic data files resemble the data after preprocessing (as done in `/scripts/1_data_prep`). Therefore, when using the synthetic data you should skip the preprocessing steps and continue to the analysis scripts (`/scripts/2_analyses`). If you do have access to the ABCD data, make sure that you place tje correct data files/folders in the `data` folder (see [how to reproduce this repository](#reproduce))
+
 
 ## Supplement
 
@@ -178,7 +202,7 @@ The supplement was produced using the same approach as the manuscript: it was wr
 The staged objects are stored in `supplement/staged-objects.Rdata`.
 The scripts that produce the staged objects are located in the `supplement/scripts/` directory and are named to be self-explanatory.
 
-## How to reproduce this repository
+## How to reproduce this repository {#reproduce}
 
 This repository can be reproduced in two ways.
 
@@ -196,7 +220,9 @@ Below is the exact order these scripts should be ran (irrespective of whether yo
 
 ### 1. Loading Dependencies
 
-1.  `/scripts/dependencies.R`: Loads (and installs if necessary) all the necessary R packages as they were on 2022-10-15 using the [`Groundhog`](https://groundhogr.com/) package. This ensures that scripts will continue functioning as intended even after packages have been updated. 
+1.  `/scripts/dependencies.R`: Loads (and installs if necessary) all the necessary R packages as they were on 2022-10-15 using the [`Groundhog`](https://groundhogr.com/) package. 
+This ensures that scripts will continue functioning as intended even after packages have been updated. 
+`Groundhog` is a more lightweight, easy-to-use alternative to package dependency managers such as `renv`.
 
 ### 2. Data Preparation
 
@@ -225,12 +251,12 @@ After downloading the above files/folders, run the preprocessing scripts in the 
 ### 4. Manuscript
 
 1.  `registered_report/scripts/staging.R`: Reads and combines all the results generated by the primary analyses and combines them in a list for the final manuscript.
-1.  `manuscript/manuscript.Rmd`: loads the staged results list and knits together the written manuscript and all statistics, tables, and figures computed in previous scripts.
+1.  `registered_report/registered_report.qmd`: loads the staged results list and knits together the written manuscript and all statistics, tables, and figures computed in previous scripts.
 
 ### 5. Supplement
 
 1.  `supplement/staging.R`: Reads and combines all the results generated by the primary analyses and combines them in a list for the supplemental materials.
-1.  `supplement/supplemental_materials.Rmd`: loads the staged results list and knits together the written supplement and all tables and figures computed by the staging script above.
+1.  `supplement/supplemental_materials.qmd`: loads the staged results list and knits together the written supplement and all tables and figures computed by the staging script above.
 
 ### 6. Using Docker {#using_docker}
 
@@ -238,42 +264,7 @@ If you want to create a Docker container in which to run the scripts, you will h
 
 1.  Download and install docker at <https://docs.docker.com/get-docker/>.
 2.  If on Windows, open the PowerShell. If on Mac, open the terminal through 'Applications \> Utilities \> Terminal'.
-3.  On the command line, type: `docker run \-\-rm \-d \-e PASSWORD=my_password \-p 8787:8787 stefanvermeent/abcd_ddm`
+3.  On the command line, type: `docker run --rm -d -e PASSWORD=my_password -p 8787:8787 stefanvermeent/abcd_ddm`
 4.  Open a browser window and enter: `localhost:8787` as the URL.
 5.  You will be redirected to an Rstudio cloud login page. As the username, type *rstudio*. As the password, type *my_password*, unless you changed it under step 3.
 6.  You should now see an RStudio environment with the required dependencies pre-installed and loaded.
-
-### 7. Data Access History
-
-
-```{r results ='asis'}
-
-gert::git_log() |> 
-  select(commit, author, time, message) |>
-  (function(.) filter(., str_detect(string = .$message, pattern = "^\\[\\[")))() |> 
-  separate(message, into = c("message", "data_hash", 'code'), sep = "\n") |> 
-  separate(message, into = c("milestone", "description"), sep = "\\]\\]\\s") %>% 
-  mutate(
-    milestone = map_chr(milestone, function(milestone) {
-      milestone |> 
-        str_remove("\\[\\[") |>
-        str_replace("_", " ") |> 
-        str_to_title()
-    }),
-    data_hash = str_remove(data_hash, "^object_hash ")
-  ) |> 
-  select(time, commit, milestone, description, code, data_hash) |> 
-  mutate(
-    code = str_replace_all(code, "\\|\\>", "\\|\\>\\\n"),
-    link_to_git = paste0(
-      gert::git_remote_list()$url |> str_remove(string = _, pattern = "\\.git$"), "/tree/", commit)
-  ) |>
-  arrange(time) |> 
-  glue_data("  - **[{time}]({link_to_git}): {description}**
-        - **Milestone:** {milestone}
-        - **Data MD5 hash**: {data_hash}
-        - [Link to code snippet](https://github.com/stefanvermeent/abcd_ddm/blob/main/.gitlog/{commit}.Rmd)
-        \n
-    ")
-
-```
