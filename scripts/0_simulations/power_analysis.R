@@ -12,7 +12,7 @@ library(RWiener)
 
 nsim    <- 1:500
 nSample <- c(1500, 2500, 3500, 4500, 5500, 6500, 7500, 8500)
-beta    <- c(0.06, 0.08, 0.1)
+beta    <- c(0.08, 0.1)
 
 cores   <-  availableCores() - 2
 plan("multisession", workers = cores) # Use parallel processing
@@ -255,13 +255,6 @@ power_results <-
       
       # 4. FIT SAMPLE MODEL TO ESTIMATION DATA
       fit <- sem(sample_model, data=data)
-      
-      out <- lavPredict(fit, fsm = TRUE)
-      
-      fitstats <- fitMeasures(fit) |> 
-        as.list() |> 
-        as_tibble() |> 
-        select(cfi, rmsea) 
       
       
       estimates <- parameterEstimates(fit) |> 
