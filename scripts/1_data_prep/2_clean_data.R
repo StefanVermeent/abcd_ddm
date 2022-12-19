@@ -1,22 +1,18 @@
-
-# Libraries and files -----------------------------------------------------
-
-source('scripts/dependencies.R')
-source('scripts/custom_functions/read-functions.R')
-source('scripts/custom_functions/general-functions.R')
-
-data_folder <- "closed_data"
-
-load(glue('{data_folder}/tasks_raw.RData'))
-
+load(glue("{data_folder}/tasks_raw.RData"))
 
 # Read TBI data
-tbi <- read_delim(file = "closed_data/abcd_tbi01.txt") |> 
-  filter(eventname == "baseline_year_1_arm_1") |> 
-  select(subjectkey, tbi_ss_worst_overall) |> 
-  rename(subj_idx = subjectkey) |> 
-  mutate(tbi_ss_worst_overall = as.numeric(tbi_ss_worst_overall))
-
+tryCatch(
+  {
+    tbi <- read_delim(file = "data/abcd_tbi01.txt") |> 
+      filter(eventname == "baseline_year_1_arm_1") |> 
+      select(subjectkey, tbi_ss_worst_overall) |> 
+      rename(subj_idx = subjectkey) |> 
+      mutate(tbi_ss_worst_overall = as.numeric(tbi_ss_worst_overall))
+  },
+  error=function(cond){ 
+    message("Error: File not found. If you do not have access to the ABCD data, you can skip the scripts under `1_data_prep` and continue to the scripts under `2_analyses` using the synthetic data that are provided in the `data` folder. If you *do* have access to the ABCD data, make sure that you place the required data in the `data` folder. See the README file for more information.")
+  }
+)
 
 exclusions <- list()
 
@@ -590,17 +586,7 @@ list(pcps_clean, flanker_clean, lmt_clean, dccs_clean) |>
 # Round all exclusions to two decimals
 exclusions <- exclusions |> map(function(x) x |> mutate(across(everything(), ~round(., 2) |> as.character())))
 
-save(
-  lmt_clean, 
-  flanker_clean, 
-  pcps_clean, 
-  dccs_clean, 
-
-  nih_ref_ids,
-  exclusions,
-  
-  file = glue('{data_folder}/tasks_clean.RData')
-  )
+save(lmt_clean, flanker_clean, pcps_clean, dccs_clean, nih_ref_ids, exclusions, file = "analysis_objects/tasks_clean.RData")
 
 
 

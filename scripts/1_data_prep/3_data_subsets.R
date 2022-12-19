@@ -1,6 +1,4 @@
-
-source('scripts/custom_functions/read-functions.R')
-load('closed_data/tasks_clean.RData')
+load('analysis_objects/tasks_clean.RData')
 
 final_sample_ids <- 
   unique(
@@ -16,7 +14,7 @@ set.seed(4876945)
 
 # Read Family IDs 
 
-family_ids <- read_delim(file = 'closed_data/acspsw03.txt', select_vars = c("subjectkey", "rel_family_id", "eventname")) |> 
+family_ids <- read_delim(file = 'data/acspsw03.txt', select_vars = c("subjectkey", "rel_family_id", "eventname")) |> 
   filter(str_detect(eventname, "baseline")) |> 
   filter(subjectkey %in% final_sample_ids) |> 
   select(-eventname)
@@ -59,8 +57,8 @@ test_set <- family_ids |>
 assertthat::assert_that(all(!training_set$rel_family_id %in% test_set$rel_family_id), msg = "Some siblings ended up in different sets!")
 
 # Save both sets
-write_csv(training_set, "closed_data/training_set.csv")
-write_csv(test_set, "closed_data/test_set.csv")
+write_csv(training_set, "analysis_objects/training_set.csv")
+write_csv(test_set, "analysis_objects/test_set.csv")
 
 
 

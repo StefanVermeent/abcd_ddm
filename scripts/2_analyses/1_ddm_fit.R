@@ -1,7 +1,4 @@
-source('scripts/dependencies.r')
-load('closed_data/tasks_clean.RData')
-source('scripts/custom_functions/DBDA2E-utilities.R')
-
+load('analysis_objects/tasks_clean.RData')
 
 # 1. Overview of Model Specifications ----------------------------------------
 
@@ -234,7 +231,7 @@ mcmc_lmt_mod1 <- as.matrix(as.mcmc.list(ddm_lmt_mod1), chains = F) |>
   as_tibble()
 
 
-save(mcmc_lmt_mod1, file = 'closed_data/mcmc_lmt_mod1.RData')
+save(mcmc_lmt_mod1, file = 'analysis_objects/ddm_lmt_mod1.RData')
 
 
 ### 2.1.3 Model 2: Without imputing missings ----
@@ -285,7 +282,7 @@ ddm_lmt_mod2 <- run.jags(method = "parallel",
 mcmc_lmt_mod2 <- as.matrix(as.mcmc.list(ddm_lmt_mod2), chains = F) |> 
   as_tibble()
 
-save(mcmc_lmt_mod2, file = 'closed_data/mcmc_lmt_mod2.RData')
+save(mcmc_lmt_mod2, file = 'analysis_objects/ddm_lmt_mod2.RData')
 
 
 
@@ -348,7 +345,7 @@ ddm_flanker_mod1 <- run.jags(method = "parallel",
 mcmc_flanker_mod1 <- as.matrix(as.mcmc.list(ddm_flanker_mod1), chains = F) |> 
   as_tibble()
 
-save(mcmc_flanker_mod1, file = 'closed_data/mcmc_flanker_mod1.RData')
+save(mcmc_flanker_mod1, file = 'analysis_objects/ddm_flanker_mod1.RData')
 
 
 
@@ -406,7 +403,7 @@ ddm_pcps_mod1 <- run.jags(method = "parallel",
 mcmc_pcps_mod1 <- as.matrix(as.mcmc.list(ddm_pcps_mod1), chains = F) |> 
   as_tibble()
 
-save(mcmc_pcps_mod1, file = 'closed_data/mcmc_pcps_mod1.RData')
+save(mcmc_pcps_mod1, file = 'analysis_objects/ddm_pcps_mod1.RData')
 
 
 
@@ -471,5 +468,5 @@ ddm_dccs_mod1 <- run.jags(method = "parallel",
 mcmc_dccs_mod1 <- as.matrix(as.mcmc.list(ddm_dccs_mod1), chains = F) |> 
   as_tibble()
 
-save(mcmc_dccs_mod1, file = 'closed_data/mcmc_dccs_mod1.RData')
+save(mcmc_dccs_mod1, file = 'analysis_objects/ddm_dccs_mod1.RData')
 

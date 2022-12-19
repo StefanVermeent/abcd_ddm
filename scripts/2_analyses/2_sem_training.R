@@ -1,6 +1,6 @@
-load("closed_data/ddm_data.RData")
-load("closed_data/iv_data.RData")
-load("closed_data/training_set.RData")
+load('analysis_objects/ddm_data.csv')
+load('analysis_objects/iv_data.csv')
+load('analysis_objects/training_set.csv')
 
 training_data <- training_data |> 
   left_join(ddm_data) |> 
@@ -328,23 +328,6 @@ model_full_fit <- lavaan.survey::lavaan.survey(lavaan.fit = model_full, survey.d
 
 
 # Save results ------------------------------------------------------------
-save(
-  model_sub_v,
-  model_sub_v_fit,
-  
-  model_sub_a,
-  model_sub_a_fit,
-  
-  model_sub_t0,
-  model_sub_t0_fit,
-  
-  model_combn,
-  model_combn_fit,
-  
-  model_full,
-  model_full_fit,
-  
-  file = "sem_training_results.RData"
-)
+save(model_sub_v, model_sub_v_fit, model_sub_a, model_sub_a_fit, model_sub_t0, model_sub_t0_fit, model_combn, model_combn_fit, model_full, model_full_fit, file = "sem_training_results.RData")
 
 

@@ -1,20 +1,16 @@
-
-# Libraries and functions -------------------------------------------------
-
-source('scripts/dependencies.R')
-source('scripts/custom_functions/read-functions.R')
-  
-)
-
-data_folder <- "closed_data"
-
-
 # Read NIH summary scores for participant ID verification
-nih_ref_ids <- read_delim('closed_data/abcd_tbss01.txt') |> 
-  filter(str_detect(eventname, 'baseline')) |> 
-  filter(collection_id != 'collection_id') |> 
-  distinct(subjectkey) |> 
-  pull(subjectkey)
+tryCatch(
+  {
+  nih_ref_ids <- read_delim('data/abcd_tbss01.txt') |> 
+    filter(str_detect(eventname, 'baseline')) |> 
+    filter(collection_id != 'collection_id') |> 
+    distinct(subjectkey) |> 
+    pull(subjectkey)
+  },
+  error=function(cond){ 
+    message("Error: File not found. If you do not have access to the ABCD data, you can skip the scripts under `1_data_prep` and continue to the scripts under `2_analyses` using the synthetic data that are provided in the `data` folder. If you *do* have access to the ABCD data, make sure that you place the required data in the `data` folder. See the README file for more information.")
+    }
+)
 
 exclusions <- list()
 descriptives <- list()
@@ -24,17 +20,24 @@ descriptives <- list()
 ## 1.1 File Preparations ----
 
 # Only keep baseline measures
-list.files(file.path(data_folder, "abcd_lmtlb01"), pattern = "2_year_follow_up", full.names = TRUE) |> 
+list.files(file.path("data/abcd_lmtlb01"), pattern = "2_year_follow_up", full.names = TRUE) |> 
   map(function(x) file.remove(x))
 
 # Extract baseline measures
-list.files(file.path(data_folder, "abcd_lmtlb01"), full.names = TRUE) |> 
+list.files(file.path("data/abcd_lmtlb01"), full.names = TRUE) |> 
   map(function(x) utils::unzip(x, exdir = data_folder))
 
 
 ## 1.2 Read files ----
 
-lmt_raw <- read_csv(file = "list.files(file.path(data_folder, 'LMT/baseline_year_1_arm_1'), full.names = TRUE)") 
+tryCatch(
+  {
+    lmt_raw <- read_csv(file = "list.files('data/LMT/baseline_year_1_arm_1', full.names = TRUE)") 
+  },
+  error=function(cond){ 
+    message("Error: File not found. If you do not have access to the ABCD data, you can skip the scripts under `1_data_prep` and continue to the scripts under `2_analyses` using the synthetic data that are provided in the `data` folder. If you *do* have access to the ABCD data, make sure that you place the required data in the `data` folder. See the README file for more information.")
+  }
+)
 
 lmt_raw <- lmt_raw |> 
   map(function(x) {
@@ -64,7 +67,7 @@ assertthat::assert_that(all(lmt_raw |> group_by(subj_idx) |> count() |> pull() =
 ## 2.1 File preparations ----
 
 # Fix file names
-list.files(glue("{data_folder}/abcd_tb_tlb01/NIHTB/NIHTB"), full.names = TRUE) |> 
+list.files("data/abcd_tb_tlb01/NIHTB/NIHTB", full.names = TRUE) |> 
   walk(function(x){
     
     new_name <- x |> 
@@ -77,15 +80,20 @@ list.files(glue("{data_folder}/abcd_tb_tlb01/NIHTB/NIHTB"), full.names = TRUE) |
   })
 
 
-
 ## 2.2 Read files ----
 
 # There are three file types with different data structures that have to be read in separately.
 
-nih_p1 <- read_csv(file = "list.files(glue('{data_folder}/abcd_tb_tlb01/NIHTB/NIHTB'), full.names = TRUE) |> str_subset(pattern = 'Narrow_Structure')")
-nih_p2 <- read_csv(file = "list.files(glue('{data_folder}/abcd_tb_tlb01/NIHTB/NIHTB'), full.names = TRUE) |> str_subset(pattern = '[0-9]_Assessment')")
-nih_p3 <- read_csv(file = "list.files(glue('{data_folder}/abcd_tb_tlb01/NIHTB/NIHTB'), full.names = TRUE) |> str_subset(pattern = 'Registration')")
-
+tryCatch(
+  {
+    nih_p1 <- read_csv(file = "list.files('data/abcd_tb_tlb01/NIHTB/NIHTB'), full.names = TRUE) |> str_subset(pattern = 'Narrow_Structure')")
+    nih_p2 <- read_csv(file = "list.files('data/abcd_tb_tlb01/NIHTB/NIHTB'), full.names = TRUE) |> str_subset(pattern = '[0-9]_Assessment')")
+    nih_p3 <- read_csv(file = "list.files('data/abcd_tb_tlb01/NIHTB/NIHTB'), full.names = TRUE) |> str_subset(pattern = 'Registration')")
+  },
+  error=function(cond){ 
+    message("Error: File not found. If you do not have access to the ABCD data, you can skip the scripts under `1_data_prep` and continue to the scripts under `2_analyses` using the synthetic data that are provided in the `data` folder. If you *do* have access to the ABCD data, make sure that you place the required data in the `data` folder. See the README file for more information.")
+  }
+)
 
 
 nih_p1_parsed <- nih_p1 |> 
@@ -104,9 +112,6 @@ nih_p2_parsed <- nih_p2 |>
       filter(!str_detect(PIN, pattern = "Test|test|testing|Testing"))
   }) |> 
   reduce(bind_rows)
-
-load('closed_data/nih_p1_parsed.Rdata')
-load('closed_data/nih_p2_parsed.Rdata')
 
 ### 2.2.1 Flanker Task ----
 
@@ -334,12 +339,4 @@ lmt_raw <- lmt_raw |>
     )
   )
 
-save(
-  lmt_raw, 
-  flanker_raw,
-  dccs_raw,
-  pcps_raw,
-  
-  nih_ref_ids,
-  file = glue('{data_folder}/tasks_raw.RData')
-  )
+save(lmt_raw, flanker_raw, dccs_raw, pcps_raw, nih_ref_ids, file = glue('data/tasks_raw.RData'))
