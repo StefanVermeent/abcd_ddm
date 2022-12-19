@@ -22,8 +22,8 @@ plan("multisession", workers = cores) # Use parallel processing
 ### 1. Specify the population model, which specifies factor loadings and adversity-cognition associations at the population level.
 ###    Beta-coefficients are fixed, but factor loadings are randomly generated between 0.6 and 0.95 following a uniform distribution.
 ### 2. Specify the sample model, which is identical to the population model but without the parameter specifications (these will be estimated)
-### 3. Simulate two datasets, an estimation set (similar to training/test set in the manuscript) and a validation set.
-### 4. Fit the model to the estimation set, and use the resulting parameter estimates to predict values in the validation set.
+### 3. Simulate data based on the population model.
+### 4. Fit the sample model to the data.
 ### 5. Store results
 
 set.seed(38584654)
@@ -245,7 +245,7 @@ power_results <-
       rotation_t0_l ~ deprivation
       '
       
-      # 3. SIMULATE ESTIMATION AND VALIDATION DATA
+      # 3. SIMULATE DATA
       data = lavaan::simulateData(
         model = population_model, 
         sample.nobs = n
@@ -253,10 +253,11 @@ power_results <-
       mutate(across(everything(), scale))
       
       
-      # 4. FIT SAMPLE MODEL TO ESTIMATION DATA
+      # 4. FIT SAMPLE MODEL TO DATA
       fit <- sem(sample_model, data=data)
       
       
+      # 5. STORE RESULTS
       estimates <- parameterEstimates(fit) |> 
         as_tibble() |> 
         filter(op == "~") |> 
