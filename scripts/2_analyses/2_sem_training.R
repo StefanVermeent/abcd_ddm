@@ -1,6 +1,6 @@
-load('analysis_objects/ddm_data.csv')
-load('analysis_objects/iv_data.csv')
-load('analysis_objects/training_set.csv')
+load('data/ddm_data.csv')
+load('data/iv_data.csv')
+load('data/training_set.csv')
 
 training_data <- training_data |> 
   left_join(ddm_data) |> 

@@ -1,4 +1,4 @@
-load(glue("{data_folder}/tasks_raw.RData"))
+load("data/tasks_raw.RData")
 
 # Read TBI data
 tryCatch(
@@ -586,7 +586,12 @@ list(pcps_clean, flanker_clean, lmt_clean, dccs_clean) |>
 # Round all exclusions to two decimals
 exclusions <- exclusions |> map(function(x) x |> mutate(across(everything(), ~round(., 2) |> as.character())))
 
-save(lmt_clean, flanker_clean, pcps_clean, dccs_clean, nih_ref_ids, exclusions, file = "analysis_objects/tasks_clean.RData")
+write_csv(lmt_clean, "data/lmt_clean.csv")
+write_csv(flanker_clean, "data/flanker_clean.csv")
+write_csv(pcps_clean, "data/pcps_clean.csv")
+write_csv(dccs_clean, "data/dccs_clean.csv")
+
+save(exclusions, file = "analysis_objects/exclusions.RData")
 
 
 

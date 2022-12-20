@@ -1,4 +1,7 @@
-load('analysis_objects/tasks_clean.RData')
+lmt_clean <- readr::read_csv("data/lmt_clean.csv")
+flanker_clean <- readr::read_csv("data/flanker_clean.csv")
+pcps_clean <- readr::read_csv("data/pcps_clean.csv")
+dccs_clean <- readr::read_csv("data/dccs_clean.csv")
 
 final_sample_ids <- 
   unique(
@@ -47,18 +50,20 @@ full_set <- full_set %>%
   
 # Create training and test set
 training_set <- family_ids |> 
-  right_join(full_set |> filter(set == "training"))
+  right_join(full_set |> filter(set == "training")) |> 
+  rename(subj_idx = subjectkey)
   
 test_set <- family_ids |> 
-  right_join(full_set |> filter(set == "test"))
+  right_join(full_set |> filter(set == "test")) |> 
+  rename(subj_idx = subjectkey)
 
 
 # Verify that all siblings are in the same set
 assertthat::assert_that(all(!training_set$rel_family_id %in% test_set$rel_family_id), msg = "Some siblings ended up in different sets!")
 
 # Save both sets
-write_csv(training_set, "analysis_objects/training_set.csv")
-write_csv(test_set, "analysis_objects/test_set.csv")
+write_csv(training_set, "data/training_set.csv")
+write_csv(test_set, "data/test_set.csv")
 
 
 

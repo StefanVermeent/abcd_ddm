@@ -1,4 +1,7 @@
-load('analysis_objects/tasks_clean.RData')
+lmt_clean     <- readr::read_csv("analysis_objects/lmt_clean.csv")
+flanker_clean <- readr::read_csv("analysis_objects/flanker_clean.csv")
+pcps_clean    <- readr::read_csv("analysis_objects/pcps_clean.csv")
+dccs_clean    <- readr::read_csv("analysis_objects/dccs_clean.csv")
 
 # 1. Overview of Model Specifications ----------------------------------------
 

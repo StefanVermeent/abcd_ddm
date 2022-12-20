@@ -214,7 +214,7 @@ ddm_sim1_cor <- ddm_sim1_data |>
   group_by(parameter) |> 
   summarise(r = cor(estimated, simulated))
   
-save(ddm_sim1_traces, ddm_sim1_data, ddm_sim1_cor, file = "synthetic_data/ddm_sim1_results.RData") 
+save(ddm_sim1_traces, ddm_sim1_data, ddm_sim1_cor, file = "analysis_objects/ddm_sim1_results.RData") 
 
 
 
@@ -377,6 +377,9 @@ ddm_sim2_data <- mcmc_sim2 |>
 ddm_sim2_cor <- ddm_sim2_data |>
   group_by(parameter) |> 
   summarise(r = cor(estimated, simulated))
+
+
+save(ddm_sim2_traces, ddm_sim2_data, ddm_sim2_cor, file = "analysis_objects/ddm_sim2_results.RData") 
 
 
 
@@ -559,8 +562,7 @@ ddm_sim3_cor <- ddm_sim3_data |>
   summarise(r = cor(estimated, simulated))
 
 
-
-save(ddm_sim3_traces, ddm_sim3_data, ddm_sim3_cor, file = "synthetic_data/ddm_sim3_results.RData") 
+save(ddm_sim3_traces, ddm_sim3_data, ddm_sim3_cor, file = "analysis_objects/ddm_sim3_results.RData") 
 
   
 
