@@ -60,7 +60,7 @@ gert::git_log() |>
   glue_data("  - **[{time}]({link_to_git}): {description}**
         - **Milestone:** {milestone}
         - **Data MD5 hash**: {data_hash}
-        - [Link to code snippet](https://github.com/stefanvermeent/abcd_ddm/blob/main/.gitlog/{commit}.Rmd)
+        - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/{commit}.Rmd)
         \n
     ")
 
