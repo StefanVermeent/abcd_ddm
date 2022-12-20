@@ -272,15 +272,11 @@ In contrast, attention shifting has been found to be enhanced in children and (y
 Thus, our choice of this dataset was guided in part by previous work documenting deficit and impairment effects in inhibition and attention shifting, respectively.
 However, it was also guided by the fact that these tasks are widely used in developmental science and adhere to DDM assumptions.
 
-In line with adaptation-based theories [@frankenhuis_2013; @frankenhuis_2016; @ellis_2022] and empirical findings by @bignardi_2022, we predict that any enhancements in cognitive abilities as a result of adverse experiences will manifest on a task-specific level, but not on a task-general level.
-In contrast, deficit patterns may emerge on both a task-general and task-specific level.
-As very little is known about the effects of adversity on different stages of cognitive processing, we refrain from predicting specific patterns for different DDM parameters.
-However, we will interpret associations between the types of adversity and DDM parameters as follows:
-For drift rates, positive associations will be interpreted as *better* speed of information processing at higher levels of adversity, and negative associations as *worse* speed of information processing.
-Task-specific drift rates will be interpreted as specific cognitive abilities, as the drift rate reflects the efficiency with which a task was completed.
-For non-decision time, positive associations will be interpreted as *worse* (i.e., slower) task preparation and execution at higher levels of adversity, and negative associations will be interpreted as *better* (i.e., faster) task-preparation and execution.
-For boundary separation, positive associations will be interpreted as more cautious responding at higher levels of adversity, and negative associations as less cautious responding.
-Potential associations between adversity and boundary separation reflect differences in strategies, not cognitive abilities.
+In line with adaptation-based frameworks [@ellis_2022; @frankenhuis_2013; @frankenhuis_2016] and recent findings by @bignardi_2022, we predict that any adversity-related enhancements will manifest at the task-specific level and not the task-general level. 
+In contrast, we expect deficit patterns to emerge across at both levels. 
+Because very little is known about how adversity relates to different stages of cognitive processing, we refrain from making specific predictions for each DDM parameter. 
+However, we will interpret associations between the types of adversity and DDM parameters using the following guidelines: 1) For drift rates, positive associations with adversity will be interpreted as improved speed of information processing and negative associations as lowered speed of information processing; 2) for non-decision time, positive associations with adversity will be interpreted as slower and/or inefficient task preparation and execution, and negative associations will be interpreted as faster or more efficient task-preparation and execution; 3) for boundary separation, positive associations with adversity will be interpreted as more cautious responding, and negative associations as less cautious responding. 
+Potential associations between adversity and boundary separation reflect differences in strategies, not cognitive abilities. 
 
 # Methods {#methods}
 
