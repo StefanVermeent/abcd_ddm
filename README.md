@@ -58,7 +58,7 @@ and GitHub.](supplement/images/fig1.png)
 ## Directory Structure
 
 The names of each folder are intended to be self-explanatory. There are
-six top-level folders to organize the inputs and outputs of this
+seven top-level folders to organize the inputs and outputs of this
 project:
 
 1.  `preregistrations/`: The preregistration(s) for the analyses done
@@ -85,11 +85,9 @@ Below is a simple visualization of the full directory structure.
     ## │   ├── ddm_sim1_results.RData
     ## │   ├── ddm_sim2_results.RData
     ## │   ├── ddm_sim3_results.RData
-    ## │   ├── generate_synthetic_data.R
-    ## │   ├── power.Rdata
-    ## │   ├── tasks_clean_synth.RData
-    ## │   ├── test_set_synth.csv
-    ## │   └── training_set_synth.csv
+    ## │   ├── descriptives.RData
+    ## │   ├── exclusions.RData
+    ## │   └── power.Rdata
     ## ├── codebooks
     ## ├── data
     ## ├── data_access_history.md
@@ -193,17 +191,17 @@ provides an overview of the inputs and outputs of each script.
 
 ### Data Prep
 
-| script            | input              | output                            |
-|-------------------|--------------------|-----------------------------------|
-| 1_preprocessing.R |                    | tasks_raw.RData’                  |
-| 2_clean_data.R    | tasks_raw.RData    | tasks_clean.RData                 |
-| 3_data_subsets.R  | tasks_clean.RData’ | training_set.csv<br> test_set.csv |
+| script            | input           | output                                                                                         |
+|-------------------|-----------------|------------------------------------------------------------------------------------------------|
+| 1_preprocessing.R |                 | tasks_raw.RData’                                                                               |
+| 2_clean_data.R    | tasks_raw.RData | lmt_clean.csv<br> flanker_clean.csv<br> pcps_clean.csv<br> dccs_clean.csv<br> exclusions.RData |
+| 3_data_subsets.R  |                 | training_set.csv<br> test_set.csv                                                              |
 
 ### Analyses
 
 | script           | input                                                | output                                                                                                                                                              |
 |------------------|------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1_ddm_fit.R      | tasks_clean.RData’                                   | ddm_lmt_mod1.RData’<br> ddm_lmt_mod2.RData’<br> ddm_flanker_mod1.RData’<br> ddm_pcps_mod1.RData’<br> ddm_dccs_mod1.RData’                                           |
+| 1_ddm_fit.R      |                                                      | ddm_lmt_mod1.RData’<br> ddm_lmt_mod2.RData’<br> ddm_flanker_mod1.RData’<br> ddm_pcps_mod1.RData’<br> ddm_dccs_mod1.RData’                                           |
 | 2_sem_training.R | ddm_data.csv’<br> iv_data.csv’<br> training_set.csv’ | model_sub_vmodel_sub_v\_fitmodel_sub_amodel_sub_a\_fitmodel_sub_t0model_sub_t0_fitmodel_combnmodel_combn_fitmodel_fullmodel_full_fitfile=sem_training_results.RData |
 | 3_sem_test.R     |                                                      | NA                                                                                                                                                                  |
 
@@ -221,11 +219,12 @@ reproduce this repository](#reproduce) for more information).
 **Computational reproduction**. To facilitate computational
 reproducibility, we provide synthetic data files. These files contain
 simulated data with the same variables as the original data and with the
-same basic characteristics. Thus, these files can be used as input to
-the analyses scripts. The synthetic versions of files can be recognized
-by the “\_synth” suffix. Note that, because the values are not identical
-to the real data, the output will deviate from the statistics described
-in the manuscript. The synthetic data files resemble the data after
+same basic characteristics. They are generated in the
+`generate_synthetic_data.R` script and can be used as input to the data
+analysis functions. The synthetic versions of files can be recognized by
+the “\_synth” suffix. Note that, because the values are not identical to
+the real data, the output will deviate from the statistics described in
+the manuscript. The synthetic data files resemble the data after
 preprocessing (as done in `/scripts/1_data_prep`). Therefore, when using
 the synthetic data you should skip the preprocessing steps and continue
 to the analysis scripts (`/scripts/2_analyses`).
