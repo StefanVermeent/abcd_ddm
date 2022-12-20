@@ -63,7 +63,7 @@ lmt_clean_synth <-
     }),
     RT = exp(RT),
     RT = ifelse(RT < 0.3, runif(1, 0.3, 0.6), RT),
-    RT = ifelse(RT > 10, runif(1, 7, 10), RT)
+    RT = ifelse(RT > 5, runif(1, 3, 5), RT)
     ) |> 
   ungroup() |> 
   select(-c(prob_correct, mean_RT, sd_RT, prob_missing))
@@ -193,10 +193,7 @@ test_set_synth <- test_set |>
 
 
 # Save Synthetic Data Files -----------------------------------------------
-readr::write_csv(lmt_clean_synth, 'data/lmt_clean_synth.csv')
-readr::write_csv(flanker_clean_synth, 'data/flanker_clean_synth.csv')
-readr::write_csv(dccs_clean_synth, 'data/dccs_clean_synth.csv')
-readr::write_csv(pcps_clean_synth, 'data/pcps_clean_synth.csv')
 
-readr::write_csv(training_set_synth, 'data/training_set_synth.csv')
-readr::write_csv(test_set_synth, 'data/test_set_synth.csv')
+save(lmt_clean_synth, flanker_clean_synth, dccs_clean_synth, pcps_clean_synth, exclusions, file = "analysis_objects/tasks_clean_synth.RData")
+readr::write_csv(training_set_synth, 'analysis_objects/training_set_synth.csv')
+readr::write_csv(test_set_synth, 'analysis_objects/test_set_synth.csv')
