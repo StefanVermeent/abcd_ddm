@@ -74,12 +74,13 @@ set_flextable_defaults(
 
 Prior to Stage 1 submission of the Registered Report, we accessed the cognitive task data for a couple of [preregistered](https://github.com/stefanvermeent/abcd_ddm/preregistrations/2022-09-20_preregistration_DDM.md) data checks.
 By only accessing the cognitive task data, these steps did not bias or substantive analyses involving measures of adversity.
-To transparently show when we accessed which data, we created an open science workflow that would automate this process. The main aim of this workflow was to create a transparent log of every major milestone of the project, such as accessing new data, submitting preregistrations, and finalizing analyses. 
+To transparently show when we accessed which data, we created an open science workflow that would automate this process. 
+The main aim of this workflow was to create a transparent log of every major milestone of the project, such as accessing new data, submitting preregistrations, and finalizing analyses. 
 
-The main ingredient of this workflow is a set of custom functions that we created for reading in data files.
+The main ingredient of this workflow is a set of custom functions that we created for reading in data files (See Figure 1).
 These are wrappers for the read functions in the *readr* package. 
 Whenever one of these functions (e.g., *read_csv*) was called, it went through a couple of internal processes.
-First, the specified data file would be read into R. 
+First, the specified data file would be read into R (but not yet accessible to us in the global environment). 
 This could be a single file, or a list of individual data files that would first be combined into a single dataframe.
 Second, any specified manipulations would be applied to the data.
 This could be selecting specific variables, filtering specific rows, or randomly shuffling values (e.g., participant IDs).
@@ -90,13 +91,20 @@ Fourth, this MD5 hash would be compared to previously generated hashes.
 
 If the newly generated MD5 hash was not recognized, this triggered an automatic commit to GitHub.
 At this point, the user gets the choice to abort the process or to continue.
+Aborting would terminate the process without importing the data.
 If opting to continue, the user could supply an informative message (e.g., "accessed Flanker data"), which would be added to the Git commit.
 The Git commit message stored other relevant meta-data as well, such as the object hash and the code used to read and manipulate the data.
 Committing and pushing to Git was handled using the *gert* package.
 
 Thus, any accessing of raw data was automatically tracked via GitHub. 
 Using this same approach, we also logged other major milestones, such as submitting preregistrations and finalizing analyses.
-For an overview of all milestones, see the [Data Access History](https://github.com/stefanvermeent/abcd_ddm/data_access_history.md).
+
+An automatically generated overview of all milestones can be found in the [Data Access History](https://github.com/stefanvermeent/abcd_ddm/data_access_history.md).
+
+```{r figureS1, fig.width=6, fig.height = 2.5, dpi=600, fig.id = "figureS1", fig.cap.style = "Image Caption", fig.cap='**Figure S1.** Graphical overview of the data access workflow using R and GitHub.'}
+knitr::include_graphics("images/fig1.png")
+```
+
 
 # Power analysis
 
@@ -105,7 +113,8 @@ On each iteration, we first specified a population model (i.e., the 'true' model
 Factor loadings in this model were randomly generated between 0.6 and 0.8 following a uniform distribution.
 Next, we simulated data sets based on the population model.
 Finally, we fitted the sample model to the simulated data and extracted the beta coefficients and corresponding *p*-values.
-We generated population models with beta coefficients of 0.08 and 0.1, and simulated data with sample sizes ranging from 1,500, to 8,500 with steps of 1,000. Each combination of coefficients and sample sizes was repeated 500 times, for a total of 8,000 iterations.
+We generated population models with beta coefficients of 0.08 and 0.1, and simulated data with sample sizes ranging from 1,500, to 8,500 with steps of 1,000. 
+Each combination of coefficients and sample sizes was repeated 500 times, for a total of 8,000 iterations.
 
 The results are shown in Figure S1. The simulations yield power \> 90% at around *N* = 2,500 for $\beta$ = 0.1 and *N* = 6,500 for $\beta$ = 0.06.
 Thus, after taking out 1,500 participants for the training set, the test set will be highly powered.
@@ -182,8 +191,8 @@ We used the first 2,000 samples as burn-in, and then took an additional 10,000 s
 Every 10th sample was discarded to reduce the size of final model object. 
 We sampled across three chains, which were subsequently combined, for a total of 3,000 samples.
 The model converged normally (Figure S2). 
-Relative parameter recovery was decent for Boundary Separation (*r* = `ddm_sim1_cor$a`) and Non-Decision Time (*r* = `ddm_sim1_cor$t`), but not for Drift rate (*r* = `ddm_sim1_cor$v`). 
-However, estimates of Boundary Separation and Non-Decision Time showed bias.
+Relative parameter recovery was decent for boundary separation (*r* = `staged_sim_results_supp$ddm_sim1_cor$a`) and non-decision time (*r* = `staged_sim_results_supp$ddm_sim1_cor$t`), but not for drift rate (*r* = `staged_sim_results_supp$ddm_sim1_cor$v`). 
+However, estimates of boundary separation and non-decision time showed bias.
 
 ```{r figureS2, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS2", fig.cap.style = "Image Caption", fig.cap="**Figure S2.** Convergence of the model in simulation 1. Plots should resemble a 'fat, hairy caterpillar'."}
 staged_sim_results_supp$ddm_sim1_traces_plot
@@ -197,11 +206,9 @@ staged_sim_results_supp$ddm_sim1_recov
 
 <br> 
 
-As discussed above, the models reported in this manuscript will have more information to go on
-As discussed above, boundary Separation will be fixed across conditions for the models reported in the manuscript.
-This means that the number of trials that can be used to estimate Boundary Separation will be larger for tasks with two conditions (20 trials for the Flanker Task and 32 trials for the Attention Shifting Task).
+As discussed above, the models reported in this manuscript will not be constricted to eight trials.
+Instead, they will be able the information of both conditions (e.g., congruent and incongruent for the Flanker Task), as parameters will tend to be correlated across conditions.
 Therefore, we ran a second simulation adding realistic condition effects.
-
 
 ## DDM simulation 2: Two conditions; Boundary Separation fixed across conditions ----
 
@@ -210,7 +217,11 @@ Mirroring the real Flanker task, we simulated two conditions, one with 8 trials 
 On average, drift rates were lower and non-decision times were longer for incongruent trials.
 Boundary separation was fixed within subjects to be equal across conditions.
 Non-decision times correlated .70 between conditions, and drift rates correlated .30 between conditions.
+These correlations were based on previous studies that we did using the Flanker Task.
+For more information on the specific settings, see [https://github.com/stefanvermeent/abcd_ddm/scripts/0_simulations/ddm_trial_simulations.R](https://github.com/stefanvermeent/abcd_ddm/scripts/0_simulations/ddm_trial_simulations.R).
 
+As discussed above, boundary Separation will be fixed across conditions for the models reported in the manuscript.
+This means that the number of trials that can be used to estimate boundary separation will be larger for tasks with two conditions (20 trials for the Flanker Task and 32 trials for the Attention Shifting Task).
 As the model converged without issues in simulation 1, we tried reducing the number of samples (2,000 burn-in with an additional 2,000 samples) to save time, without applying thinning.
 The model converged normally (Figure S4). 
 Correlations between simulated and recovered parameter estimates was high, ranging between *r* = `r staged_sim_results_supp$ddm_sim2_cor$v` for the drift rate and `r staged_sim_results_supp$ddm_sim2_cor$t` for the non-decision time (see Figure S5).
@@ -221,7 +232,7 @@ staged_sim_results_supp$ddm_sim2_traces_plot
 
 <br>
 
-```{r figureS5, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS3", fig.cap.style = "Image Caption", fig.cap='**Figure S5.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+```{r figureS5, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS5", fig.cap.style = "Image Caption", fig.cap='**Figure S5.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
 staged_sim_results_supp$ddm_sim2_recov
 ```
 
@@ -237,6 +248,19 @@ we ran a third simulation to investigate if---and to what extent---the parameter
 We simulated task data for 10,000 participants.
 All other simulation settings were identical to simulation 2.
 
+The model converged normally (Figure S6). 
+Correlations between simulated and recovered parameter estimates were high and very similar to those found in simulation 2, ranging between *r* = `r staged_sim_results_supp$ddm_sim3_cor$v` for the drift rate and `r staged_sim_results_supp$ddm_sim3_cor$t` for the non-decision time (see Figure S5).
+
+```{r figureS6, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS6", fig.cap.style = "Image Caption", fig.cap="**Figure S6.** Convergence of the model in simulation 3. Plots should resemble a 'fat, hairy caterpillar'."}
+staged_sim_results_supp$ddm_sim3_traces_plot
+```
+<br>
+
+```{r figureS5, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS5", fig.cap.style = "Image Caption", fig.cap='**Figure S5.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+staged_sim_results_supp$ddm_sim3_recov
+```
+
+Overall, we conclude that applying hierarchical Bayesian DDM to the ABCD data is feasible.
 
 # DDM Model Fit Assessments
 
