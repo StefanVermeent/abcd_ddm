@@ -45,6 +45,9 @@ vignettes/*.pdf
 /data/*.txt
 /data/*.RData
 
-/analysis_objects/test_set.csv
-/analysis_objects/training_set.csv
-/analysis_objects/tasks_clean.RData
+/data/test_set.csv
+/data/training_set.csv
+/data/lmt_clean.csv
+/data/flanker_clean.csv
+/data/dccs_clean.csv
+/data/pcps_clean.csv
