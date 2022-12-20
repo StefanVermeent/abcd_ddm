@@ -52,6 +52,9 @@ Using this same approach, we also logged other major milestones, such as
 submitting preregistrations and finalizing analyses. For an overview of
 all milestones, see the [Data Access History](data_access_history.md).
 
+![**Figure 1.** Graphical overview of the data access workflow using R
+and GitHub.](supplement/images/fig1.png)
+
 ## Directory Structure
 
 The names of each folder are intended to be self-explanatory. There are
@@ -62,22 +65,33 @@ project:
     prior to Stage 1 submission.
 2.  `registered_report/`: The Registered Report written in R markdown
     for submission to a journal.
-3.  `scripts/`: R-scripts that read, analyze, and produce all analysis
-    objects.
-4.  `supplement/`: a supplemental text (to be submitted with the
+3.  `supplement/`: a supplemental text (to be submitted with the
     manuscript) documenting all secondary analyses in detail.
+4.  `scripts/`: R-scripts that read, analyze, and produce all analysis
+    objects.
 5.  `data/`: Folder in which real ABCD data can be placed to make the
     analyses fully reproducible. Note that we cannot openly share the
     raw data on the open repository. Contains synthetic data to
     facilitate computational reproducibility in the absence of ABCD
     access.
-6.  `codebooks/`: lists of variable names, labels, and value labels
+6.  `analysis_objects/`: Folder containing all analysis objects.
+7.  `codebooks/`: lists of variable names, labels, and value labels
     (where applicable).
 
 Below is a simple visualization of the full directory structure.
 
     ## .
+    ## ├── analysis_objects
+    ## │   ├── ddm_sim1_results.RData
+    ## │   ├── ddm_sim2_results.RData
+    ## │   ├── ddm_sim3_results.RData
+    ## │   ├── generate_synthetic_data.R
+    ## │   ├── power.Rdata
+    ## │   ├── tasks_clean_synth.RData
+    ## │   ├── test_set_synth.csv
+    ## │   └── training_set_synth.csv
     ## ├── codebooks
+    ## ├── data
     ## ├── data_access_history.md
     ## ├── data_access_history.Rmd
     ## ├── Dockerfile
@@ -114,23 +128,17 @@ Below is a simple visualization of the full directory structure.
     ## │   │   ├── general-functions.R
     ## │   │   └── read-functions.R
     ## │   └── dependencies.R
-    ## ├── supplement
-    ## │   ├── apa.csl
-    ## │   ├── reference-doc.docx
-    ## │   ├── references.bib
-    ## │   ├── scripts
-    ## │   │   └── staging_suppl.R
-    ## │   ├── supplemental_materials.docx
-    ## │   └── supplemental_materials.qmd
-    ## └── synthetic_data
-    ##     ├── ddm_sim1.RData
-    ##     ├── ddm_sim1_mod.RData
-    ##     ├── ddm_sim1_results.RData
-    ##     ├── ddm_sim2_mod.RData
-    ##     ├── ddm_sim2_results.RData
-    ##     ├── power.Rdata
-    ##     ├── sim_DDM_6trials.RData
-    ##     └── staged_sim_results_supp.RData
+    ## └── supplement
+    ##     ├── apa.csl
+    ##     ├── images
+    ##     │   └── fig1.png
+    ##     ├── reference-doc.docx
+    ##     ├── references.bib
+    ##     ├── scripts
+    ##     │   └── staging_suppl.R
+    ##     ├── staged_sim_results_supp.RData
+    ##     ├── supplemental_materials.docx
+    ##     └── supplemental_materials.qmd
 
 Each of the top-level folders are explained in more detail below:
 
@@ -153,6 +161,16 @@ necessary data/objects from the `analysis-objects/` directory and
 sources the other scripts to produce the objects needed for the
 manuscript.
 
+## Supplement
+
+This directory contains the supplement to the manuscript described
+above. The supplement was produced using the same approach as the
+manuscript: it was written in R Markdown, is 100% reproducible, and all
+outputs were staged prior to compiling into a `.docx`. The staged
+objects are stored in `supplement/staged-objects.Rdata`. The scripts
+that produce the staged objects are located in the `supplement/scripts/`
+directory and are named to be self-explanatory.
+
 ## Data Processing Scripts
 
 There are four types of R-scripts in this repository, each with a
@@ -168,10 +186,10 @@ provides an overview of the inputs and outputs of each script.
 
 ### Simulations
 
-| script                  | input | output                 |
-|-------------------------|-------|------------------------|
-| ddm_trial_simulations.R |       | ddm_sim2_results.RData |
-| power_analysis.R        |       | power.RData’           |
+| script                  | input | output                                                                       |
+|-------------------------|-------|------------------------------------------------------------------------------|
+| ddm_trial_simulations.R |       | ddm_sim1_results.RData<br> ddm_sim2_results.RData<br> ddm_sim3_results.RData |
+| power_analysis.R        |       | power.RData’                                                                 |
 
 ### Data Prep
 
@@ -183,46 +201,48 @@ provides an overview of the inputs and outputs of each script.
 
 ### Analyses
 
-| script           | input                                             | output                     |
-|------------------|---------------------------------------------------|----------------------------|
-| 1_ddm_fit.R      | tasks_clean.RData’                                | mcmc_dccs_mod1.RData’      |
-| 2_sem_training.R | ddm_data.csv<br> iv_data.csv<br> training_set.csv | sem_training_results.RData |
-| 3_sem_test.R     |                                                   | NA                         |
-
-## Codebooks
-
-These are lists of variable names, labels, and value labels (where
-applicable) (see [data](data) below).
+| script           | input                                                | output                                                                                                                                                              |
+|------------------|------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1_ddm_fit.R      | tasks_clean.RData’                                   | ddm_lmt_mod1.RData’<br> ddm_lmt_mod2.RData’<br> ddm_flanker_mod1.RData’<br> ddm_pcps_mod1.RData’<br> ddm_dccs_mod1.RData’                                           |
+| 2_sem_training.R | ddm_data.csv’<br> iv_data.csv’<br> training_set.csv’ | model_sub_vmodel_sub_v\_fitmodel_sub_amodel_sub_a\_fitmodel_sub_t0model_sub_t0_fitmodel_combnmodel_combn_fitmodel_fullmodel_full_fitfile=sem_training_results.RData |
+| 3_sem_test.R     |                                                      | NA                                                                                                                                                                  |
 
 ## Data
 
 This folder contains all the data that serves as input for the analysis
-scripts. ABCD data cannot be shared on open repositories. Therefore,
-interested readers can only fully reproduce our analyses with personal
-access to the ABCD data repository. To facilitate computational
+scripts. ABCD data cannot be shared on open repositories.
+
+**Full reproduction**. In order to fully reproduce the analysis
+described in the manuscript, the interested reader needs to have their
+own personal access to the ABCD data repository. After obtaining access,
+the required data files can be placed in the `data` folder (see [how to
+reproduce this repository](#reproduce) for more information).
+
+**Computational reproduction**. To facilitate computational
 reproducibility, we provide synthetic data files. These files contain
 simulated data with the same variables as the original data and with the
 same basic characteristics. Thus, these files can be used as input to
-the analyses scripts. Note that, because the values are not identical to
-the real data, the output will deviate from the statistics described in
-the manuscript.
+the analyses scripts. The synthetic versions of files can be recognized
+by the “\_synth” suffix. Note that, because the values are not identical
+to the real data, the output will deviate from the statistics described
+in the manuscript. The synthetic data files resemble the data after
+preprocessing (as done in `/scripts/1_data_prep`). Therefore, when using
+the synthetic data you should skip the preprocessing steps and continue
+to the analysis scripts (`/scripts/2_analyses`).
 
-The synthetic data files resemble the data after preprocessing (as done
-in `/scripts/1_data_prep`). Therefore, when using the synthetic data you
-should skip the preprocessing steps and continue to the analysis scripts
-(`/scripts/2_analyses`). If you do have access to the ABCD data, make
-sure that you place tje correct data files/folders in the `data` folder
-(see [how to reproduce this repository](#reproduce))
+## Analysis objects
 
-## Supplement
+This folder contains all analysis objects, i.e., the outputs of the
+various data processing scripts. Similar to the data, analysis objects
+containing individual-level data cannot be shared openly on GitHub.
+These analysis objects can be created either by using the synthetic data
+files or by requesting access to the ABCD data (see [how to reproduce
+this repository](#reproduce)).
 
-This directory contains the supplement to the manuscript described
-above. The supplement was produced using the same approach as the
-manuscript: it was written in R Markdown, is 100% reproducible, and all
-outputs were staged prior to compiling into a `.docx`. The staged
-objects are stored in `supplement/staged-objects.Rdata`. The scripts
-that produce the staged objects are located in the `supplement/scripts/`
-directory and are named to be self-explanatory.
+## Codebooks
+
+These are lists of variable names, labels, and value labels (where
+applicable) (see [data](#data) below).
 
 ## How to reproduce this repository
 
@@ -232,8 +252,7 @@ The first way is by downloading all files locally. You can do this by
 [cloning the
 repository](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/adding-and-cloning-repositories/cloning-and-forking-repositories-from-github-desktop)
 or by downloading the repository as a `.zip` file. After
-cloning/downloading, double click on `abcd_ddm.Rproj` to open up
-RStudio.
+cloning/downloading, double click on `abcd.Rproj` to open up RStudio.
 
 The second way is by using [Docker](https://docs.docker.com/). We supply
 a Docker image that instantiates an Rstudio cloud environment with all
@@ -244,9 +263,13 @@ project dependencies (R packages, software, operating systems)
 pre-loaded in their (historic) versions as they were used when the
 project was created. Thus, Docker ensures that scripts will still
 function as intended even into the future. **Note: It is not necessary
-to use Docker to reproduce our results**, but some of our scripts might
-stop to function properly over time as some dependencies get updated
-and/or deprecated.
+to use Docker to reproduce our results**. If you’re cloning the
+repository within a couple of years of publication and installing the
+proper dependencies (see step 1 below) you should be able to run all
+scripts without issues. However, some of our scripts might stop to
+function properly over time as other dependencies get updated and/or
+deprecated (e.g., future versions of RStudio) If that case, Docker is
+the solution.
 
 Below is the exact order these scripts should be ran (irrespective of
 whether you are working with or without Docker):
@@ -257,7 +280,8 @@ whether you are working with or without Docker):
     necessary R packages as they were on 2022-10-15 using the
     [`Groundhog`](https://groundhogr.com/) package. This ensures that
     scripts will continue functioning as intended even after packages
-    have been updated.
+    have been updated. `Groundhog` is a more lightweight, easy-to-use
+    alternative to package dependency managers such as `renv`.
 
 ### 2. Data Preparation
 
@@ -297,17 +321,17 @@ in the following order:
 ### 4. Manuscript
 
 1.  `registered_report/scripts/staging.R`: Reads and combines all the
-    results generated by the primary analyses and combines them in a
-    list for the final manuscript.
+    relevant analysis objects generated by the analysis scripts and
+    combines them in a list for the supplemental materials.
 2.  `registered_report/registered_report.qmd`: loads the staged results
-    list and knits together the written manuscript and all statistics,
-    tables, and figures computed in previous scripts.
+    list and knits together the supplemental materials and all
+    statistics, tables, and figures computed in previous scripts.
 
 ### 5. Supplement
 
-1.  `supplement/staging.R`: Reads and combines all the results generated
-    by the primary analyses and combines them in a list for the
-    supplemental materials.
+1.  `supplement/scripts/staging_suppl.R`: Reads and combines all the
+    relevant analysis objects generated by the analysis scripts and
+    combines them in a list for the supplemental materials.
 2.  `supplement/supplemental_materials.qmd`: loads the staged results
     list and knits together the written supplement and all tables and
     figures computed by the staging script above.
