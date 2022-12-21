@@ -11,7 +11,7 @@ Science*.
 
 Prior to Stage 1 submission of the Registered Report, we accessed the
 cognitive task data for a couple of
-[preregistered](https://github.com/stefanvermeent/abcd_ddm/preregistrations/2022-09-20_preregistration_DDM.md)
+[preregistered](https://anonymous.4open.science/r/anon-255D//preregistrations/2022-09-20_preregistration_DDM.md)
 data checks. By only accessing the cognitive task data, these steps did
 not bias or substantive analyses involving measures of adversity. To
 transparently show when we accessed which data, we created an open
@@ -102,10 +102,14 @@ Below is a simple visualization of the full directory structure.
     ## │   │   ├── fig1.png
     ## │   │   ├── fig2.png
     ## │   │   └── fig3.png
+    ## │   ├── journals
+    ## │   │   └── DevSci
     ## │   ├── reference-doc.docx
     ## │   ├── references.bib
     ## │   ├── registered_report.docx
     ## │   ├── registered_report.qmd
+    ## │   ├── registered_report_blinded.docx
+    ## │   ├── registered_report_blinded.qmd
     ## │   ├── scripts
     ## │   │   └── staging.R
     ## │   └── staged_results.RData
@@ -193,17 +197,17 @@ provides an overview of the inputs and outputs of each script.
 
 | script            | input           | output                                                                                         |
 |-------------------|-----------------|------------------------------------------------------------------------------------------------|
-| 1_preprocessing.R |                 | tasks_raw.RData’                                                                               |
+| 1_preprocessing.R |                 | tasks_raw.RData’<br> descriptives.RData’                                                       |
 | 2_clean_data.R    | tasks_raw.RData | lmt_clean.csv<br> flanker_clean.csv<br> pcps_clean.csv<br> dccs_clean.csv<br> exclusions.RData |
 | 3_data_subsets.R  |                 | training_set.csv<br> test_set.csv                                                              |
 
 ### Analyses
 
-| script           | input                                                | output                                                                                                                                                              |
-|------------------|------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1_ddm_fit.R      |                                                      | ddm_lmt_mod1.RData’<br> ddm_lmt_mod2.RData’<br> ddm_flanker_mod1.RData’<br> ddm_pcps_mod1.RData’<br> ddm_dccs_mod1.RData’                                           |
-| 2_sem_training.R | ddm_data.csv’<br> iv_data.csv’<br> training_set.csv’ | model_sub_vmodel_sub_v\_fitmodel_sub_amodel_sub_a\_fitmodel_sub_t0model_sub_t0_fitmodel_combnmodel_combn_fitmodel_fullmodel_full_fitfile=sem_training_results.RData |
-| 3_sem_test.R     |                                                      | NA                                                                                                                                                                  |
+| script           | input | output                                                                                                                                                              |
+|------------------|-------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1_ddm_fit.R      |       | ddm_lmt_mod1.RData’<br> ddm_lmt_mod2.RData’<br> ddm_flanker_mod1.RData’<br> ddm_pcps_mod1.RData’<br> ddm_dccs_mod1.RData’                                           |
+| 2_sem_training.R |       | model_sub_vmodel_sub_v\_fitmodel_sub_amodel_sub_a\_fitmodel_sub_t0model_sub_t0_fitmodel_combnmodel_combn_fitmodel_fullmodel_full_fitfile=sem_training_results.RData |
+| 3_sem_test.R     |       | NA                                                                                                                                                                  |
 
 ## Data
 
@@ -345,7 +349,7 @@ you will have to follow the following steps:
 2.  If on Windows, open the PowerShell. If on Mac, open the terminal
     through ‘Applications \> Utilities \> Terminal’.
 3.  On the command line, type:
-    `docker run --rm -d -e PASSWORD=my_password -p 8787:8787 stefanvermeent/abcd_ddm`
+    `docker run --rm -d -e PASSWORD=my_password -p 8787:8787 <anonymized_repository>`
 4.  Open a browser window and enter: `localhost:8787` as the URL.
 5.  You will be redirected to an Rstudio cloud login page. As the
     username, type *rstudio*. As the password, type *my_password*,

@@ -17,7 +17,7 @@ This repository contains data, code, and output for a manuscript entitled "Cogni
 
 ## Open Science Workflow {#openscience}
 
-Prior to Stage 1 submission of the Registered Report, we accessed the cognitive task data for a couple of [preregistered](https://github.com/stefanvermeent/abcd_ddm/preregistrations/2022-09-20_preregistration_DDM.md) data checks.
+Prior to Stage 1 submission of the Registered Report, we accessed the cognitive task data for a couple of [preregistered](https://anonymous.4open.science/r/anon-255D//preregistrations/2022-09-20_preregistration_DDM.md) data checks.
 By only accessing the cognitive task data, these steps did not bias or substantive analyses involving measures of adversity.
 To transparently show when we accessed which data, we created an open science workflow that would automate this process. The main aim of this workflow was to create a transparent log of every major milestone of the project, such as accessing new data, submitting preregistrations, and finalizing analyses. 
 
@@ -278,7 +278,7 @@ If you want to create a Docker container in which to run the scripts, you will h
 
 1.  Download and install docker at <https://docs.docker.com/get-docker/>.
 2.  If on Windows, open the PowerShell. If on Mac, open the terminal through 'Applications \> Utilities \> Terminal'.
-3.  On the command line, type: `docker run --rm -d -e PASSWORD=my_password -p 8787:8787 stefanvermeent/abcd_ddm`
+3.  On the command line, type: `docker run --rm -d -e PASSWORD=my_password -p 8787:8787 <anonymized_repository>`
 4.  Open a browser window and enter: `localhost:8787` as the URL.
 5.  You will be redirected to an Rstudio cloud login page. As the username, type *rstudio*. As the password, type *my_password*, unless you changed it under step 3.
 6.  You should now see an RStudio environment with the required dependencies pre-installed and loaded.
