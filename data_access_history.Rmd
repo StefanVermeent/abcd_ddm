@@ -8,12 +8,7 @@ editor_options:
 
 ```{r setup, include=F, echo=F}
 library(glue)
-library(dplyr)
-library(gert)
-library(tidyr)
-library(stringr)
-library(purrr)
-
+library(tidyverse)
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
 ```
 
