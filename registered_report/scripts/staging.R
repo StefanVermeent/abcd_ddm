@@ -1,83 +1,12 @@
 data_folder <- 'closed_data'
+
 load('data/tasks_raw.RData')
-load('analysis_objects/tasks_clean.RData')
 
-descriptives <- list()
+lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv"))
+flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv"))
+pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv"))
+dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv"))
 
-# Sample Size Information -------------------------------------------------
-
-# Sample size information for manuscript
-descriptives$precleaning_n <- 
-  list(
-    lmt     = lmt_raw |> pull(subj_idx) |> unique() |> length(),
-    flanker = flanker_raw |> pull(subj_idx) |> unique() |> length(),
-    dccs    = dccs_raw |> pull(subj_idx) |> unique() |> length(),
-    pcps    = pcps_raw |> pull(subj_idx) |> unique() |> length(),
-    # picvoc  = picvoc_raw |> pull(subj_idx) |> unique() |> length(),
-    
-    # N participants with summary score cognitive data
-    full_n_nihtb = nih_ref_ids |> length(),
-    
-    # N participants with trial-level cognitive data
-    full_n_trial = 
-      unique(
-        c(
-          lmt_raw |> pull(subj_idx) |> unique(),
-          flanker_raw |> pull(subj_idx) |> unique(),
-          dccs_raw |> pull(subj_idx) |> unique(),
-          pcps_raw |> pull(subj_idx) |> unique()
-          # picvoc_raw |> pull(subj_idx) |> unique()
-        )
-      )  |> length()
-  )
-
-descriptives$precleaning_n <- descriptives$precleaning_n |> 
-  map(function(x) prettyNum(x, big.mark = ","))
-
-
-
-descriptives$postcleaning_n <- 
-  list(
-    lmt     = lmt_clean |> pull(subj_idx) |> unique() |> length(),
-    flanker = flanker_clean |> pull(subj_idx) |> unique() |> length(),
-    dccs    = dccs_clean |> pull(subj_idx) |> unique() |> length(),
-    pcps    = pcps_clean |> pull(subj_idx) |> unique() |> length(),
-    
-    # N participants with trial-level cognitive data
-    full_n_trial = 
-      unique(
-        c(
-          lmt_clean |> pull(subj_idx) |> unique(),
-          flanker_clean |> pull(subj_idx) |> unique(),
-          dccs_clean |> pull(subj_idx) |> unique(),
-          pcps_clean |> pull(subj_idx) |> unique()
-        )
-      )  |> length(),
-    
-    # N participants with trial-level cognitive data on all tasks
-    shared_n = 
-      Reduce(intersect, 
-             list(
-               lmt_clean |> pull(subj_idx) |> unique(),
-               flanker_clean |> pull(subj_idx) |> unique(),
-               dccs_clean |> pull(subj_idx) |> unique(),
-               pcps_clean|> pull(subj_idx) |> unique()
-               
-             )) |> length()
-  )
-
-descriptives$postcleaning_n <- descriptives$postcleaning_n |> 
-  map(function(x) prettyNum(x, big.mark = ","))
-
-# Subjects that have data available on all tasks
-shared_ids <- 
-  Reduce(intersect, 
-         list(
-           lmt_clean |> pull(subj_idx) |> unique(),
-           flanker_clean |> pull(subj_idx) |> unique(),
-           dccs_clean |> pull(subj_idx) |> unique(),
-           pcps_clean |> pull(subj_idx) |> unique()
-         ))
 
 
 # Task-descriptives -------------------------------------------------------

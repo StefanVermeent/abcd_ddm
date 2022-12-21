@@ -117,7 +117,7 @@ This study was approved by the Ethics Review Board of the Faculty of Social & Be
 
 1. We use Drift Diffusion Modeling (DDM) to investigate how two forms of early-life adversity---material deprivation and household threat---lower or improve cognitive abilities.
 2. The DDM can inform us if and where cognitive differences occur along distinct stages of cognitive processing.
-3. We will also use structural equation modeling and out-of-sample cross-validation to tease apart effects of adversity that are task-specific versus task-general.
+3. We will also use structural equation modeling and out-of-sample validation to tease apart effects of adversity that are task-specific versus task-general.
 4. We will apply our approach to a large, representative sample of around 10,000 9- to 10 year-olds from the ABCD study.
 
 \pagebreak
@@ -126,7 +126,7 @@ This study was approved by the Ethics Review Board of the Faculty of Social & Be
 
 Childhood adversity can lead to either cognitive deficits or enhancements, depending on many factors. 
 Though progress has been made, two challenges prevent us from integrating and better understanding these findings. 
-First, studies commonly use and interpret raw performance differences. 
+First, studies commonly use and interpret raw performance differences, such as mean response times or overall accuracy. 
 However, raw scores conflate different stages of cognitive processing. 
 Second, research tends to either isolate or aggregate abilities, obscuring the degree to which individual differences reflect task-specific or task-general processes. 
 We address these challenges using Drift Diffusion Modeling (DDM) and structural equation modeling.
@@ -141,8 +141,10 @@ It will add much-needed nuance to adversity-related performance differences, whi
 
 #### Cognitive deficits and enhancements in youth from adverse conditions: An integrative assessment using Drift Diffusion Modeling in the ABCD study
 
+<br>
+
 The effects of early-life adversity---such as growing up in poverty or experiencing high levels of violence---on cognition are complex.
-Different types of adversity pose different challenges and constraints, and therefore shape developing cognitive abilities in diverse ways
+Different types of adversity pose different challenges and constraints, and therefore shape cognitive abilities in diverse ways across development
 [@blair_2012]. 
 Studies linking adversity and cognitive abilities tend to adopt either a deficit-oriented framework or an adaptation-based framework---both of which offer a valuable lens. 
 However, these frameworks may produce complementary or opposing predictions. 
@@ -164,15 +166,15 @@ The second problem is that studies tend to ignore how abilities are related by l
 However, different cognitive tasks are not fully independent; performance on any cognitive task likely reflects both task-specific processes (e.g., shifting ability on an attention shifting task, working memory updating on an n-back task) and processes that are shared across tasks [e.g., general cognitive efficiency\; @lerche_2020].
 
 In this paper, we simultaneously address both methodological challenges.
-First, we use computational modeling that formalizes the stages of processing underlying RTs and accuracy.
-Second, we use analytic methods that can distinguish unique and specific abilities (e.g., attention-shifting or inhibition) from general abilities common to most tasks (e.g., general cognitive efficiency).
-We investigate the unique effects of key dimensions of adversity on these specific and general cognitive abilities to generate novel empirical knowledge and theoretical insights about the link between early adversity and cognition.
+First, we will use computational modeling to formalize the stages of processing underlying RTs and accuracy.
+Second, we will use analytic methods that can distinguish unique and specific abilities (e.g., attention-shifting or inhibition) from general abilities common to most tasks (e.g., general cognitive efficiency).
+We investigate the unique effects of key dimensions of adversity---threat and deprivation---on these specific and general cognitive abilities to generate novel empirical knowledge and theoretical insights about the link between early adversity and cognition.
 
 ## Do deficit and enhancement patterns mean what we think they mean? {#intro_sub1}
 
 Both the deficit and adaptation literature use speeded tasks, in which participants are usually instructed to respond as fast and accurate as possible.
 For example, performing well on inhibition tasks [e.g., Flanker task, Go/No-Go Task\; @farah_2006; @fields_2021; @mezzacappa_2004; @noble_2005], attention shifting tasks [e.g., Dimensional Change Card Sort\; @farah_2006; @fields_2021; @young_2022; @mittal_2015; @noble_2005], and stimulus detection tasks [@farah_2006; @noble_2005; @pollak_2008] requires fast and accurate responses.
-However, in practice, performance is often quantified using aggregated indices of speed alone (e.g., RT), accuracy alone (e.g., proportion correct), or both independently (rather than in an integrated manner).
+In practice, performance is often quantified using aggregated indices of speed alone (e.g., RT), accuracy alone (e.g., proportion correct), or both independently (rather than in an integrated manner).
 However, speed and accuracy are known to trade off against each other.
 Such tradeoffs hold information about each stage of cognitive processing involved in executing a task, but are difficult to detect by looking at RTs and accuracy separately.
 This is because changes in accuracy are often subtle, even with substantial changes in RTs [@forstmann_2011; @heitz_2014; @pew_1969].
@@ -261,10 +263,9 @@ It is important to separate specific abilities and general processes, both for d
 ## The current study {#intro_current}
 
 In this study, we will use the Adolescent Brain Cognitive Development (ABCD) study data ([http://abcdstudy.org](http://abcdstudy.org)).
-The ABCD study is ideal because it provides a large, representative, and diverse sample of 9- to 10 year-olds---a particularly salient developmental period characterized by rapid growth in cognitive abilities [@blakemore_2006]
+The ABCD study is ideal because it provides a large, representative, and diverse sample of 9- to 10 year-olds---a particularly salient developmental period characterized by rapid growth in cognitive abilities [@blakemore_2006].
 We will map two key dimensions of adversity---household threat and material deprivation---to general and task-specific DDM parameters covering attention shifting, inhibition, and mental rotation.
-Threat and deprivation have been widely studied in their relation to cognitive outcomes from both deficit and adaptation perspectives [e.g., @bignardi_2022; @fields_2021; @schafer_2022; @sheridan_2022; @young_2022] and are at the center of contemporary conceptualizations of adversity [e.g., @mclaughlin_2021; @sheridan_2014].
-However, it remains an open question as to whether and how each adversity dimension shapes individual differences in youth's cognitive processing.
+Threat and deprivation have been widely studied in their relation to cognitive outcomes from both deficit and adaptation perspectives [e.g., @fields_2021; @schafer_2022; @sheridan_2022; @young_2022] and are at the center of contemporary conceptualizations of adversity [e.g., @mclaughlin_2021; @sheridan_2014].
 Executive functions are still actively developing at this age, which lasts until early adulthood [@luna_2009; @tervo_clemmens_2022].
 However, effects of early-life adversity on executive functions are already visible at this age.
 For example, children with more adverse experiences typically show worse inhibitory abilities around this age [e.g., @fields_2021; @tibu_2016].
@@ -273,7 +274,7 @@ Thus, our choice of this dataset was guided in part by previous work documenting
 However, it was also guided by the fact that these tasks are widely used in developmental science and adhere to DDM assumptions.
 
 In line with adaptation-based frameworks [@ellis_2022; @frankenhuis_2013; @frankenhuis_2016] and recent findings by @bignardi_2022, we predict that any adversity-related enhancements will manifest at the task-specific level and not the task-general level. 
-In contrast, we expect deficit patterns to emerge across at both levels. 
+In contrast, we expect deficit patterns to emerge at both levels. 
 Because very little is known about how adversity relates to different stages of cognitive processing, we refrain from making specific predictions for each DDM parameter. 
 However, we will interpret associations between the types of adversity and DDM parameters using the following guidelines: 1) For drift rates, positive associations with adversity will be interpreted as improved speed of information processing and negative associations as lowered speed of information processing; 2) for non-decision time, positive associations with adversity will be interpreted as slower and/or inefficient task preparation and execution, and negative associations will be interpreted as faster or more efficient task-preparation and execution; 3) for boundary separation, positive associations with adversity will be interpreted as more cautious responding, and negative associations as less cautious responding. 
 Potential associations between adversity and boundary separation reflect differences in strategies, not cognitive abilities. 
@@ -321,7 +322,7 @@ Next, we removed trials with: (1) RTs \< 300 ms (ranging from `r min(as.numeric(
 This truncated the right-hand tail of the RT distribution, which can bias DDM estimation. 
 Therefore, we decided to impute these values during DDM estimation instead of removing them (see the Supplemental materials for more information).
 
-Next, we excluded participants who 1) had suffered possible mild traumatic brain injury or worse (*n* = `r smallNum(exclusions$lmt_participant$ex_tbi)`); 2) showed a response bias of \> 80% on a task (ranging between *n* = `r smallNum(min(as.numeric(c(exclusions$lmt_participant$ex_response_biases,exclusions$flanker_participant$ex_response_biases,exclusions$pcps_participant$ex_response_biases,exclusions$dccs_participant$ex_response_biases))))` and `r smallNum(max(as.numeric(c(exclusions$lmt_participant$ex_response_biases,exclusions$flanker_participant$ex_response_biases,exclusions$pcps_participant$ex_response_biases,exclusions$dccs_participant$ex_response_biases))))`; deviating from the preregistration); 3) had a low number of trials left after trial-level exclusions, defined as \< 20 trials for Mental Rotation and Attention Shifting (*n* = `r smallNum(exclusions$lmt_participant$ex_below_20_trials)` and `r smallNum(exclusions$dccs_participant$ex_below_20_trials)`, respectively) and \< 15 trials for Flanker and Processing Speed (*n* = `r exclusions$flanker_participant$ex_below_15_trials` and `r smallNum(exclusions$pcps_participant$ex_below_15_trials)`, respectively, deviating from the preregistration).
+Next, we excluded participants who 1) had suffered possible mild traumatic brain injury or worse (*n* = `r smallNum(exclusions$lmt_participant$ex_tbi)`); 2) showed a response bias of \> 80% on a task (ranging between `r smallNum(min(as.numeric(c(exclusions$lmt_participant$ex_response_biases,exclusions$flanker_participant$ex_response_biases,exclusions$pcps_participant$ex_response_biases,exclusions$dccs_participant$ex_response_biases))))` and `r smallNum(max(as.numeric(c(exclusions$lmt_participant$ex_response_biases,exclusions$flanker_participant$ex_response_biases,exclusions$pcps_participant$ex_response_biases,exclusions$dccs_participant$ex_response_biases))))`; deviating from the preregistration); 3) had a low number of trials left after trial-level exclusions, defined as \< 20 trials for Mental Rotation and Attention Shifting (*n* = `r smallNum(exclusions$lmt_participant$ex_below_20_trials)` and `r smallNum(exclusions$dccs_participant$ex_below_20_trials)`, respectively) and \< 15 trials for Flanker and Processing Speed (*n* = `r exclusions$flanker_participant$ex_below_15_trials` and `r smallNum(exclusions$pcps_participant$ex_below_15_trials)`, respectively, deviating from the preregistration).
 Finally, we excluded task data of several participants based on data inspection (not preregistered): `r smallNum(exclusions$lmt_participant$ex_0_accuracy)` participant with 0% accuracy on the Mental Rotation Task; `r smallNum(exclusions$pcps_participant$ex_decreasing_effort)` participants who showed a sharp decline in accuracy over time on the Processing Speed Task; `r smallNum(exclusions$dccs_participant$ex_switching_bias)` participants on the Attention Shifting Task who (almost) only made switches across all trials, even on repeat trials.
 We also decided to include participants with missing data on one or more tasks because our main analyses will use FIML for missing data.
 
@@ -438,7 +439,7 @@ Finally, the sociodemographic covariates that are included in the MNLFA scores (
 Goodness-of-fit will be assessed using the root mean square error of approximation (RMSEA) and the comparative fit index (CFI).
 Following @hu_1999, CFI values \> .90 and RMSEA values \< .08 will be interpreted as acceptable model fit and CFI values \> .95 and RMSEA values \≤ .06 as good model fit.
 
-```{r figure3, fig.width=6, dpi=600, fig.id = "figure3", fig.cap.style = "Image Caption", fig.cap='**Figure 3.** Visualization of the full structural equation model (SEM). Dotted black lines represent covariances. Dashed black lines represent factor loadings. Solid grey lines represent regression paths. The factor loadings to each of the Processing Speed Task indicators are fixed to 1. The unique variances of each manifest indicator are captured in additional latent factors (U), one per indicator. To this end, the factor loadings are fixed to 0 and the residual variances of the manifest indicators are fixed to 0. For model identification reasons, we do not estimate regression paths to the unique variances of the Processing Speed Task. The sociodemographic covariates that are included in the MNLFA scores (see Measures section) are controlled for in the SEM. These paths are not shown in the Figure to improve readability. PS = Processing Speed Task; AS = Attention Shifting Task; MR = Mental Rotation Task; FL = Flanker Task; *v* = Drift rate; *a* = Boundary separation; *t0* = Non-decision time; U = unique variance.'}
+```{r figure3, fig.width=6, dpi=600, fig.id = "figure3", fig.cap.style = "Image Caption", fig.cap='**Figure 3.** Visualization of the full structural equation model (SEM). Dotted black lines represent covariances. Dashed black lines represent factor loadings. Solid grey lines represent regression paths. The factor loadings to each of the Processing Speed Task indicators are fixed to 1. The unique variances of each manifest indicator are captured in additional latent factors (U), one per indicator. To this end, the factor loadings are fixed to 0 and the residual variances of the manifest indicators are fixed to 0. For model identification reasons, we do not estimate regression paths to the unique variances of the Processing Speed Task. The sociodemographic covariates that are included in the MNLFA scores (see Measures section) are controlled for in the SEM. These paths are not shown in the Figure to improve readability. PS = Processing Speed Task; AS Rep = Attention Shifting Task repeat trials; AS Sw = Attention Shifting Task switch trials; MR = Mental Rotation Task; FL Con = Flanker Task congruent trials; FL Inc = Flanker Task incongruent trials; *v* = Drift rate; *a* = Boundary separation; *t0* = Non-decision time; U = unique variance.'}
 knitr::include_graphics("images/fig3.png")
 ```
 
