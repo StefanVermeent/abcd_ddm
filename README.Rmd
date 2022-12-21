@@ -43,7 +43,7 @@ Thus, any accessing of raw data was automatically tracked via GitHub.
 Using this same approach, we also logged other major milestones, such as submitting preregistrations and finalizing analyses.
 For an overview of all milestones, see the [Data Access History](data_access_history.md).
 
-```{r figure1, fig.width=6, fig.height = 2.5, dpi=600, fig.id = "figure1", fig.cap.style = "Image Caption", fig.cap='**Figure 1.** Graphical overview of the data access workflow using R and GitHub.'}
+```{r figure1, fig.width=3, dpi=600, fig.id = "figure1", fig.cap.style = "Image Caption", fig.cap='**Figure 1.** Graphical overview of the data access workflow using R and GitHub.'}
 knitr::include_graphics("supplement/images/fig1.png")
 ```
 

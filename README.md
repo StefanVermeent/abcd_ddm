@@ -140,7 +140,8 @@ Below is a simple visualization of the full directory structure.
     ##     │   └── staging_suppl.R
     ##     ├── staged_sim_results_supp.RData
     ##     ├── supplemental_materials.docx
-    ##     └── supplemental_materials.qmd
+    ##     ├── supplemental_materials.qmd
+    ##     └── ~$pplemental_materials.docx
 
 Each of the top-level folders are explained in more detail below:
 
