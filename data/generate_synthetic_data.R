@@ -195,5 +195,11 @@ test_set_synth <- test_set |>
 # Save Synthetic Data Files -----------------------------------------------
 
 save(lmt_clean_synth, flanker_clean_synth, dccs_clean_synth, pcps_clean_synth, exclusions, file = "analysis_objects/tasks_clean_synth.RData")
-readr::write_csv(training_set_synth, 'analysis_objects/training_set_synth.csv')
-readr::write_csv(test_set_synth, 'analysis_objects/test_set_synth.csv')
+
+readr::write_csv(lmt_clean_synth, 'data/lmt_clean_synth.csv')
+readr::write_csv(flanker_clean_synth, 'data/flanker_clean_synth.csv')
+readr::write_csv(dccs_clean_synth, 'data/dccs_clean_synth.csv')
+readr::write_csv(pcps_clean_synth, 'data/pcps_clean_synth.csv')
+
+readr::write_csv(training_set_synth, 'data/training_set_synth.csv')
+readr::write_csv(test_set_synth, 'data/test_set_synth.csv')
