@@ -1,7 +1,10 @@
 
 
 # Load objects ------------------------------------------------------------
-load('analysis_objects/tasks_clean.RData')
+lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv"))
+flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv"))
+pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv"))
+dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv"))
 load('analysis_objects/power.RData')
 load('analysis_objects/ddm_sim1_results.RData')
 load('analysis_objects/ddm_sim2_results.RData')

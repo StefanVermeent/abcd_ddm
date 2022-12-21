@@ -109,18 +109,18 @@ knitr::include_graphics("images/fig1.png")
 # Power analysis
 
 We conducted a power analysis through simulation using the *simulateData* function of the *lavaan* package.
-On each iteration, we first specified a population model (i.e., the 'true' model) with prespecified factor loadings and regression coefficients, and a sample model.
+On each iteration, we first specified a population model (i.e., the 'true' model) with prespecified factor loadings and regression coefficients.
 Factor loadings in this model were randomly generated between 0.6 and 0.8 following a uniform distribution.
 Next, we simulated data sets based on the population model.
-Finally, we fitted the sample model to the simulated data and extracted the beta coefficients and corresponding *p*-values.
-We generated population models with beta coefficients of 0.08 and 0.1, and simulated data with sample sizes ranging from 1,500, to 8,500 with steps of 1,000. 
-Each combination of coefficients and sample sizes was repeated 500 times, for a total of 8,000 iterations.
+Finally, we fitted a sample model (i.e., without constrained parameters) to the simulated data and extracted the beta coefficients and corresponding *p*-values.
+We generated population models with beta coefficients of 0.06, 0.08 and 0.1, and simulated data with sample sizes ranging from 1,500 to 8,500 with steps of 1,000. 
+Each combination of coefficients and sample sizes was repeated 500 times, for a total of 12,000 iterations.
 
 The results are shown in Figure S1. The simulations yield power \> 90% at around *N* = 2,500 for $\beta$ = 0.1 and *N* = 6,500 for $\beta$ = 0.06.
 Thus, after taking out 1,500 participants for the training set, the test set will be highly powered.
 
 
-```{r figureS1, fig.width=6, fig.height = 2.5, dpi=600, fig.id = "figureS1", fig.cap.style = "Image Caption", fig.cap='**Figure S1.** Results of the power simulations. The dashed line indicates 90% power.'}
+```{r figureS2, fig.width=6, fig.height = 2.5, dpi=600, fig.id = "figureS2", fig.cap.style = "Image Caption", fig.cap='**Figure S2.** Results of the power simulations. The dashed line indicates 90% power.'}
 staged_sim_results_supp$power_plot
 ```
 <br>
@@ -137,7 +137,8 @@ flextable(staged_sim_results_supp$descriptives, cwidth = c(2, 1.2, 1.2, 1.2, 1.2
 # Overview of DDM Modeling Procedure
 
 The hierarchical DDM models will be fit using the *runjags* package [@denwood_2016] with JAGS code adapted from @johnson_2017.
-The JAGS code will be adjusted to fix the starting point to 0.5 and to estimate parameters separately for each condition of the Flanker and Attention Shifting Task.
+The JAGS code will be adjusted in a number of ways to meet our purposes.
+Across all models, the starting point will be fixed to 0.5, and the boundary separation will be will be constrained to be the same across conditions where relevant.
 Each model will be fit with three Markov Chain Monte Carlo (MCMC) chains.
 Each chain will contain 2,000 burn-in samples and 10,000 additional samples.
 Of these samples, every 10th sample will be retained.
@@ -148,9 +149,9 @@ Model convergence will be assessed in several ways.
 First, we will visually inspect the traces, which should not contain any drifts or large jumps.
 Second, we will calculate the Gelman-Rubin convergence statistic R\^ (@gelman_1992), of which all values should be below 1.1.
 Third, we will assess whether the model provides a good fit to the participants' data.
-To do this, we will simulate 50,000 trials of RT and accuracy data using the estimated DDM parameters of each participant.
-We will then fit the DDM to these simulated data using Kolgomorov-Smirnov estimation.
-We will then compute correlations between the observed and simulated scores for RTs in the 25th, 50th and 75th percentile of the RT distribution as well as for accuracies.
+To do this, we will simulate RT and accuracy data using the estimated DDM parameters of each participant (using the same number of trials as the participant).
+We will then fit the DDM to these simulated data using the same model specification.
+We will compute correlations between the observed and simulated scores for RTs in the 25th, 50th and 75th percentile of the RT distribution as well as for accuracies.
 We will consider *r* \> .80 to indicate a good model fit.
 
 In theory, the hierarchical Bayesian framework allows simultaneously estimating DDM parameters, latent measurement models, and the regression paths between them in a single step [e.g., @schubert_2019; @vandekerckhove_2014].
@@ -179,35 +180,35 @@ The number of trials that is available for each of the cognitive tasks is substa
 This is especially true for the Flanker Task (8 incongruent trials, 12 congruent trials) and the Attention Shifting Task (7 switch trials, 23 repeat trials).
 While each participant completed a small number of trials, the hierarchical Bayesian framework can use information from the full sample to estimate and constrain individual estimates.
 Here, we report simulation studies that aimed to assess whether it would be possible to accurately recover parameter estimates.
-The analyses are modeled on the Flanker Task, which is the task with the lowest number of trials (*N* = 20). 
+The analyses are modeled on the Flanker Task, which is the task with the lowest overall number of trials (*N* = 20). 
 For simulations involving two conditions, we assume (as we do in the real data) that the drift rate and non-decision time differ (and are correlated) across conditions, and that the boundary separation is the same across conditions.
 This latter assumption reflects the fact that conditions are randomly shuffled on a trial-by-trial basis, which prohibits participants from adapting their strategy for different conditions.
 The starting point is fixed to the mid-point (0.5) for all simulations.
 
-## DDM simulation 1: Single condition with eight trials ---
+## DDM simulation 1: Single condition with eight trials 
 
 First, we simulated task data for 1,500 participants with eight trials per participant.
 We used the first 2,000 samples as burn-in, and then took an additional 10,000 samples.
 Every 10th sample was discarded to reduce the size of final model object. 
 We sampled across three chains, which were subsequently combined, for a total of 3,000 samples.
-The model converged normally (Figure S2). 
-Relative parameter recovery was decent for boundary separation (*r* = `staged_sim_results_supp$ddm_sim1_cor$a`) and non-decision time (*r* = `staged_sim_results_supp$ddm_sim1_cor$t`), but not for drift rate (*r* = `staged_sim_results_supp$ddm_sim1_cor$v`). 
-However, estimates of boundary separation and non-decision time showed bias.
+The model converged normally (Figure S3). 
+Relative parameter recovery was decent for boundary separation (*r* = `r staged_sim_results_supp$ddm_sim1_cor$a`) and non-decision time (*r* = `r staged_sim_results_supp$ddm_sim1_cor$t`), but not for drift rate (*r* = `r staged_sim_results_supp$ddm_sim1_cor$v`). 
+However, estimates of boundary separation and non-decision time showed substantial bias (See Figure S4).
 
-```{r figureS2, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS2", fig.cap.style = "Image Caption", fig.cap="**Figure S2.** Convergence of the model in simulation 1. Plots should resemble a 'fat, hairy caterpillar'."}
+```{r figureS3, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS3", fig.cap.style = "Image Caption", fig.cap="**Figure S3.** Convergence of the model in simulation 1. Plots should resemble a 'fat, hairy caterpillar'."}
 staged_sim_results_supp$ddm_sim1_traces_plot
 ```
 
 <br>
 
-```{r figureS3, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS3", fig.cap.style = "Image Caption", fig.cap='**Figure S3.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+```{r figureS4, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS4", fig.cap.style = "Image Caption", fig.cap='**Figure S4.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
 staged_sim_results_supp$ddm_sim1_recov
 ```
 
 <br> 
 
 As discussed above, the models reported in this manuscript will not be constricted to eight trials.
-Instead, they will be able the information of both conditions (e.g., congruent and incongruent for the Flanker Task), as parameters will tend to be correlated across conditions.
+Instead, they will be able to use the information of both conditions (e.g., congruent and incongruent for the Flanker Task), as parameters will tend to be correlated across conditions.
 Therefore, we ran a second simulation adding realistic condition effects.
 
 ## DDM simulation 2: Two conditions; Boundary Separation fixed across conditions ----
@@ -216,23 +217,21 @@ We again simulated task data for 1,500 participants.
 Mirroring the real Flanker task, we simulated two conditions, one with 8 trials (incongruent) and one with 12 trials (congruent).
 On average, drift rates were lower and non-decision times were longer for incongruent trials.
 Boundary separation was fixed within subjects to be equal across conditions.
-Non-decision times correlated .70 between conditions, and drift rates correlated .30 between conditions.
+Non-decision times correlated on average .70 between conditions, and drift rates correlated on average .30 between conditions.
 These correlations were based on previous studies that we did using the Flanker Task.
 For more information on the specific settings, see [https://github.com/stefanvermeent/abcd_ddm/scripts/0_simulations/ddm_trial_simulations.R](https://github.com/stefanvermeent/abcd_ddm/scripts/0_simulations/ddm_trial_simulations.R).
 
-As discussed above, boundary Separation will be fixed across conditions for the models reported in the manuscript.
-This means that the number of trials that can be used to estimate boundary separation will be larger for tasks with two conditions (20 trials for the Flanker Task and 32 trials for the Attention Shifting Task).
-As the model converged without issues in simulation 1, we tried reducing the number of samples (2,000 burn-in with an additional 2,000 samples) to save time, without applying thinning.
-The model converged normally (Figure S4). 
-Correlations between simulated and recovered parameter estimates was high, ranging between *r* = `r staged_sim_results_supp$ddm_sim2_cor$v` for the drift rate and `r staged_sim_results_supp$ddm_sim2_cor$t` for the non-decision time (see Figure S5).
+As the model converged without issues in simulation 1, we tried reducing the number of samples (2,000 burn-in with an additional 2,000 samples) to save time.
+The model converged normally (Figure S5). 
+Correlations between simulated and recovered parameter estimates was high, ranging between *r* = `r staged_sim_results_supp$ddm_sim2_cor$v` for the drift rate and `r staged_sim_results_supp$ddm_sim2_cor$t` for the non-decision time (see Figure S6).
 
-```{r figureS4, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS4", fig.cap.style = "Image Caption", fig.cap="**Figure S2.** Convergence of the model in simulation 2. Plots should resemble a 'fat, hairy caterpillar'."}
+```{r figureS5, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS5", fig.cap.style = "Image Caption", fig.cap="**Figure S5.** Convergence of the model in simulation 2. Plots should resemble a 'fat, hairy caterpillar'."}
 staged_sim_results_supp$ddm_sim2_traces_plot
 ```
 
 <br>
 
-```{r figureS5, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS5", fig.cap.style = "Image Caption", fig.cap='**Figure S5.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+```{r figureS6, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS6", fig.cap.style = "Image Caption", fig.cap='**Figure S6.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
 staged_sim_results_supp$ddm_sim2_recov
 ```
 
@@ -248,15 +247,16 @@ we ran a third simulation to investigate if---and to what extent---the parameter
 We simulated task data for 10,000 participants.
 All other simulation settings were identical to simulation 2.
 
-The model converged normally (Figure S6). 
-Correlations between simulated and recovered parameter estimates were high and very similar to those found in simulation 2, ranging between *r* = `r staged_sim_results_supp$ddm_sim3_cor$v` for the drift rate and `r staged_sim_results_supp$ddm_sim3_cor$t` for the non-decision time (see Figure S5).
+The model converged normally (Figure S7). 
+Correlations between simulated and recovered parameter estimates were high and very similar to those found in simulation 2, ranging between *r* = `r staged_sim_results_supp$ddm_sim3_cor$v` for the drift rate and `r staged_sim_results_supp$ddm_sim3_cor$t` for the non-decision time (see Figure S8).
+Thus, the benefit of adding more subjects is already saturated around 1,500 participants, with additional participants not improving parameter estimation.
 
-```{r figureS6, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS6", fig.cap.style = "Image Caption", fig.cap="**Figure S6.** Convergence of the model in simulation 3. Plots should resemble a 'fat, hairy caterpillar'."}
+```{r figureS7, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS7", fig.cap.style = "Image Caption", fig.cap="**Figure S7.** Convergence of the model in simulation 3. Plots should resemble a 'fat, hairy caterpillar'."}
 staged_sim_results_supp$ddm_sim3_traces_plot
 ```
 <br>
 
-```{r figureS5, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS5", fig.cap.style = "Image Caption", fig.cap='**Figure S5.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+```{r figureS8, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS8", fig.cap.style = "Image Caption", fig.cap='**Figure S8.** Parameter recovery in the case of two conditions. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
 staged_sim_results_supp$ddm_sim3_recov
 ```
 
