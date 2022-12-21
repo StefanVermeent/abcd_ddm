@@ -1,6 +1,7 @@
+install.packages('groundhog')
 library(groundhog)
 meta.groundhog("2022-10-15")
-groundhog::set.groundhog.folder(getwd())
+groundhog::set.groundhog.folder(file.path(getwd(), 'groundhog'))
 
 # Dependencies for this project
 pkgs <- 
@@ -32,8 +33,6 @@ date <- "2022-10-15"
 
 # Using the groundhog package, we install and load the project dependencies
 groundhog.library(pkg = pkgs, date = date)
-
-readline()
 
 # Do you want to use synthetic data or ABCD data to reproduce the manuscript?
 data <- 'synthetic'

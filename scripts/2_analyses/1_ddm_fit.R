@@ -1,7 +1,8 @@
-lmt_clean     <- readr::read_csv("analysis_objects/lmt_clean.csv")
-flanker_clean <- readr::read_csv("analysis_objects/flanker_clean.csv")
-pcps_clean    <- readr::read_csv("analysis_objects/pcps_clean.csv")
-dccs_clean    <- readr::read_csv("analysis_objects/dccs_clean.csv")
+lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv"))
+flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv"))
+pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv"))
+dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv"))
+
 
 # 1. Overview of Model Specifications ----------------------------------------
 

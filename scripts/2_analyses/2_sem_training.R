@@ -1,6 +1,6 @@
-load('data/ddm_data.csv')
-load('data/iv_data.csv')
-load('data/training_set.csv')
+ddm_data      <- readr::read_csv('data/ddm_data.csv')
+iv_data       <- readr::read_csv(paste0("data/iv_data", data_suffix, ".csv"))
+training_set  <- readr::read_csv(paste0("data/training_set", data_suffix, ".csv"))
 
 training_data <- training_data |> 
   left_join(ddm_data) |> 

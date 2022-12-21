@@ -1,7 +1,7 @@
-lmt_clean <- readr::read_csv("data/lmt_clean.csv")
-flanker_clean <- readr::read_csv("data/flanker_clean.csv")
-pcps_clean <- readr::read_csv("data/pcps_clean.csv")
-dccs_clean <- readr::read_csv("data/dccs_clean.csv")
+readr::read_csv("data/lmt_clean.csv")
+readr::read_csv("data/flanker_clean.csv")
+readr::read_csv("data/pcps_clean.csv")
+readr::read_csv("data/dccs_clean.csv")
 
 final_sample_ids <- 
   unique(
