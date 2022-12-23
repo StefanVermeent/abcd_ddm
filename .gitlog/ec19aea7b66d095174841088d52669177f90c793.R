@@ -1,17 +1,9 @@
----
-title: 'Data access event'
-output: github_document
----
-
-
 ### Date: 2022-10-07 12:52:55
 
 ### Description: Read NIH Toolbox performance summary scores
 
 
-### For more information on this commit, go to https://github.com/StefanVermeent/abcd_ddm/commit/ec19aea7b66d095174841088d52669177f90c793
-
-
+### For more information on this commit, see the README file, or go to <anonymized repository>
 
 ### Below is the full code that was used to access the data:
 

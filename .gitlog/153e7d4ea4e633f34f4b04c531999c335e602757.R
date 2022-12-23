@@ -1,17 +1,9 @@
----
-title: 'Data access event'
-output: github_document
----
-
-
 ### Date: 2022-12-08 09:34:04
 
 ### Description: Access family ids
 
 
-### For more information on this commit, go to https://github.com/StefanVermeent/abcd_ddm/commit/153e7d4ea4e633f34f4b04c531999c335e602757
-
-
+### For more information on this commit, see the README file, or go to <anonymized repository>
 
 ### Below is the full code that was used to access the data:
 

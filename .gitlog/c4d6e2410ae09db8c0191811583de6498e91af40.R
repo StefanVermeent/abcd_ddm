@@ -1,17 +1,9 @@
----
-title: 'Data access event'
-output: github_document
----
-
-
 ### Date: 2022-09-22 10:01:58
 
 ### Description: read single LMT file to develop parsing strategy.
 
 
-### For more information on this commit, go to https://github.com/StefanVermeent/abcd_ddm/commit/c4d6e2410ae09db8c0191811583de6498e91af40
-
-
+### For more information on this commit, see the README file, or go to <anonymized repository>
 
 ### Below is the full code that was used to access the data:
 

@@ -1,17 +1,9 @@
----
-title: 'Data access event'
-output: github_document
----
-
-
 ### Date: 2022-09-26 10:45:23
 
 ### Description: read all Little Man Task data.
 
 
-### For more information on this commit, go to https://github.com/StefanVermeent/abcd_ddm/commit/f2c4b1e6808bd216eb096dd0be45bb2882570072
-
-
+### For more information on this commit, see the README file, or go to <anonymized repository>
 
 ### Below is the full code that was used to access the data:
 

@@ -1,17 +1,9 @@
----
-title: 'Data access event'
-output: github_document
----
-
-
 ### Date: 2022-09-29 17:28:04
 
 ### Description: Read second part of the NIH toolbox data.
 
 
-### For more information on this commit, go to https://github.com/StefanVermeent/abcd_ddm/commit/c42a59876450c81cc6dbfc6ade5920a64feb4326
-
-
+### For more information on this commit, see the README file, or go to <anonymized repository>
 
 ### Below is the full code that was used to access the data:
 

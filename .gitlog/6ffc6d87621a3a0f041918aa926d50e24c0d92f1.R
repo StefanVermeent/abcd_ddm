@@ -1,17 +1,9 @@
----
-title: 'Data access event'
-output: github_document
----
-
-
-### Date: 2022-09-28 08:48:40
+### Date: 2022-09-28 08:50:56
 
 ### Description: Read TBI data for data exclusions.
 
 
-### For more information on this commit, go to https://github.com/StefanVermeent/abcd_ddm/commit/0eb03a16b3790a88b522757ee0b691994ec1693c
-
-
+### For more information on this commit, see the README file, or go to <anonymized repository>
 
 ### Below is the full code that was used to access the data:
 

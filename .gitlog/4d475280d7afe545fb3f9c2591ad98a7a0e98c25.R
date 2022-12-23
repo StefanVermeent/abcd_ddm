@@ -1,17 +1,9 @@
----
-title: 'Data access event'
-output: github_document
----
+### Date: 2022-10-11 12:03:50
+
+### Description: Read NIH Toolbox trial-level data part 1 -- incl. files that previously got dropped by accident.
 
 
-### Date: 2022-09-29 12:33:42
-
-### Description: Read first part of NIH Toolbox data.
-
-
-### For more information on this commit, go to https://github.com/StefanVermeent/abcd_ddm/commit/d5245a2ffa01a2429a4ebd87624c345e20070a42
-
-
+### For more information on this commit, see the README file, or go to <anonymized repository>
 
 ### Below is the full code that was used to access the data:
 

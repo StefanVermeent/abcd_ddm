@@ -49,13 +49,15 @@ gert::git_log() |>
   mutate(
     code = str_replace_all(code, "\\|\\>", "\\|\\>\\\n"),
     link_to_git = paste0(
-      gert::git_remote_list()$url |> str_remove(string = _, pattern = "\\.git$"), "/tree/", commit)
+      "<anonymized repository>"
+     # gert::git_remote_list()$url |> str_remove(string = _, pattern = "\\.git$"), "/tree/", commit)
+    )
   ) |>
   arrange(time) |> 
   glue_data("  - **[{time}]({link_to_git}): {description}**
         - **Milestone:** {milestone}
         - **Data MD5 hash**: {data_hash}
-        - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/{commit}.Rmd)
+        - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/{commit}.R)
         \n
     ")
 

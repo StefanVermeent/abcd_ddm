@@ -11,16 +11,15 @@ gert::git_log() |>
         str_replace_all(string = _, "\\|> ", "\\|>\n") |> 
         str_remove(string = _, "^code ") 
       
-      url <- gert::git_remote_list()$url |> 
-        str_remove(string = _, "\\.git$") |> 
-        paste0(paste0("/commit/", commit))
+    #  url <- gert::git_remote_list()$url |> 
+    #    str_remove(string = _, "\\.git$") |> 
+    #    paste0(paste0("/commit/", commit))
+      
+      url <- "<anonymized repository>"
       
       script <-
         glue(
-          "---
-          title: 'Data access event'
-          output: github_document
-          ---\n\n
+          "
           ### Date: {time}\n
           ### Description: {description}\n\n
           ### For more information on this commit, see the README file, or go to {url}\n
@@ -28,7 +27,7 @@ gert::git_log() |>
           {code}"
         )
       
-      writeLines(script, con = paste0(".gitlog/", commit, ".Rmd"))
+      writeLines(script, con = paste0(".gitlog/", commit, ".R"))
     }
   })
 
