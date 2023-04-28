@@ -21,14 +21,14 @@ mod_base_1con <- "model {
   for (s in 1:nSubjects) {
    
     tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
-    delta[s] ~ dnorm(muDelta, precDelta) T(-5, 5)
+    delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
     alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
     
   }
   
   #priors
   muTau ~ dunif(.0001, 1)
-  muDelta ~ dunif(-5, 5)
+  muDelta ~ dunif(-10, 10)
   muAlpha~ dunif(.1, 5) 
   
   precAlpha  ~ dgamma(.001, .001)
@@ -51,14 +51,14 @@ mod_base_2con <- "model {
   for (s in 1:nSubjects) {
     for (c in 1:nCon) {
       tau[c, s]  ~ dnorm(muTau[c], precTau) T(.0001, 1)
-      delta[c, s] ~ dnorm(muDelta[c] , precDelta) T(-5, 5)
+      delta[c, s] ~ dnorm(muDelta[c] , precDelta) T(-10, 10)
     }
     alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
   }
   #priors
   for (c in 1:nCon){ 
     muTau[c] ~ dunif(.0001, 1)
-    muDelta[c] ~ dunif(-5, 5)
+    muDelta[c] ~ dunif(-10, 10)
   } 
   muAlpha~ dunif(.1, 5) 
   
@@ -83,13 +83,13 @@ mod_base_1con_impute <- "model {
   }
   for (s in 1:nSubjects) {
     tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
-    delta[s] ~ dnorm(muDelta, precDelta) T(-5, 5)
+    delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
     alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
   }
   
   #priors
   muTau ~ dunif(.0001, 1)
-  muDelta ~ dunif(-5, 5)
+  muDelta ~ dunif(-10, 10)
   muAlpha~ dunif(.1, 5) 
   
   precAlpha  ~ dgamma(.001, .001)
@@ -126,12 +126,12 @@ initfunction_2con <- function(chain){
 initfunction_1con_impute <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
-    muTau = runif(2, .01, .05),
-    muDelta = runif(2, -9.9, 9.9),
+    muTau = runif(1, .01, .05),
+    muDelta = runif(1, -9.9, 9.9),
     precAlpha = runif(1, .01, 100),
     precTau = runif(1, .01, 100),
     precDelta = runif(1, .01, 100),
-    y = yInit,
+    y = yInit_impute,
     .RNG.name = "lecuyer::RngStream",
     .RNG.seed = sample.int(1e10, 1, replace = F)))
 }
@@ -153,7 +153,7 @@ lmt_clean <- lmt_clean |>
 
 
 #Calculations below are necessary because data are censored beyond 5 seconds
-#We probabilistially assign 0 (incorrect) or 1 (correct) to missing trials to estimate data
+#We probabilistically assign 0 (incorrect) or 1 (correct) to missing trials to estimate data
 
 set.seed(37843564)
 lmt_clean <- lmt_clean |> 
@@ -183,8 +183,8 @@ threshMat <- as.matrix(data.frame(thresh1 = rep(-5, nrow(lmt_clean)),
 #Create initial values for missing data
 yInit_impute = 1:nrow(lmt_clean) |> 
   map_dbl(function(x){
-    if(is.na(lmt_y[x])) { # If RT has been cut off
-      if(lmt_ybin[x] == 0) { # And has been imputed as 'incorrect'
+    if(is.na(lmt_y_impute[x])) { # If RT has been cut off
+      if(lmt_ybin_impute[x] == 0) { # And has been imputed as 'incorrect'
         threshMat[x,1]-.001 # Initialize below the threshold
       } else {
         threshMat[x,2]+.001
@@ -198,7 +198,7 @@ lmt_nTrials    <- nrow(lmt_clean)
 lmt_nSubjects  <- length(unique(lmt_clean$subj_idx))
 
 #Create a list of the data; this gets sent to JAGS
-lmt_datalist <- list(y = lmt_y, ybin = lmt_ybin, threshMat = threshMat,
+lmt_datalist <- list(y = lmt_y_impute, ybin = lmt_ybin_impute, threshMat = threshMat,
                      subject = lmt_clean$subj_idx_num,
                      nTrials = lmt_nTrials, nSubjects = lmt_nSubjects)
 
@@ -214,18 +214,18 @@ nChains = 3 # Specify number of chains to run (one per processor)
 
 # Run Model
 ddm_lmt_mod1 <- run.jags(method = "parallel",
-                          model = mod_base_1con_impute,
-                          monitor = parameters,
-                          data = lmt_datalist,
-                          inits = initfunction_1con,
-                          n.chains = nChains,
-                          adapt = 1000, #how long the samplers "tune"
-                          burnin = 2000, #how long of a burn in
-                          sample = 12000,
-                          thin = 10, #thin if high autocorrelation to avoid huge files
-                          modules = c("wiener", "lecuyer"),
-                          summarise = F,
-                          plots = F)
+                         model = mod_base_1con_impute,
+                         monitor = parameters,
+                         data = lmt_datalist,
+                         inits = initfunction_1con_impute,
+                         n.chains = nChains,
+                         adapt = 1000, #how long the samplers "tune"
+                         burnin = 2000, #how long of a burn in
+                         sample = 12000,
+                         thin = 10, #thin if high autocorrelation to avoid huge files
+                         modules = c("wiener", "lecuyer"),
+                         summarise = F,
+                         plots = F)
 
 
 # Extract results
@@ -248,12 +248,12 @@ lmt_y          <- round(ifelse(lmt_clean_noImp$correct == 0, (lmt_clean_noImp$RT
 yInit          <- rep(NA, length(lmt_y))
 
 #Create numbers for JAGS
-lmt_nTrials    <- nrow(lmt_clean)
-lmt_nSubjects  <- length(unique(lmt_clean$subj_idx))
+lmt_nTrials    <- nrow(lmt_clean_noImp)
+lmt_nSubjects  <- length(unique(lmt_clean_noImp$subj_idx))
 
 #Create a list of the data; this gets sent to JAGS
 lmt_datalist_noImp <- list(y = lmt_y, subject = lmt_clean_noImp$subj_idx_num,
-                      nTrials = lmt_nTrials, nSubjects = lmt_nSubjects)
+                           nTrials = lmt_nTrials, nSubjects = lmt_nSubjects)
 
 # JAGS Specifications
 
@@ -267,18 +267,18 @@ nChains = 3 # Specify number of chains to run (one per processor)
 
 # Run Model
 ddm_lmt_mod2 <- run.jags(method = "parallel",
-                          model = mod_base_1con,
-                          monitor = parameters,
-                          data = lmt_datalist_noImp,
-                          inits = initfunction_1con,
-                          n.chains = nChains,
-                          adapt = 1000, #how long the samplers "tune"
-                          burnin = 2000, #how long of a burn in
-                          sample = 12000,
-                          thin = 10, #thin if high autocorrelation to avoid huge files
-                          modules = c("wiener", "lecuyer"),
-                          summarise = F,
-                          plots = F)
+                         model = mod_base_1con,
+                         monitor = parameters,
+                         data = lmt_datalist_noImp,
+                         inits = initfunction_1con,
+                         n.chains = nChains,
+                         adapt = 1000, #how long the samplers "tune"
+                         burnin = 2000, #how long of a burn in
+                         sample = 10000,
+                         thin = 10, #thin if high autocorrelation to avoid huge files
+                         modules = c("wiener", "lecuyer"),
+                         summarise = F,
+                         plots = F)
 
 # Extract results
 
@@ -315,8 +315,8 @@ flanker_nCondition <- max(flanker_condition)
 
 #Create a list of the data; this gets sent to JAGS
 flanker_datalist <- list(y = flanker_y, subject = flanker_clean$subj_idx_num, con = flanker_condition,
-                 nTrials = flanker_nTrials, nCon = flanker_nCondition,
-                 nSubjects = flanker_nSubjects)
+                         nTrials = flanker_nTrials, nCon = flanker_nCondition,
+                         nSubjects = flanker_nSubjects)
 
 # JAGS Specifications
 
@@ -330,18 +330,18 @@ nChains = 3 # Specify number of chains to run (one per processor)
 
 # Run Model
 ddm_flanker_mod1 <- run.jags(method = "parallel",
-                         model = mod_base_2con,
-                         monitor = parameters,
-                         data = flanker_datalist,
-                         inits = initfunction_2con,
-                         n.chains = nChains,
-                         adapt = 1000, #how long the samplers "tune"
-                         burnin = 2000, #how long of a burn in
-                         sample = 1000,
-                         thin = 10, #thin if high autocorrelation to avoid huge files
-                         modules = c("wiener", "lecuyer"),
-                         summarise = F,
-                         plots = F)
+                             model = mod_base_2con,
+                             monitor = parameters,
+                             data = flanker_datalist,
+                             inits = initfunction_2con,
+                             n.chains = nChains,
+                             adapt = 1000, #how long the samplers "tune"
+                             burnin = 2000, #how long of a burn in
+                             sample = 10000,
+                             thin = 10, #thin if high autocorrelation to avoid huge files
+                             modules = c("wiener", "lecuyer"),
+                             summarise = F,
+                             plots = F)
 
 # Extract results
 
@@ -417,6 +417,8 @@ save(mcmc_pcps_mod1, file = 'analysis_objects/ddm_pcps_mod1.RData')
 
 ## 2.4 Attention Shifting Task ----
 
+# Will this still be here?
+
 # Create numeric participant IDs
 dccs_id_matches <- dccs_clean |> 
   distinct(subj_idx) |> 
@@ -437,9 +439,9 @@ dccs_nSubjects  <- length(unique(dccs_clean$subj_idx))
 dccs_nCondition <- max(dccs_condition)
 
 #Create a list of the data; this gets sent to JAGS
-dccs_datalist <- list(y = dccs_y, subject = dccs_clean$subj_idx_num, con = dccs_condition,
-                 nTrials = dccs_nTrials, nCon = dccs_nCondition,
-                 nSubjects = dccs_nSubjects)
+dccs_datalist <- list(y = dccs_y, subject = dccs_clean$subj_idx_num, condition = dccs_condition,
+                      nTrials = dccs_nTrials, nCon = dccs_nCondition,
+                      nSubjects = dccs_nSubjects)
 
 # JAGS Specifications
 
@@ -453,18 +455,18 @@ nChains = 3 # Specify number of chains to run (one per processor)
 
 # Run Model
 ddm_dccs_mod1 <- run.jags(method = "parallel",
-                             model = mod_base_2con,
-                             monitor = parameters,
-                             data = dccs_datalist,
-                             inits = initfunction_2con,
-                             n.chains = nChains,
-                             adapt = 1000, #how long the samplers "tune"
-                             burnin = 2000, #how long of a burn in
-                             sample = 12000,
-                             thin = 10, #thin if high autocorrelation to avoid huge files
-                             modules = c("wiener", "lecuyer"),
-                             summarise = F,
-                             plots = F)
+                          model = mod_base_2con,
+                          monitor = parameters,
+                          data = dccs_datalist,
+                          inits = initfunction_2con,
+                          n.chains = nChains,
+                          adapt = 1000, #how long the samplers "tune"
+                          burnin = 2000, #how long of a burn in
+                          sample = 10000,
+                          thin = 10, #thin if high autocorrelation to avoid huge files
+                          modules = c("wiener", "lecuyer"),
+                          summarise = F,
+                          plots = F)
 
 # Extract results
 

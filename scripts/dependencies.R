@@ -1,4 +1,4 @@
-install.packages('groundhog')
+#install.packages('groundhog')
 library(groundhog)
 meta.groundhog("2022-10-15")
 groundhog::set.groundhog.folder(file.path(getwd(), 'groundhog'))
@@ -10,6 +10,8 @@ pkgs <-
     "tidyr",
     "purrr",
     "readr",
+    "stringr",
+    "ggplot2",
     "utils", 
     "gert",
     "glue",
@@ -22,7 +24,10 @@ pkgs <-
     "lavaan.survey",
     "assertthat",
     "english",
-    "ggsci"
+    "ggsci",
+    "lme4",
+    "interactions",
+    "ggeffects"
   )
 
 
@@ -47,3 +52,4 @@ data_suffix <- ifelse(data == 'synthetic', '_synth', '')
 source('scripts/custom_functions/read-functions.R')
 source('scripts/custom_functions/general-functions.R')
 source('scripts/custom_functions/DBDA2E-utilities.R')
+
