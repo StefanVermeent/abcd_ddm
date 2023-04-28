@@ -1,14 +1,19 @@
 
-
 # Load objects ------------------------------------------------------------
-lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv"))
-flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv"))
-pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv"))
-dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv"))
+lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv")) |> mutate(task = 1)
+flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv")) |> mutate(task = 2)
+dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv")) |> mutate(task = 3)
+pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv")) |> mutate(task = 4)
+
 load('analysis_objects/power.RData')
 load('analysis_objects/ddm_sim1_results.RData')
 load('analysis_objects/ddm_sim2_results.RData')
 load('analysis_objects/ddm_sim3_results.RData')
+load("analysis_objects/ddm_sim4_results.RData")
+load("analysis_objects/ddm_sim5_results.RData")
+
+
+
 
 # Power analysis ----------------------------------------------------------
 
@@ -217,6 +222,178 @@ ddm_sim3_cor <- ddm_sim3_cor |>
   pivot_wider(names_from = "parameter", values_from = "r") |> 
   as.list()
 
+
+# Simulation 4 ------------------------------------------------------------
+
+shrink_hist_sim4 <- ddm_sim4_data |> 
+  mutate(
+    parameter = case_when(
+      parameter == "v" ~ "Drift rate",
+      parameter == "a" ~ "Boundary separation",
+      parameter == "t" ~ "Non-decision time"
+    ),
+    parameter = factor(parameter, levels = c("Drift rate", "Non-decision time", "Boundary separation"))
+  ) |> 
+  pivot_longer(c(estimated,simulated), names_to = "type", values_to = "value") |> 
+  ggplot(aes(value, fill = type, group = type)) +
+  geom_histogram(alpha=0.5, position="identity") +
+  facet_wrap(~parameter, scales = "free") +
+  ggsci::scale_fill_uchicago() +
+  theme_classic() +
+  labs(
+    y = "Frequency",
+    x = "Parameter estimate",
+    fill = ""
+  )
+
+ddm_sim4_cor <- ddm_sim4_data |>
+  group_by(parameter) |> 
+  summarise(r = cor(estimated, simulated))
+
+dist_sim4 <- ddm_sim4_data |> 
+  summarise(
+    m_est = mean(estimated),
+    m_sim = mean(simulated),
+    sd_est = sd(estimated),
+    sd_sim = sd(simulated)
+  )
+
+deviation_sim4 <- ddm_sim4_data |>
+  mutate(
+    parameter = case_when(
+      parameter == "a" ~ "Boundary separation",
+      parameter == "v" ~ "Drift rate",
+      parameter == "t" ~ "Non-decision time"
+    ),
+parameter = factor(parameter, levels = c("Drift rate", "Non-decision time", "Boundary separation")),
+adversity2 = adversity^2
+) |> 
+  ggplot(aes(adversity, deviation)) +
+  facet_wrap(~parameter, scales = "free") +
+  geom_point() +
+  stat_smooth(aes(y = deviation),method = "lm", formula = y ~ x + I(x^2), size = 1) +
+  stat_smooth(aes(y = deviation),method = "lm", formula = y ~ x + I(x^2), size = 1, color = "red") +
+  geom_hline(yintercept = 0) +
+  theme_classic() +
+  labs(
+    x = "Adversity",
+    y = "Simulated - Estimated"
+  )
+
+# Is parameter recovery worse at high levels of adversity for each of the three DDM parameters?
+
+mod_dev_v_sim4 <- ddm_sim4_data |> filter(parameter == 'v') |> lm(data = _, deviation ~ adversity) |> summary()
+mod_dev_a_sim4 <- ddm_sim4_data |> filter(parameter == 'a') |> lm(data = _, deviation ~ adversity) |> summary()
+mod_dev_t_sim4 <- ddm_sim4_data |> filter(parameter == 't') |> lm(data = _, deviation ~ adversity) |> summary()
+
+# If worse recovery is due to a shrinkage effect at the tail, the effect might be quadratic (i.e., a non-linear increase of the deviation at the highest levels of adversity)
+
+mod_dev_v2_sim4 <- ddm_sim4_data |> filter(parameter == 'v') |> mutate(adversity2 = adversity^2) |> lm(data = _, deviation ~ adversity + adversity2) |> summary()
+mod_dev_a2_sim4 <- ddm_sim4_data |> filter(parameter == 'a') |> mutate(adversity2 = adversity^2) |> lm(data = _, deviation ~ adversity + adversity2) |> summary()
+mod_dev_t2_sim4 <- ddm_sim4_data |> filter(parameter == 't') |> mutate(adversity2 = adversity^2) |> lm(data = _, deviation ~ adversity + adversity2) |> summary()
+
+# Simulated and estimated effects
+fit_sim4 <- ddm_sim4_data |> 
+  filter(parameter == "v") |> 
+  pivot_longer(c(estimated, simulated), names_to = 'type', values_to = 'value') |> 
+  mutate(type = ifelse(type == "simulated", 0,1)) |> 
+  lmerTest::lmer(data = _, value ~ type*adversity + (1|id)) 
+  
+
+
+ss2_sim4 <- sim_slopes(fit_sim4, pred = type, modx = adversity, modx.values = c(-1, 0, 1)) |> 
+  broom.mixed::tidy() |> 
+  select(modx.value, p.value) |> 
+  mutate(
+    p.value = paste0("p = ", formatC(p.value,  digits = 3, width = 3, flag = "0", format = 'f')),
+    group = "Recovered",
+    x = 0,
+    y = c(3.3, 3.18, 3.07))
+  
+points_sim4 <- 
+  ggpredict(fit_sim4, terms = c("adversity [-1,0,1]", "type [0,1]")) |> 
+  as_tibble() |> 
+  mutate(
+    group = ifelse(group == 0, "Simulated", "Recovered"),
+    group = factor(group, levels = c('Simulated', "Recovered")),
+    x = case_when(
+      x == -1 ~ "Low (-1SD)", 
+      x == 0 ~ "Average",
+      x == 1 ~ "High (+1SD)"),
+    x = factor(x, levels = c("Low (-1SD)", "Average", "High (+1SD)"))
+  ) |>  
+  ggplot() +
+  geom_point(aes(group, predicted, color = x, group = x)) +
+  geom_line(aes(group, predicted, color = x, group = x)) +
+  geom_text(data = ss2_sim4, aes(x = group, y = y, label = p.value), hjust = 2.5) +
+  ggsci::scale_color_uchicago() +
+  theme_classic() +
+  ylim(2.8, 3.6) +
+  labs(
+    color = "Adversity",
+    x = "\nDataset",
+    y = "Predicted\n"
+  )
+
+
+
+# Simulation 5 ------------------------------------------------------------
+
+data_compare_sim5 <- 
+  list(
+  sim_RT5_complete |> 
+  group_by(subject) |> 
+  summarise(
+    rt_sim = mean(RT),
+    acc_sim = sum(choice == 1)/n()*100,
+    missing_sim = sum(RT > 5)/n()*100
+  ) |> 
+  ungroup() |> 
+  summarise(
+    rt_sim = mean(rt_sim),
+    acc_sim = mean(acc_sim),
+    missing_sim = mean(missing_sim)
+  ),
+  
+  lmt_clean |> 
+    group_by(subj_idx) |> 
+    summarise(
+      rt_lmt = mean(RT, na.rm = T),
+      acc_lmt = sum(correct==1)/n()*100,
+      missing_lmt = sum(is.na(RT))/n()*100
+    ) |> 
+    ungroup() |> 
+    summarise(
+      rt_lmt = mean(rt_lmt),
+      acc_lmt = mean(acc_lmt),
+      missing_lmt = mean(missing_lmt)
+    )
+  ) |> 
+  reduce(bind_cols) |> 
+  mutate(
+    across(everything(),
+           ~formatC(.,  digits = 2, width = 3, flag = "0", format = 'f'))
+  )
+
+cor_sim5 <- ddm_sim5_data |> 
+  group_by(parameter) |> 
+  summarise(
+    r_miss_comp = cor(est_missing, est_complete),
+    r_miss_sim = cor(est_missing, simulated),
+    r_comp_sim = cor(est_complete, simulated)
+    ) |> 
+  mutate(
+    across(
+      starts_with('r'),
+      ~ifelse(round(.,3) == 1, 
+             formatC(.,  digits = 0, width = 1, flag = "0", format = 'f'),
+             formatC(.,  digits = 3, width = 3, flag = "0", format = 'f'))
+    )
+  )
+    
+
+
+
 # Descriptives ------------------------------------------------------------
 
 descriptives <- list()
@@ -231,12 +408,12 @@ descriptives$task_descriptives_table <-
         rt = mean(RT, na.rm = T),
         acc     = sum(correct)/n() * 100,
       ) |> 
-      group_by(task) |> 
+     group_by(task) |> 
       summarise(
         across(
           c(rt, acc),
           list(mean = mean, sd = sd, min = min, max = max)
-        ))
+        )) 
   }) |> 
   select(-c(rt_min, rt_max)) |> 
   mutate(
@@ -278,6 +455,23 @@ staged_sim_results_supp <-
     ddm_sim3_distr_plot  = distr_plot_sim3,
     ddm_sim3_cor         = ddm_sim3_cor,
     ddm_sim3_recov       = recov_plot_sim3,
+    
+    ddm_sim4_cor         = ddm_sim4_cor,
+    ddm_sim4_hist        = shrink_hist_sim4,
+    ddm_sim4_dist        = dist_sim4,
+    ddm_sim4_dev_plot    = deviation_sim4,
+    ddm_sim4_mod_dev_v   = mod_dev_v_sim4,
+    ddm_sim4_mod_dev_a   = mod_dev_a_sim4,
+    ddm_sim4_mod_dev_t   = mod_dev_t_sim4,
+    ddm_sim4_mod_dev_v2  = mod_dev_v2_sim4,
+    ddm_sim4_mod_dev_t2  = mod_dev_t2_sim4,
+    ddm_sim4_mod_dev_a2  = mod_dev_a2_sim4,
+    ddm_sim4_fit         = fit_sim4, 
+    ddm_sim4_simslopes   = ss2_sim4, 
+    ddm_sim4_points_plot = points_sim4,
+    
+    ddm_sim5_cor         = cor_sim5,
+    ddm_sim5_data_compare = data_compare_sim5,
     
     descriptives         = descriptives$task_descriptives_table
   )

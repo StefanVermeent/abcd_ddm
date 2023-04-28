@@ -40,6 +40,11 @@ library(tidyverse)
 library(glue)
 library(ggsci)
 library(flextable)
+library(broom)
+library(broom.mixed)
+library(ggeffects)
+library(interactions)
+library(lmerTest)
 
 
 load('../supplement/staged_sim_results_supp.RData')
@@ -72,12 +77,12 @@ set_flextable_defaults(
 
 # Data access workflow
 
-Prior to Stage 1 submission of the Registered Report, we accessed the cognitive task data for a couple of [preregistered](https://github.com/stefanvermeent/abcd_ddm/preregistrations/2022-09-20_preregistration_DDM.md) data checks.
+Prior to Stage 1 submission of the Registered Report, we accessed the cognitive task data for a couple of [preregistered](https://github.com/stefanvermeent/abcd_ddm/blob/main/preregistrations/2022-09-20_preregistration_DDM.md) data checks.
 By only accessing the cognitive task data, these steps did not bias or substantive analyses involving measures of adversity.
 To transparently show when we accessed which data, we created an open science workflow that would automate this process. 
 The main aim of this workflow was to create a transparent log of every major milestone of the project, such as accessing new data, submitting preregistrations, and finalizing analyses. 
 
-The main ingredient of this workflow is a set of custom functions that we created for reading in data files (See Figure 1).
+The main ingredient of this workflow is a set of custom functions that we created for reading in data files (See Figure S1).
 These are wrappers for the read functions in the *readr* package. 
 Whenever one of these functions (e.g., *read_csv*) was called, it went through a couple of internal processes.
 First, the specified data file would be read into R (but not yet accessible to us in the global environment). 
@@ -116,7 +121,7 @@ Finally, we fitted a sample model (i.e., without constrained parameters) to the 
 We generated population models with beta coefficients of 0.06, 0.08 and 0.1, and simulated data with sample sizes ranging from 1,500 to 8,500 with steps of 1,000. 
 Each combination of coefficients and sample sizes was repeated 500 times, for a total of 12,000 iterations.
 
-The results are shown in Figure S1. The simulations yield power \> 90% at around *N* = 2,500 for $\beta$ = 0.1 and *N* = 6,500 for $\beta$ = 0.06.
+The results are shown in Figure S2. The simulations yield power \> 90% at around *N* = 2,500 for $\beta$ = 0.1 and *N* = 6,500 for $\beta$ = 0.06.
 Thus, after taking out 1,500 participants for the training set, the test set will be highly powered.
 
 
@@ -136,6 +141,11 @@ flextable(staged_sim_results_supp$descriptives, cwidth = c(2, 1.2, 1.2, 1.2, 1.2
 
 # Overview of DDM Modeling Procedure
 
+In theory, the hierarchical Bayesian framework allows simultaneously estimating DDM parameters, latent measurement models, and the regression paths between them in a single step [e.g., @schubert_2019; @vandekerckhove_2014].
+An advantage of this approach is that information regarding estimation uncertainty (e.g., of the DDM parameters) gets integrated in subsequent steps.
+However, this approach is very computationally expensive and might even be unfeasible with the current sample size.
+Therefore, we opted for a two-step estimation approach.
+
 The hierarchical DDM models will be fit using the *runjags* package [@denwood_2016] with JAGS code adapted from @johnson_2017.
 The JAGS code will be adjusted in a number of ways to meet our purposes.
 Across all models, the starting point will be fixed to 0.5, and the boundary separation will be will be constrained to be the same across conditions where relevant.
@@ -150,14 +160,24 @@ First, we will visually inspect the traces, which should not contain any drifts 
 Second, we will calculate the Gelman-Rubin convergence statistic R\^ (@gelman_1992), of which all values should be below 1.1.
 Third, we will assess whether the model provides a good fit to the participants' data.
 To do this, we will simulate RT and accuracy data using the estimated DDM parameters of each participant (using the same number of trials as the participant).
-We will then fit the DDM to these simulated data using the same model specification.
-We will compute correlations between the observed and simulated scores for RTs in the 25th, 50th and 75th percentile of the RT distribution as well as for accuracies.
-We will consider *r* \> .80 to indicate a good model fit.
+We then fit the DDM to these simulated data using the same model specification.
+We will compute overall correlations between the observed and simulated scores for RTs in the 25th, 50th and 75th percentile of the RT distribution as well as for accuracies.
+If the correlation is  \< .80, we will take steps to improve model fit (see next paragraph).
+In addition, we will also compute correlations between observed and simulated RTs and accuracy at different levels of the two adversity measures: <1*SD*, ≥1*SD*≤, and >1*SD*.
+This will tell us whether parameter recovery is worse for specific subgroups of participants, which would require caution when interpreting the results.
+If correlations for specific subgroups are low but the overall correlation is \> .80, we will still use the estimates in the analyses.
 
-In theory, the hierarchical Bayesian framework allows simultaneously estimating DDM parameters, latent measurement models, and the regression paths between them in a single step [e.g., @schubert_2019; @vandekerckhove_2014].
-An advantage of this approach is that information regarding estimation uncertainty (e.g., of the DDM parameters) gets integrated in subsequent steps.
-However, this approach is very computationally expensive and might even be unfeasible with the current sample size.
-Therefore, we opted for a two-step estimation approach.
+In case of overall model fit \< .80 for a particular task, we will determine criteria to find outliers based on the following simulation procedure.
+First, we will simulate DDM parameters for 10,000 participants based on the overall sample parameter distributions (means, standard deviations, and the variance-covariance matrix).
+Second, we will generate RT and accuracy data based on this new set of simulated parameters.
+Third, we will fit the DDM to these RT and accuracy data and again generate RT and accuracy data from these estimated DDM parameters.
+Thus, this procedure yields a set of simulated RT/accuracy data and corresponding recovered RT/accuracy data.
+We will fit regression models predicting estimated RTs and accuracy with simulated RTs and accuracy at the 25th, 50th and 75th percentile.
+The 2.5% and 97.5% quantiles of the residuals will be extracted from each model and used as cut-offs for bad model fit.
+Participants will be excluded if any of their RTs or accuracies are larger than these cut-offs.
+After excluding outliers, we will fit the DDM model again and repeat model fit assessments.
+
+# Imputation of the Mental Rotation Task
 
 During preprocessing, we discovered that the 5-second response cut-off that was used for the Mental Rotation Task led to severe truncation of the RT distribution.
 This is problematic because the tail of the distribution holds important information about stages of processing.
@@ -173,6 +193,7 @@ The second bin contains the observed data, ranging between -5 and 5 seconds.
 The third bin contains correct (imputed) RTs slower than 5 seconds (coded as 5).
 JAGS then imputes the response times for missing trials based on these thresholds.
 We will compare model versions with and without imputation of missing responses.
+A simulation demonstrating the feasibility of this approach is described below (DDM simulation 5: Imputation of missing RTs)
 
 # DDM simulations: The effect of few trials per participant
 
@@ -261,6 +282,70 @@ staged_sim_results_supp$ddm_sim3_recov
 ```
 
 Overall, we conclude that applying hierarchical Bayesian DDM to the ABCD data is feasible.
+
+# Additional DDM simulations 
+
+## DDM simulation 4: Does shrinkage bias the associations between parameter estimates and adversity? 
+
+One of the reviewers noted that the hierarchical Bayesian DDM tends to compress parameter estimates by pulling extreme values toward the group mean (a phenomenon known as shrinkage). 
+A concern may be that this could potentially reduce the individual differences of interest, especially if these occur in the tail of the distribution (e.g., the participants with the highest levels of adversity obtaining the most extreme parameter estimates).
+In general, this is not the case; in contrast, shrinkage tends to pull less reliable and outlier estimates towards the group mean, which has been shown to positively affect the signal-to-noise ratio and reliability of parameter estimates in cognitive neuroscience [@dai_2017; @mejia_2018]. 
+To specifically study the effects of shrinkage on the variance of DDM parameter estimates, we nevertheless ran a simulation to investigate the likelihood that shrinkage might obscure adversity-DDM parameter associations.
+
+We simulated DDM parameters for 1,500 participants.
+Participants' adversity scores followed a log-normal distribution (mean~log~ = 0, sd~log~ = 0.3) to approximate the skew in the right tail typically found in adversity scores.
+Drift rates were simulated based on a standardized association of $\beta$ = 0.1 with the adversity score.
+Thus, higher levels of adversity tended to be associated with higher drift rates.
+Based on the simulated DDM parameters, we simulated 20 trials (RTs and accuracy) per participant, which were then used as input to the DDM model.
+We used the first 2,000 samples as burn-in, and then took an additional 2,000 samples.
+We sampled across three chains, which were subsequently combined, for a total of 6,000 samples.
+
+All parameters were recovered with high correlations ranging between `r round(min(staged_sim_results_supp$ddm_sim4_cor$r),2)` and `r round(max(staged_sim_results_supp$ddm_sim4_cor$r),2)`.
+Figure S10 shows signs of shrinkage, especially in the right tail of the drift rate distribution.
+However, the difference in standard deviations was minimal (*SD~simulated~* = `r round(staged_sim_results_supp$ddm_sim4_dist$sd_sim,2)`; *SD~recovered~* = `r round(staged_sim_results_supp$ddm_sim4_dist$sd_est,2)`.
+
+<br>
+
+```{r figureS9, fig.width=7, fig.height = 3, dpi=600, fig.id = "figureS9", fig.cap.style = "Image Caption", fig.cap='**Figure S9.** Histograms of simulated and recovered parameter estimates. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+staged_sim_results_supp$ddm_sim4_hist
+
+```
+<br>
+
+Next, we calculated the deviations between each simulated and recovered parameter estimate and plotted this against the adversity scores (See Figure S11).
+Figure S11 suggests a small positive quadratic effect for the drift rate, with the highest levels of adversity being associated with a bigger deviation (and thus higher shrinkage).
+However, this association was not statistically significant (all *p*s > .05 for linear and quadratic effects).
+
+<br>
+
+```{r figureS11, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS11", fig.cap.style = "Image Caption", fig.cap='**Figure S11.** Deviation between simulated and recovered parameter estimates as a function of adversity. The regression lines show quadratic effects. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+staged_sim_results_supp$ddm_sim4_dev_plot
+```
+
+<br>
+
+Finally, we fitted a linear mixed model predicting drift rates estimates as a function of adversity, dataset (simulated vs. recovered; dummy-coded with simulated as the reference category), and the adversity x dataset interaction to assess whether the difference between simulated and recovered drift rates would be different at low, average, and high levels of adversity.
+We did not find a significant adversity x dataset interaction, *b* = `r staged_sim_results_supp$ddm_sim4_fit |> tidy() |> filter(str_detect(term, ":")) |> pull(estimate) |> round(2)`, *p* = `r staged_sim_results_supp$ddm_sim4_fit |> tidy() |> filter(str_detect(term, ":")) |> pull(p.value) |> round(3) |> as.character() |> str_remove("^0")`.
+As Figure 12 illustrates, there seemed to be small shrinkage effects at the low and high levels of adversity.
+However, none of these simple slope effects were statistically significant.
+Taken together, we conclude that DDM recovery at higher levels of adversity was not less precise compared to lower levels of adversity.
+
+<br>
+
+```{r figureS12, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS12", fig.cap.style = "Image Caption", fig.cap='**Figure S12.** Simple slopes of the difference between simulated and estimated drift rates at different levels of adversity.'}
+staged_sim_results_supp$ddm_sim4_points_plot
+```
+
+<br>
+
+## DDM simulation 5: Imputation of missing RTs
+
+To demonstrate the feasibility of the imputation approach for the Mental Rotation Task, we ran a simulation based on 1500 participants in which RT and accuracy data were generated modeled on the real Mental Rotation Task data (RT: *M*~real~ = `r staged_sim_results_supp$ddm_sim5_data_compare$rt_lmt`, *M*~sim~ = `r staged_sim_results_supp$ddm_sim5_data_compare$rt_sim`; Accuracy: *M*~real~ = `r staged_sim_results_supp$ddm_sim5_data_compare$acc_lmt`%, *M*~sim~ = `r staged_sim_results_supp$ddm_sim5_data_compare$acc_sim`%; RTs above 5 s cut-off: *M*~real~ = `r staged_sim_results_supp$ddm_sim5_data_compare$missing_lmt`%, *M*~sim~ = `r staged_sim_results_supp$ddm_sim5_data_compare$missing_sim`%). 
+We fitted two DDM models: one that was fit to the complete data (including RTs > 5 s) and one that was fit to data in which all RTs > 5 s were set to missing.
+In the latter case, missing RTs were imputed as described above.
+All other model fit settings were identical to simulations 2-4.
+Correlations between DDM parameters based on the complete data and imputed data were near perfect, *r* = `r staged_sim_results_supp$ddm_sim5_cor |> filter(parameter == 'v') |> pull(r_miss_comp)` for drift rate, *r* = `r staged_sim_results_supp$ddm_sim5_cor |> filter(parameter == 't') |> pull(r_miss_comp)` for non-decision time, and *r* = `r staged_sim_results_supp$ddm_sim5_cor |> filter(parameter == 'a') |> pull(r_miss_comp)` for boundary separation.
+
 
 # DDM Model Fit Assessments
 
