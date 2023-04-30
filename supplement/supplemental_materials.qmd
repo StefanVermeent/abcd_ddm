@@ -132,6 +132,8 @@ staged_sim_results_supp$power_plot
 
 # Response Distributions of Cognitive Tasks
 
+See Table S1 for descriptive statistics for all cognitive tasks.
+
 **Table S1.** Descriptive statistics of mean RTs and accuracy for the cognitive tasks.
 ```{r}
 flextable(staged_sim_results_supp$descriptives, cwidth = c(2, 1.2, 1.2, 1.2, 1.2)) |> 
@@ -301,7 +303,7 @@ We used the first 2,000 samples as burn-in, and then took an additional 2,000 sa
 We sampled across three chains, which were subsequently combined, for a total of 6,000 samples.
 
 All parameters were recovered with high correlations ranging between `r round(min(staged_sim_results_supp$ddm_sim4_cor$r),2)` and `r round(max(staged_sim_results_supp$ddm_sim4_cor$r),2)`.
-Figure S10 shows signs of shrinkage, especially in the right tail of the drift rate distribution.
+Figure S9 shows signs of shrinkage, especially in the right tail of the drift rate distribution.
 However, the difference in standard deviations was minimal (*SD~simulated~* = `r round(staged_sim_results_supp$ddm_sim4_dist$sd_sim,2)`; *SD~recovered~* = `r round(staged_sim_results_supp$ddm_sim4_dist$sd_est,2)`.
 
 <br>
@@ -312,13 +314,12 @@ staged_sim_results_supp$ddm_sim4_hist
 ```
 <br>
 
-Next, we calculated the deviations between each simulated and recovered parameter estimate and plotted this against the adversity scores (See Figure S11).
-Figure S11 suggests a small positive quadratic effect for the drift rate, with the highest levels of adversity being associated with a bigger deviation (and thus higher shrinkage).
-However, this association was not statistically significant (all *p*s > .05 for linear and quadratic effects).
+Next, we calculated the deviations between each simulated and recovered parameter estimate and plotted this against the adversity scores (See Figure S10).
+None of the associations were statistically significant (all *p*s > .05 for linear and quadratic effects).
 
 <br>
 
-```{r figureS11, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS11", fig.cap.style = "Image Caption", fig.cap='**Figure S11.** Deviation between simulated and recovered parameter estimates as a function of adversity. The regression lines show quadratic effects. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
+```{r figureS10, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS10", fig.cap.style = "Image Caption", fig.cap='**Figure S10.** Deviation between simulated and recovered parameter estimates as a function of adversity. The regression lines show quadratic effects. a = Boundary Separation; t = Non-Decision Time; v = Drift Rate'}
 staged_sim_results_supp$ddm_sim4_dev_plot
 ```
 
@@ -326,13 +327,13 @@ staged_sim_results_supp$ddm_sim4_dev_plot
 
 Finally, we fitted a linear mixed model predicting drift rates estimates as a function of adversity, dataset (simulated vs. recovered; dummy-coded with simulated as the reference category), and the adversity x dataset interaction to assess whether the difference between simulated and recovered drift rates would be different at low, average, and high levels of adversity.
 We did not find a significant adversity x dataset interaction, *b* = `r staged_sim_results_supp$ddm_sim4_fit |> tidy() |> filter(str_detect(term, ":")) |> pull(estimate) |> round(2)`, *p* = `r staged_sim_results_supp$ddm_sim4_fit |> tidy() |> filter(str_detect(term, ":")) |> pull(p.value) |> round(3) |> as.character() |> str_remove("^0")`.
-As Figure 12 illustrates, there seemed to be small shrinkage effects at the low and high levels of adversity.
+As Figure 11 illustrates, there seemed to be small shrinkage effects at the low and high levels of adversity.
 However, none of these simple slope effects were statistically significant.
 Taken together, we conclude that DDM recovery at higher levels of adversity was not less precise compared to lower levels of adversity.
 
 <br>
 
-```{r figureS12, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS12", fig.cap.style = "Image Caption", fig.cap='**Figure S12.** Simple slopes of the difference between simulated and estimated drift rates at different levels of adversity.'}
+```{r figureS11, fig.width=6, fig.height = 3, dpi=600, fig.id = "figureS11", fig.cap.style = "Image Caption", fig.cap='**Figure S11.** Simple slopes of the difference between simulated and estimated drift rates at different levels of adversity.'}
 staged_sim_results_supp$ddm_sim4_points_plot
 ```
 

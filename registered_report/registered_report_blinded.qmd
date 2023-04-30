@@ -67,8 +67,6 @@ set_flextable_defaults(
 
 ```
 
-
-
 # Proposal Research Highlights
 
 1. We use Drift Diffusion Modeling (DDM) to investigate how two forms of early-life adversity---material deprivation and household threat---are associated with lowered or improved cognitive performance.
@@ -134,15 +132,15 @@ These inferential challenges have real-world implications, especially when raw p
 One promising solution to these issues is leveraging cognitive measurement models developed by mathematical psychologists.
 For speeded binary decision tasks, a well-established measurement model is the Drift Diffusion Model [DDM\; @forstmann_2016; @ratcliff_1998; @ratcliff_2008; @wagenmakers_2009].
 The DDM integrates speed and accuracy on a trial-by-trial level to estimate cognitive processes at different stages of the decision-making process.
-The DDM assumes that people go through three distinct phases of cognitive processing on each trial (see Figure S1 for a visualization).
+The DDM assumes that people go through three distinct phases of cognitive processing on each trial (see Figure 1 for a visualization).
 The first phase, *preparation*, includes processes such as focusing attention and visually encoding the stimulus.
 In the second phase, *decision-making*, people gather evidence for both response options until the evidence sufficiently favors one option over the other (explained below) and the decision process terminates. 
 The third phase, *execution*, involves preparing and executing the motor response corresponding to the choice.
 
-```{r figure1, fig.width=5.5, dpi=600, fig.id = "figure1", fig.cap.style = "Image Caption", fig.cap='**Figure 1.** A visual overview of the Drift Diffusion Model (DDM). The DDM assumes that decision making on cognitive tasks with two forced response options advances through three stages. First, people go through a preparation phase in which they engage in initial stimulus encoding. Second, people gather information for one of two response options until the accumulation process terminates at one of the decision boundaries. Each squiggly line  represents the evidence accumulation process on a single trial. Third, a motor response is triggered in the execution phase. The model estimates four parameters that reflect distinct cognitive processes (printed in italic): (1) The *drift rate* represents the rate at which evidence accumulation drifts towards the decision boundary and is a measure of processing speed; (2) The *non-decision time* represents the combined time spent on task preparation and response execution; (3) The *boundary separation* represents the width of the decision boundaries and is a measure of response caution; (4) The *starting point* represents the starting point of the decision process and can be used to model response biases (not considered in this study).'}
-knitr::include_graphics("images/fig1.png")
-```
-
+<br>
+<br>
+[Figure 1 about here]
+<br>
 <br>
 
 DDM estimates a set of parameters for each participant that represent each phase of the decision process [@voss_2004]. 
@@ -342,10 +340,10 @@ The analysis indicated that we will have more than 90% power for all regression 
 All analyses will be conducted in R 4.2.1 [@Rcoreteam_2022].
 The source code can be found on the Github repository ([https://anonymous.4open.science/r/anon-255D/scripts](https://anonymous.4open.science/r/anon-255D/scripts)).
 
-```{r figure2, fig.width=5, dpi=600, fig.id = "figure2", fig.cap.style = "Image Caption", fig.cap='**Figure 2.** Visual overview of the full analysis workflow. Analyses are done in two stages: (1) prior to Stage 1 submission of the manuscript, and (2) after Stage 1 in-principle acceptance. Analyses at Stage 1 only focus on the cognitive task data. Independent variables (i.e., threat and deprivation measures) will only be accessed during Stage 2 after all DDM models have been fit, and only for the test set after the model has been optimized based on the training set. Data access will be tracked via the GitHub repository. IV = independent variable; SEM = structural equation modeling; DDM = Drift Diffusion Model.'}
-knitr::include_graphics("images/fig2.png")
-```
-
+<br>
+<br>
+[Figure 2 about here]
+<br>
 <br>
 
 **Step 1: DDM estimation.** The DDM will be fit to each cognitive task in a hierarchical Bayesian framework which estimates DDM parameters both on the individual and group level [@vandekerckhove_2011; @wiecki_2013].
@@ -378,10 +376,10 @@ Finally, the sociodemographic covariates that are included in the MNLFA scores (
 Goodness-of-fit will be assessed using the root mean square error of approximation (RMSEA) and the comparative fit index (CFI).
 Following @hu_1999, CFI values \> .90 and RMSEA values \< .08 will be interpreted as acceptable model fit and CFI values \> .95 and RMSEA values \≤ .06 as good model fit.
 
-```{r figure3, fig.width=6, dpi=600, fig.id = "figure3", fig.cap.style = "Image Caption", fig.cap='**Figure 3.** Visualization of the full structural equation model (SEM). Dotted black lines represent covariances. Dashed black lines represent factor loadings. Solid grey lines represent regression paths. The factor loadings to each of the Processing Speed Task indicators are fixed to 1. The unique variances of each manifest indicator are captured in additional latent factors (U), one per indicator. To this end, the factor loadings are fixed to 0 and the residual variances of the manifest indicators are fixed to 0. For model identification reasons, we do not estimate regression paths to the unique variances of the Processing Speed Task. Not shown in this Figure to improve readability: (1) the sociodemographic covariates that are included in the MNLFA scores (see Measures section), and (2) age as a covariate for the manifest DDM parameters. PS = Processing Speed Task; AS Rep = Attention Shifting Task repeat trials; AS Sw = Attention Shifting Task switch trials; MR = Mental Rotation Task; FL Con = Flanker Task congruent trials; FL Inc = Flanker Task incongruent trials; *v* = Drift rate; *a* = Boundary separation; *t0* = Non-decision time; U = unique variance.'}
-knitr::include_graphics("images/fig3.png")
-```
-
+<br>
+<br>
+[Figure 3 about here]
+<br>
 <br>
 
 **Step 3: Model validation in test set.** After optimizing the model based on the training set, we will refit it to the test data.
@@ -407,6 +405,28 @@ This makes it unsuitable for DDM, as the model assumes the level of difficulty i
 
 \pagebreak
 
-# References {#refs}
+### References
 
- 
+::: {#refs}
+:::
+
+\pagebreak
+
+```{r figure1, fig.width=5.5, dpi=600, fig.id = "figure1", fig.cap.style = "Image Caption", fig.cap='**Figure 1.** A visual overview of the Drift Diffusion Model (DDM). The DDM assumes that decision making on cognitive tasks with two forced response options advances through three stages. First, people go through a preparation phase in which they engage in initial stimulus encoding. Second, people gather information for one of two response options until the accumulation process terminates at one of the decision boundaries. Each squiggly line  represents the evidence accumulation process on a single trial. Third, a motor response is triggered in the execution phase. The model estimates four parameters that reflect distinct cognitive processes (printed in italic): (1) The *drift rate* represents the rate at which evidence accumulation drifts towards the decision boundary and is a measure of processing speed; (2) The *non-decision time* represents the combined time spent on task preparation and response execution; (3) The *boundary separation* represents the width of the decision boundaries and is a measure of response caution; (4) The *starting point* represents the starting point of the decision process and can be used to model response biases (not considered in this study).'}
+knitr::include_graphics("images/fig1.png")
+```
+
+
+\pagebreak
+
+
+```{r figure2, fig.width=5, dpi=600, fig.id = "figure2", fig.cap.style = "Image Caption", fig.cap='**Figure 2.** Visual overview of the full analysis workflow. Analyses are done in two stages: (1) prior to Stage 1 submission of the manuscript, and (2) after Stage 1 in-principle acceptance. Analyses at Stage 1 only focus on the cognitive task data. Independent variables (i.e., threat and deprivation measures) will only be accessed during Stage 2 after all DDM models have been fit, and only for the test set after the model has been optimized based on the training set. Data access will be tracked via the GitHub repository. IV = independent variable; SEM = structural equation modeling; DDM = Drift Diffusion Model.'}
+knitr::include_graphics("images/fig2.png")
+```
+
+\pagebreak
+
+```{r figure3, fig.width=6, dpi=600, fig.id = "figure3", fig.cap.style = "Image Caption", fig.cap='**Figure 3.** Visualization of the full structural equation model (SEM). Dotted black lines represent covariances. Dashed black lines represent factor loadings. Solid grey lines represent regression paths. The factor loadings to each of the Processing Speed Task indicators are fixed to 1. The unique variances of each manifest indicator are captured in additional latent factors (U), one per indicator. To this end, the factor loadings are fixed to 0 and the residual variances of the manifest indicators are fixed to 0. For model identification reasons, we do not estimate regression paths to the unique variances of the Processing Speed Task. Not shown in this Figure to improve readability: (1) the sociodemographic covariates that are included in the MNLFA scores (see Measures section), and (2) age as a covariate for the manifest DDM parameters. PS = Processing Speed Task; AS Rep = Attention Shifting Task repeat trials; AS Sw = Attention Shifting Task switch trials; MR = Mental Rotation Task; FL Con = Flanker Task congruent trials; FL Inc = Flanker Task incongruent trials; *v* = Drift rate; *a* = Boundary separation; *t0* = Non-decision time; U = unique variance.'}
+knitr::include_graphics("images/fig3.png")
+```
+
