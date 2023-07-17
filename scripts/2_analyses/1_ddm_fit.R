@@ -18,16 +18,15 @@ mod_base_1con <- "model {
                    0.5, 
                    delta[subject[t]])
   }
+  
   for (s in 1:nSubjects) {
-   
-    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
+    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 2)
     delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
     alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
-    
   }
   
   #priors
-  muTau ~ dunif(.0001, 1)
+  muTau ~ dunif(.0001, 2)
   muDelta ~ dunif(-10, 10)
   muAlpha~ dunif(.1, 5) 
   
@@ -82,13 +81,13 @@ mod_base_1con_impute <- "model {
                    delta[subject[t]])
   }
   for (s in 1:nSubjects) {
-    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
+    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 2)
     delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
     alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
   }
   
   #priors
-  muTau ~ dunif(.0001, 1)
+  muTau ~ dunif(.0001, 2)
   muDelta ~ dunif(-10, 10)
   muAlpha~ dunif(.1, 5) 
   
@@ -100,16 +99,15 @@ mod_base_1con_impute <- "model {
 initfunction_1con <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
-    muTau = runif(1, .01, .05),
+    muTau = runif(1, .01, 1.05),
     muDelta = runif(1, -9.9, 9.9),
     precAlpha = runif(1, .01, 100),
     precTau = runif(1, .01, 100),
     precDelta = runif(1, .01, 100),
-    y = yInit,
+    y = rep(NA, length(y)),
     .RNG.name = "lecuyer::RngStream",
     .RNG.seed = sample.int(1e10, 1, replace = F)))
 }
-
 initfunction_2con <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
@@ -136,7 +134,6 @@ initfunction_1con_impute <- function(chain){
     .RNG.seed = sample.int(1e10, 1, replace = F)))
 }
 
-
 # 2. DDM Estimation ----------------------------------------------------------
 
 ## 2.1 Mental Rotation Task ----
@@ -160,10 +157,10 @@ lmt_clean <- lmt_clean |>
   group_by(subj_idx) |> 
   mutate(
     # If response is missing, impute correctness probabilistically
-    prop = sum(correct)/n(),
-    correct = ifelse(is.na(RT),
-                     sample(c(0,1), prob = c(1-sum(correct)/n(), sum(correct)/n()), size = 100, replace = T),
-                     correct)
+    prop = sum(choice)/n(),
+    choice = ifelse(is.na(RT),
+                     sample(c(0,1), prob = c(1-sum(choice)/n(), sum(choice)/n()), size = 100, replace = T),
+                     choice)
   )
 
 # Store RTs and condition per trial (incorrect RTs are coded negatively)
@@ -172,13 +169,13 @@ lmt_y_impute <- round(ifelse(lmt_clean$correct == 0, (lmt_clean$RT*-1), lmt_clea
 lmt_ybin_impute = 1:nrow(lmt_clean) |> 
   map_dbl(function(x){
     if(is.na(lmt_clean$RT[x])) {
-      if(lmt_clean$correct[x] == 0) 0 else 1
-    } else 2 
+      if(lmt_clean$correct[x] == 0) 0 else 2
+    } else 1
   })
 
 #Create a matrix of cutoff times for JAGS
-threshMat <- as.matrix(data.frame(thresh1 = rep(-5, nrow(lmt_clean)), 
-                                  thresh2 = rep(5, nrow(lmt_clean))))
+threshMat_impute <- as.matrix(data.frame(thresh1 = rep(-5.001, nrow(lmt_clean)), 
+                                  thresh2 = rep(5.001, nrow(lmt_clean))))
 
 #Create initial values for missing data
 yInit_impute = 1:nrow(lmt_clean) |> 
@@ -198,7 +195,7 @@ lmt_nTrials    <- nrow(lmt_clean)
 lmt_nSubjects  <- length(unique(lmt_clean$subj_idx))
 
 #Create a list of the data; this gets sent to JAGS
-lmt_datalist <- list(y = lmt_y_impute, ybin = lmt_ybin_impute, threshMat = threshMat,
+lmt_datalist <- list(y = lmt_y_impute, ybin = lmt_ybin_impute, threshMat = threshMat_impute,
                      subject = lmt_clean$subj_idx_num,
                      nTrials = lmt_nTrials, nSubjects = lmt_nSubjects)
 

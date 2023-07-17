@@ -1,0 +1,86 @@
+---
+bibliography: references.bib
+csl: apa.csl
+format: 
+  docx:
+    reference-doc: reference-doc.docx
+output:
+  officedown::rdocx_document:
+    page_margins:
+      bottom: 1
+      footer: 0
+      gutter: 0
+      header: 0.5
+      left: 1
+      right: 1
+      top: 1
+    plots:
+      align: center
+      caption:
+        pre: 'Figure '
+        sep: '. '
+        style: Image Caption
+    tables:
+      caption:
+        pre: 'Table '
+        sep: '. '
+        style: Table Caption
+  pdf_document: default
+  word_document: default
+editor: 
+  markdown: 
+    wrap: sentence
+---
+In this study, we will use the Adolescent Brain Cognitive Development (ABCD) study data (<http://abcdstudy.org>). 
+The ABCD study is ideal because it provides a large, representative, and socioeconomically and ethnically diverse sample of 9- to 10 year-olds---an age range characterized by rapid growth in cognitive abilities [@blakemore_2006]. 
+We will fit one general SEM mapping two key dimensions of adversity---material deprivation and household threat---to task-general and task-specific DDM parameters representing processing speed, attention shifting, inhibition, and mental rotation.
+
+We include measures of threat and deprivation because these forms of adversity have been widely studied in their relation to cognitive outcomes from both deficit and strength-based perspectives [@fields_2021; @schafer_2022; @sheridan_2022; @young_2022] and are central to contemporary conceptualizations of adversity [e.g., @mclaughlin_2021; @sheridan_2014]. 
+We include an Attention-Shifting task because previous work has found this ability to be enhanced in children and (young) adults with more environmental unpredictability [@fields_2021; @mittal_2015; @young_2022]. 
+Attention shifting is thought to enable people to rapidly adjust to, and take advantage of, a changing environment (e.g., seize fleeting opportunities). 
+We include the Flanker Task because children with more adverse experiences typically show worse inhibition [e.g., @fields_2021; @tibu_2016]. 
+We include the Mental Rotation Task because previous studies have found negative associations between SES and mental rotation ability [e.g., @assari_2020; @bignardi_2022]. 
+Also, this task is widely used in developmental science and contributes unique variance that is not captured by any of the other cognitive tasks in our set. 
+Finally, we include the Processing Speed Task because it offers a purer measure of the type of basic processing speed that plays a role in the other tasks. 
+Aside from these main theoretical considerations, all four tasks adhere to DDM assumptions. 
+This allows us to compare them based on the same model parameters.
+
+Our aim is to systematically describe how adversity is associated with cognitive performance on the three DDM parameters of interest: drift rates, non-decision times, and boundary separation. 
+We will assess each parameter's association with adversity on a task-general and a task-specific level. 
+Task-general estimates reflect the portion of variance in a given parameter that is shared across all tasks. 
+Conversely, task-specific estimates reflect DDM parameter variance that is unique to a specific task. 
+On both levels, we are interested in three different associations with adversity: positive associations, negative associations, and equivalence (no association).
+Below, we describe how we will interpret differences on each level for the three DDM parameters, including our expectations based on previous research. 
+These expectations apply broadly to both material deprivation and household threat, unless otherwise specified. 
+We note that the findings that guide these expectations are all based on raw performance measures.
+[Something about the need to systematically document, and our framework allowing us to do so]
+
+For drift rate, negative (positive) associations with adversity on the task-general level would indicate that adversity lowers (increases) overall speed of information processing [@lerche_2020; @loffler_2022]. 
+Negative (positive) associations with adversity on the task-specific level would indicate that adversity lowers (improves) the cognitive ability that is central to performance on a task (e.g., inhibition on the Flanker Task).
+Thus, we stand to gain a more precise understanding of the cognitive abilities that are shaped by adversity.
+We expect that enhanced drift rates will arise on the task-specific level, and not the task-general level. 
+This follows from the assumption of strength-based frameworks that specific types of adversity shape specific cognitive abilities that help youth solve real-world challenges [@ellis_2022; @frankenhuis_2013; @frankenhuis_2016; @frankenhuis_2020]. 
+This assumption has been supported by empirical work demonstrating enhancements only in some abilities (e.g., attention shifting, working memory updating) while others show impairments (e.g., inhibition) [@fields_2021; @mittal_2015; @young_2018].
+These same findings also lead us to expect cognitive deficits on the task-specific level.
+In addition, neurodevelopmental work has established that adversity--in particular deprivation (see below)--broadly affects brain regions that are involved across several cognitive abilities [@sheridan_2014], which we expect to translate to a lowered task-general drift rate.
+
+For non-decision time, negative (positive) associations with adversity on the task-general level would indicate that adversity slows down (speeds up) non-decision processes in the same way across tasks. 
+Negative (positive) associations with adversity on the task-specific level would indicate that adversity slows down (speeds up) processes that are not central to the construct being assessed.
+Thus, we will learn whether performance differences are (in part) the result of processes not central to the tasks, and whether there are specific tasks which place unique non-decision demands on adversity-exposed youth.
+While existing theory offers little to guide expectations, we can conceive of two (mutually exclusive) patterns. 
+First, both material deprivation and household threat may be associated with slower speed of attending to and encoding information or executing responses, leading to a lower task-general non-decision times. 
+Second, youth with more exposure to household threat may develop a baseline hyper-vigilance, leading to a faster non-decision time [@dejoseph_2022].
+
+For boundary separation, negative (positive) associations with adversity on the task-general level would indicate that adversity decreases (increases) an overall preference for response caution.
+Negative (positive) associations with adversity on the task-specific level would indicate that adversity decreases (increases) response caution on specific tasks.
+Thus, we will learn the extent to which raw performance differences are the result of differences in response caution as opposed to cognitive abilities.
+We have no expectations for associations between adversity and boundary separation.
+
+Previous studies demonstrate that cognitive deficits are more strongly associated with cognitive deprivation than with threat exposure [@salhi_2021; @sheridan_2020].
+Although cognitive deprivation and material deprivation (as measured here) are not the same, we assume that both are related to access to resources to support cognitive development (e.g., books present in the home, formal education).
+For instance, in the ABCD sample material deprivation is substantially correlated with income (-.81) and education (-.56), while correlations with household threat are low [-.25 and -.12, respectively\; @dejoseph_2022].
+For this reason, we expect the associations between material and cognitive deprivation with performance to be in the same (negative) direction.
+These findings lead us to expect that the association between material deprivation and drift rates will be more negative than the association between household threat and drift rates.
+
+
+## Boundary separation: General - Specific - Takeaway (what we stand to gain)

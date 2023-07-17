@@ -78,7 +78,7 @@ set_flextable_defaults(
 
 # Proposal Abstract
 
-Childhood adversity can lead to either cognitive deficits or enhancements, depending on many factors. 
+Childhood adversity can lead to cognitive deficits or enhancements, depending on many factors. 
 Though progress has been made, two challenges prevent us from integrating and better understanding these findings. 
 First, studies commonly use and interpret raw performance differences, such as mean response times or overall accuracy. 
 However, raw scores conflate different stages of cognitive processing. 
@@ -99,7 +99,7 @@ It will add much-needed nuance to adversity-related performance differences, whi
 
 The effects of early-life adversity---such as growing up in poverty or experiencing high levels of violence---on cognition are complex.
 There is a growing consensus that adversity-exposed youth may develop not only deficits, but also strengths.
-For example, studies find deficits and strengths across different cognitive domains including (but not limited to) executive functioning, social cognition, language, and emotion [@ellis_2022; @frankenhuis_2013; @frankenhuis_2016;  @sheridan_2022; @sheridan_2014].
+For example, studies find lowered and improved performance across different cognitive domains including (but not limited to) executive functioning, social cognition, language, and emotion [@ellis_2022; @frankenhuis_2013; @frankenhuis_2016;  @sheridan_2022; @sheridan_2014].
 Researchers focused on one type of effect or another acknowledge the importance of identifying both deficits and strengths.
 Yet, in practice, they often focus on one at the expense of the other.
 To develop an integrated, well-rounded, and nuanced understanding of how adversity shapes cognitive abilities, research must integrate both types of effects.
@@ -110,12 +110,12 @@ This makes it difficult to understand why cognitive performance may be lowered o
 Second, adversity may lower or improve performance because it affects general processes (i.e., processes shared across many tasks) or abilities that are task-specific.
 In this Registered Report, we use a framework that tackles both challenges.
 First, we decompose raw performance into measures of different stages of cognitive processes through cognitive modeling.
-Second, we analyze four different tasks---tapping processing speed, attention shifting, inhibition, and mental rotation---most of which have shown associations with adversity.
+Second, we analyze four different tasks---tapping processing speed, attention shifting, inhibition, and mental rotation---all of which have documented associations with adversity.
 Finally, we model shared (i.e., task-general) and unique (i.e., task-specific) factors that drive performance and investigate how they are associated with adversity.
 
-## What do deficit and enhancement patters mean? {#intro_sub1}
+## What do deficit and enhancement patterns mean? {#intro_sub1}
 
-Both the deficit and strength-based literature routinely use speeded tasks, in which participants are usually instructed to respond as fast and accurate as possible.
+Both the deficit and strength-based literature often use speeded tasks, in which participants are usually instructed to respond as fast and accurate as possible.
 For example, performing well on inhibition tasks [e.g., Flanker task, Go/No-Go Task\; @farah_2006; @fields_2021; @mezzacappa_2004; @noble_2005], attention shifting tasks [e.g., Dimensional Change Card Sort\; @farah_2006; @fields_2021; @nweze_2021; @young_2022; @mittal_2015; @noble_2005], and stimulus detection tasks [@farah_2006; @noble_2005; @pollak_2008] requires fast and accurate responses.
 In practice, performance is often quantified using aggregated indices of speed alone (e.g., RT), accuracy alone (e.g., proportion correct), or both independently (rather than in an integrated manner).
 
@@ -123,7 +123,7 @@ In both the deficit and strength-based literature, *task performance* (indexed b
 For example, deficit-focused studies relate slower RTs on inhibition tasks to *worse inhibition ability* [@farah_2006; @fields_2021; @mezzacappa_2004; @noble_2005].
 Strength-based studies relate faster RTs on standard attention shifting tasks to *better shifting ability* [@fields_2021; @young_2022; @mittal_2015].
 However, speed and accuracy comprise more than pure ability (e.g., inhibition, attention shifting).
-They also measure other constructs such as response caution (e.g., more or less cautious responding), speed of task preparation (e.g., orienting attention, encoding the stimuli), and speed of response execution. 
+They also measure other constructs such as response caution (e.g., more or less cautious responding), speed of task preparation (e.g., orienting attention, encoding information), and speed of response execution. 
 This heterogeneity creates an inferential risk, namely, if performance differences are interpreted as differences in abilities without sufficiently considering alternative explanations.
 In addition, the effect of adversity exposure may not be limited to a single process.
 For example, a specific type of adversity could affect both the speed of information processing and also shape the strategy that a person uses.
@@ -132,7 +132,7 @@ These inferential challenges have real-world implications, especially when raw p
 One promising solution to these issues is leveraging cognitive measurement models developed by mathematical psychologists.
 For speeded binary decision tasks, a well-established measurement model is the Drift Diffusion Model [DDM\; @forstmann_2016; @ratcliff_1998; @ratcliff_2008; @wagenmakers_2009].
 The DDM integrates speed and accuracy on a trial-by-trial level to estimate cognitive processes at different stages of the decision-making process.
-The DDM assumes that people go through three distinct phases of cognitive processing on each trial (see Figure 1 for a visualization).
+The DDM assumes that people go through three distinct phases on each trial (see Figure 1 for a visualization).
 The first phase, *preparation*, includes processes such as focusing attention and visually encoding the stimulus.
 In the second phase, *decision-making*, people gather evidence for both response options until the evidence sufficiently favors one option over the other (explained below) and the decision process terminates. 
 The third phase, *execution*, involves preparing and executing the motor response corresponding to the choice.
@@ -143,7 +143,7 @@ The third phase, *execution*, involves preparing and executing the motor respons
 <br>
 <br>
 
-DDM estimates a set of parameters for each participant that represent each phase of the decision process [@voss_2004]. 
+DDM estimates a set of parameters^1^ for each participant that represent each phase of the decision process [@voss_2004]. 
 The *drift rate* (*v*) represents the speed of information uptake [@schmiedek_2007; @voss_2013]. 
 People with a higher drift rate are faster and make fewer errors. 
 The *non-decision time* (*t0*) includes initial preparatory processes (e.g., visually encoding the stimulus) and processes after the decision is made (e.g., pressing a button). 
@@ -152,18 +152,23 @@ The *boundary separation* (*a*) represents the distance between the two decision
 A larger boundary separation means more information is collected before making a decision.
 Thus, boundary separation measures response caution.
 In contrast to non-decision time, larger boundary separation leads to slower but more accurate responses, reflecting a speed-accuracy tradeoff. 
-Finally, the *starting point* (*z*) represents an initial bias towards one of the two decision options (e.g., a tendency to classify facial expressions as angry that extends to neutral faces).
-Note that allowing the starting point to vary only makes sense if response options differ in valence (e.g., happy and angry faces, which the current study does not include and thus is unable to examine).
-Out of the four DDM parameters, the drift rate in most cases captures the variation in the cognitive ability of interest (e.g., inhibition, attention shifting).
-That is because a better functioning of the ability of interest should both increase speed of processing as well as reduce errors.
+
+As mentioned earlier, adversity-related raw performance differences---both lowered and improved performance---are typically interpreted as differences in ability (e.g., inhibition, attention shifting).
+If these interpretations are accurate, then drift rate would reflect these variations.
+That is because improved ability would result in both decreased RTs and increased accuracy.
+However, if performance differences arise through other factors---such as differences in response caution or response speed---they would be captured by parameters other than the drift rate.
 Thus, disentangling the drift rate, non-decision time, and boundary separation enhances our understanding of how adversity-exposure is associated with performance.
 
 ## Are deficit and enhancement patterns task-specific or task-general? {#intro_sub2}
 
-Performance on cognitive tasks often relies both on shared cognitive processes and unique abilities.
+An important caveat to interpreting task performance on any task in isolation is that performance on most tasks relies both on shared cognitive processes and unique abilities.
 For example, RTs on executive functioning tasks are substantially confounded with general processing efficiency [@frischkorn_2019; @lerche_2020; @loffler_2022]. 
 Both task-specific abilities and task-general processes affect RTs and accuracy in similar ways and are thus likely confounded in drift rates.
-It is important to separate these effects, for both deficit- and strength-based approaches (e.g., does adversity impair broad domains such as executive functioning? Does it enhance specific abilities such as attention shifting?), as well as for real-world interventions grounded in both approaches (e.g., school-based interventions targeting broad  domains or specific abilities).
+Task-general effects create the illusion that many different abilities are affected by adversity when in fact only one more general process is affected. 
+Consider research on cognitive deficits. 
+Adversity exposure might disrupt general cognitive processes shared across many tasks, such as general processing speed, for example, because of its effects on brain regions that are involved across several cognitive abilities [@sheridan_2014]. 
+If so, studies analyzing raw Flanker performance in isolation will find processing speed deficits but wrongly interpret this as an inhibition deficit. 
+Such distinctions matter for both deficit- and strength-based approaches (e.g., does adversity impair broad domains such as executive functioning? Does it enhance specific abilities such as attention shifting?), as well as for real-world interventions grounded in both approaches (e.g., school-based interventions targeting broad domains or specific abilities).
 
 Structural equation modeling (SEM) can disentangle task-general and task-specific processes. 
 For example, it can estimate shared task variance with latent task-general variables.
@@ -172,46 +177,53 @@ By estimating shared variance across different tasks, we can also obtain more pr
 They used SEM to model the effect of SES on a general factor and task-specific residual variances.
 Lower SES was associated with a lower general ability, but *enhanced* task-specific processing speed, inhibition, and attention shifting.
 However, their analysis looked at shared and unique variance using raw performance measures.
-We extend this SEM analysis technique to DDM parameters.
-Our approach affords insight into how task-general and task-specific drift rates, non-decision times, and boundary separations relate to adversity exposures.
-
+Thus, it is subject to the same limitations outlined in the previous section.
 
 ## The current study {#intro_current}
 
-In this study, we will use the Adolescent Brain Cognitive Development (ABCD) study data ([http://abcdstudy.org](http://abcdstudy.org)).
-The ABCD study is ideal because it provides a large, representative, and socioeconomically and ethnically diverse sample of 9- to 10 year-olds---an age range characterized by rapid growth in cognitive abilities [@blakemore_2006].
-We will fit one general SEM mapping two key dimensions of adversity---material deprivation and household threat---to task-general and task-specific DDM parameters representing processing speed, attention shifting, inhibition, and mental rotation.
-The measures of adversity were previously adjusted for measurement non-invariance across sociodemographic characteristics in the ABCD sample using moderated nonlinear factor analysis [MNLFA\; @bauer_2017; @dejoseph_2022].
+Here, we will analyze the Adolescent Brain Cognitive Development (ABCD) study data (http://abcdstudy.org). 
+The ABCD study is ideal because it provides a large, representative, and socioeconomically and ethnically diverse sample of 9- to 10 year-olds--—an age range characterized by rapid growth in cognitive abilities [@blakemore_2006]. 
 
-We include measures of threat and deprivation because these forms of adversity have been widely studied in their relation to cognitive outcomes from both deficit and strength-based perspectives [@fields_2021; @schafer_2022; @sheridan_2022; @young_2022] and are central to contemporary conceptualizations of adversity [e.g., @mclaughlin_2021; @sheridan_2014].
-We include an Attention-Shifting task because previous work has found this ability to be enhanced in children and (young) adults with more environmental unpredictability [@fields_2021; @mittal_2015; @young_2022]. 
-We include the Flanker Task because children with more adverse experiences typically show worse inhibition [e.g., @fields_2021; @tibu_2016]. 
-We include the Mental Rotation Task because previous studies have found negative associations between SES and mental rotation ability [e.g., @assari_2020; @bignardi_2022].
-Also, this task is widely used in developmental science and contributes unique variance that is not captured by any of the other cognitive tasks in our set.
-Finally, we include the Processing Speed Task because it offers a purer measure of the type of basic processing speed that plays a role in the other tasks.
-Generally, the decision to include these four tasks (and exclude others in the ABCD data) is guided by these tasks adhering to DDM assumptions.
+We will study two dimensions of adversity: household threat and material deprivation.
+These forms of adversity have been widely studied in their relation to cognitive outcomes---from both deficit and strength-based perspectives [@fields_2021; @schafer_2022; @sheridan_2022; @young_2022]---and are central to contemporary conceptualizations of adversity [e.g., @mclaughlin_2021; @sheridan_2014]. 
+Prior work has shown that cognitive deprivation is more strongly associated with lower cognitive performance than threat exposure [@salhi_2021; @sheridan_2020]. 
+Although material deprivation (as measured here) and cognitive deprivation (in previous studies) are not identical, both seem related to access to resources that support cognitive development (e.g., books in the home, formal education). 
+Indeed, in the ABCD sample material deprivation is highly or moderately correlated with income (-.81) and education (-.56), while correlations with household threat are lower [-.25 and -.12, respectively\; @dejoseph_2022]. 
+Therefore, to the extent that the deprivation-versus-threat literature has captured ability-relevant processes, we may expect material deprivation to be more strongly associated with lower drift rates than threat exposure.
 
-Both the deficit- and strength-based literature provide general insights that guide our expectations about how different types of adversity may be associated with Drift Diffusion parameters.
-First, a central assumption of strength-based frameworks is that specific types of adversity shape specific abilities that help youth solve real-world challenges [@ellis_2022; @frankenhuis_2013; @frankenhuis_2016; @frankenhuis_2020].
-Following this assumption, we expect adversity-related enhancements to arise on the task-specific level, and not on the task-general level.
-In addition, both household threat and material deprivation may lead to specific enhancements on different abilities, about which we do not have specific expectations.
-Second, cognitive deficits have been demonstrated both for specific abilities [e.g., @fields_2021] and on a general level [e.g., @salhi_2021].
-Moreover, previous studies demonstrate that cognitive deficits are more strongly associated with cognitive deprivation than with threat exposure [@salhi_2021; @sheridan_2020].
-Although cognitive deprivation and material deprivation (as used here) are not the same, we assume that both are related to youth's access to resources to support cognitive development (e.g., books in the home and formal education).
-This assumption is supported by work based on the ABCD sample showing that material deprivation is substantially correlated with income (-.81) and education (-.56), while correlations with household threat are low [-.25 and -.12, respectively\; @dejoseph_2022].
-Therefore, we assume that the association between material deprivation and cognitive performance will be in the same (negative) direction as the association with cognitive deprivation.
-These general insights lead us to the following expectations:
+We will analyze four cognitive abilities that have been studied in relation to adversity. 
+We include *attention shifting* because previous work has reported enhancement of this ability in children and (young) adults with more exposure to environmental unpredictability [based on raw performance switch costs\; @fields_2021; @mittal_2015; @young_2022; but see @nweze_2021]. 
+Theoretically, attention shifting is thought to enable people to rapidly adjust to, and take advantage of, a changing environment (e.g., seize fleeting opportunities). 
+We include *inhibition* because previous research suggests that children with more adverse experiences are worse at inhibiting distracting information [based on raw RT difference scores\; @fields_2021; @mezzacappa_2004; @mittal_2015; @tibu_2016].
+We include *mental rotation* because previous studies have found negative associations between SES and mental rotation ability [based on RTs and accuracy\; @assari_2020; @bignardi_2022]. 
+To the extent that these performance differences reflect differences in the respective abilities---as they have been interpreted---they should show up in *task-specific drift rates*.
+We also include a measure of *processing speed*, which will not be measured in relation to adversity but provides a direct measure of the type of basic processing speed that plays a role in the other tasks. 
+Taken together, the four tasks provide a broad assessment of cognitive domains, which makes them well-suited for isolating task-general processes. 
+As all four tasks adhere to DDM assumptions, we can compare them based on the same model parameters.
 
-(1) Drift rate.
-    (a) We expect any adversity-related improvements to manifest in task-specific drift rates and not in task-general drift rates. In particular, we expect adversity to be positively related to drift rates specific to attention shifting [@fields_2021; @mittal_2015; @young_2022; but see @nweze_2021].
-    (b) We expect adversity to be associated with lower drift rates (i.e., deficit patterns) at both the task-general and task-specific level.
-    (c) We expect drift rates at both of these levels to be more negatively associated with material deprivation than with household threat.
+Adaptation-based frameworks predict increased task-specific drift rates.
+This follows from the key assumption that adversity shapes specific abilities, rather than general cognitive processes [@ellis_2022; @frankenhuis_2020; @frankenhuis_2016; @frankenhuis_2013].
+Task-specific enhancement in the attention-shifting drift rate would align with this assumption, as this ability is thought to be adaptive in changing environments; but enhancement in the task-general drift rate would not.
+One study reports evidence suggesting that exposure to threat but not deprivation is associated with better attention shifting [@young_2022]. 
+If so, we should expect to see higher task-specific drift rates with household threat, but not with material deprivation.
+Enhanced task-specific drift rates on inhibition and mental rotation would be unexpected yet interesting.
+It would constitute novel documentation of enhancements, and would suggest that lowered raw performance reflects ability-irrelevant processes.
+Finally, equivalent drift rates across adversity levels would also not be consistent with strength-based frameworks; rather, such a pattern would suggest that abilities are intact (i.e., not affected by adversity).
 
-(2) Non-decision time. Existing theory offers little direction for predicting how adversity should relate to non-decision time, but we can conceive of two general patterns:
-    (a) Both material deprivation and household threat may generally be associated with slower speed of attending to and encoding information or executing responses, leading to task-general deficits in non-decision times.
-    (b) Youth with more exposure to household threat may develop a baseline hyper-vigilance, leading to faster task-specific non-decision times [@dejoseph_2022].
+Deficit perspectives can accommodate both lowered task-specific and lowered task-general drift rates.
+On the one hand, past work suggests that adversity impairs specific abilities [e.g., inhibition\; @farah_2006; @fields_2021; @mezzacappa_2004; @mittal_2015]. 
+On the other hand, there is also evidence that adversity affects general cognitive ability [@bignardi_2022]---perhaps through its broad effects on brain regions that are involved across several cognitive abilities [@sheridan_2014]. 
+However, equivalent or enhanced drift rates, whether they be task-specific or task-general, would not be consistent with deficit perspectives; rather, this would suggest that abilities are intact or enhanced.
 
-(3) Boundary separation. We do not have specific predictions for associations between adversity and boundary separation, as differences in boundary separations cannot be interpreted as either deficits or enhancements, but rather as strategies.
+Our approach adds value in a third way besides separating drift rate from ability-irrelevant factors and isolating task-specific and task-general effects: It allows us to quantify cognitive deficits and enhancements separately within the same model.
+This is because the task-specific and task-general estimates are statistically independent.
+Thus, for instance, we may find that adversity lowers general drift rate, as well as some task-specific drift rate (e.g., capturing inhibition), but increases other task-specific drift rates (e.g., capturing attention shifting).
+
+If the drift rates we observe align with previous interpretations of performance differences as outlined above, our findings support existing theories about deficits and enhancements. 
+However, if not drift rates, but non-decision time or boundary separation account for the existing findings, and drift rates do not, neither deficit- or adaptation-based frameworks are supported. 
+This would at a minimum invite reflection---perhaps revision---of the evidence base for (parts of) these frameworks.
+At the same time, such findings would offer clear directions for future research in this field (e.g., which factors explain variation in non-decision times and/or boundary separation across levels of adversity).
+Thus, regardless of the specific pattern of outcomes, our analyses will contribute to an accurate and refined understanding of how early-life adversity shapes cognitive abilities.
 
 # Methods {#methods}
 
@@ -223,7 +235,7 @@ There are four tasks: (1) Processing Speed Task (Pattern Comparison Processing S
 At baseline, the study included 11,878 youths (aged between 9 and 10 years old, measured in months) recruited across 21 sites. 
 The study used multi-stage probability sampling to obtain a nationally representative sample [@heeringa_2010]. 
 Baseline assessments were completed between September 1^st^ 2016 and August 31^st^ 2018 [see @garavan_2018].
-Our analysis sample includes `r descriptives$precleaning_n$full_n_trial` participants who had trial-level data available on all four^1^ cognitive tasks.
+Our analysis sample includes `r descriptives$precleaning_n$full_n_trial` participants who had trial-level data available on all four^2^ cognitive tasks.
 We will provide descriptive statistics of the youth included in the final sample (i.e., age, income-to-needs ratio, parent education level, ethnicity) in Stage 2 of this Registered Reports submission.
 
 ## Open Science Statement {#meth_os}
@@ -350,7 +362,7 @@ The source code can be found on the Github repository ([https://anonymous.4open.
 We use code provided by @johnson_2017.
 The benefit of this approach is that group-level information is leveraged to estimate individual-level estimates.
 This differs from classic DDM estimation approaches where the model is fitted to the data of each participant separately [@voss_2013].
-This is particularly useful in developmental samples like the ABCD dataset which have a limited number of trials per participant but substantially larger sample sizes than is typical in the DDM literature^2^.
+This is particularly useful in developmental samples like the ABCD dataset which have a limited number of trials per participant but substantially larger sample sizes than is typical in the DDM literature^3^.
 
 All models will freely estimate the drift rate, non-decision time, and boundary separation while constraining response bias to 0.5 (i.e., assuming no bias towards a particular response option).
 For the Flanker and Attention Shifting Task, we will compare model versions that separately estimate drift rate and non-decision-time per task condition or collapsed across conditions.
@@ -387,25 +399,30 @@ Model fit will be assessed the same way as at Step 2.
 The regression coefficients of these models will be interpreted to address our research questions.
 We will control for multiple testing in the regression paths based on the false discovery rate [@benjamini_1995; @cribbie_2007].
 We will do so separately for tests involving drift rates, non-decision times, and boundary separations, as we have different hypotheses for each of these parameters.
+In addition, we are interested in determining if effects that fall between -.10 and .10 are consistent with an actual null effect.
+For regression coefficients falling within these bounds, we therefore use two one-sided tests (TOST) equivalence testing using -.10 and .10 as bounds.
 
 ## Timeline
 
 All data required for the study have already been collected.
-We estimate we will need three months after Stage 1 in-principle acceptance to fit all the DDM models, run the analyses, and finish the Stage 2 report.
+We estimate we will need four months after Stage 1 in-principle acceptance to fit all the DDM models, run the analyses, and finish the Stage 2 report.
 
 \pagebreak
 
 # Footnotes
 
-^1^ The preregistration also included the Picture Vocabulary Task.
+^1^ A fourth DDM parameter,, the *starting point* (*z*), represents an initial bias towards one of the two decision options (e.g., a tendency to classify facial expressions as angry that extends to neutral faces).
+Note that allowing the starting point to vary only makes sense if response options differ in valence (e.g., happy and angry faces, which the current study does not include and thus is unable to examine).
+
+^2^ The preregistration also included the Picture Vocabulary Task.
 However, after accessing the data we realized that this task was implemented using computerized adaptive testing [@luciana_2018].
 This makes it unsuitable for DDM, as the model assumes the level of difficulty is the same across trials.
 
-^2^ We ran parameter recovery studies simulating the data for the Flanker Task, which has the lowest overall number of trials. Parameter recovery was excellent for the scenario that we plan in our main analyses (all *r*s \≥ .84). See the supplemental materials for more details.
+^3^ We ran parameter recovery studies simulating the data for the Flanker Task, which has the lowest overall number of trials. Parameter recovery was excellent for the scenario that we plan in our main analyses (all *r*s \≥ .84). See the supplemental materials for more details.
 
 \pagebreak
 
-### References
+# References
 
 ::: {#refs}
 :::
@@ -429,4 +446,3 @@ knitr::include_graphics("images/fig2.png")
 ```{r figure3, fig.width=6, dpi=600, fig.id = "figure3", fig.cap.style = "Image Caption", fig.cap='**Figure 3.** Visualization of the full structural equation model (SEM). Dotted black lines represent covariances. Dashed black lines represent factor loadings. Solid grey lines represent regression paths. The factor loadings to each of the Processing Speed Task indicators are fixed to 1. The unique variances of each manifest indicator are captured in additional latent factors (U), one per indicator. To this end, the factor loadings are fixed to 0 and the residual variances of the manifest indicators are fixed to 0. For model identification reasons, we do not estimate regression paths to the unique variances of the Processing Speed Task. Not shown in this Figure to improve readability: (1) the sociodemographic covariates that are included in the MNLFA scores (see Measures section), and (2) age as a covariate for the manifest DDM parameters. PS = Processing Speed Task; AS Rep = Attention Shifting Task repeat trials; AS Sw = Attention Shifting Task switch trials; MR = Mental Rotation Task; FL Con = Flanker Task congruent trials; FL Inc = Flanker Task incongruent trials; *v* = Drift rate; *a* = Boundary separation; *t0* = Non-decision time; U = unique variance.'}
 knitr::include_graphics("images/fig3.png")
 ```
-
