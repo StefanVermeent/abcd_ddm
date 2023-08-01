@@ -51,3 +51,6 @@ vignettes/*.pdf
 /data/flanker_clean.csv
 /data/dccs_clean.csv
 /data/pcps_clean.csv
+/data/mnlfa_ivs*
+
+/analysis_objects/ddm*
