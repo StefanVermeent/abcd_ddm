@@ -49,14 +49,14 @@ mod_base_2con <- "model {
   }
   for (s in 1:nSubjects) {
     for (c in 1:nCon) {
-      tau[c, s]  ~ dnorm(muTau[c], precTau) T(.0001, 1)
+      tau[c, s]  ~ dnorm(muTau[c], precTau) T(.0001, 2)
       delta[c, s] ~ dnorm(muDelta[c] , precDelta) T(-10, 10)
     }
     alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
   }
   #priors
   for (c in 1:nCon){ 
-    muTau[c] ~ dunif(.0001, 1)
+    muTau[c] ~ dunif(.0001, 2)
     muDelta[c] ~ dunif(-10, 10)
   } 
   muAlpha~ dunif(.1, 5) 
@@ -72,7 +72,7 @@ mod_base_2con <- "model {
 # Note: This model will be used for the Mental Rotation Task to fix the truncated RT distribution
 
 mod_base_1con_impute <- "model {
-  #likelihood function
+ #likelihood function
   for (t in 1:nTrials) {
     ybin[t] ~ dinterval(y[t], threshMat[t,]) 
     y[t] ~ dwiener(alpha[subject[t]], 
@@ -104,14 +104,14 @@ initfunction_1con <- function(chain){
     precAlpha = runif(1, .01, 100),
     precTau = runif(1, .01, 100),
     precDelta = runif(1, .01, 100),
-    y = rep(NA, length(y)),
+    y = yInit,
     .RNG.name = "lecuyer::RngStream",
     .RNG.seed = sample.int(1e10, 1, replace = F)))
 }
 initfunction_2con <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
-    muTau = runif(2, .01, .05),
+    muTau = runif(2, .01, 1.05),
     muDelta = runif(2, -9.9, 9.9),
     precAlpha = runif(1, .01, 100),
     precTau = runif(1, .01, 100),
@@ -124,7 +124,7 @@ initfunction_2con <- function(chain){
 initfunction_1con_impute <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
-    muTau = runif(1, .01, .05),
+    muTau = runif(1, .01, 1.05),
     muDelta = runif(1, -9.9, 9.9),
     precAlpha = runif(1, .01, 100),
     precTau = runif(1, .01, 100),
@@ -153,50 +153,50 @@ lmt_clean <- lmt_clean |>
 #We probabilistically assign 0 (incorrect) or 1 (correct) to missing trials to estimate data
 
 set.seed(37843564)
-lmt_clean <- lmt_clean |> 
+lmt_clean_impute <- lmt_clean |> 
   group_by(subj_idx) |> 
   mutate(
     # If response is missing, impute correctness probabilistically
-    prop = sum(choice)/n(),
-    choice = ifelse(is.na(RT),
-                     sample(c(0,1), prob = c(1-sum(choice)/n(), sum(choice)/n()), size = 100, replace = T),
-                     choice)
+    prop = sum(correct)/n(),
+    correct = ifelse(is.na(RT),
+                     sample(c(0,1), prob = c(1-sum(correct)/n(), sum(correct)/n()), size = 100, replace = T),
+                     correct)
   )
 
 # Store RTs and condition per trial (incorrect RTs are coded negatively)
-lmt_y_impute <- round(ifelse(lmt_clean$correct == 0, (lmt_clean$RT*-1), lmt_clean$RT),3)
+lmt_y_impute <- round(ifelse(lmt_clean_impute$correct == 0, (lmt_clean_impute$RT*-1), lmt_clean_impute$RT),3)
 
-lmt_ybin_impute = 1:nrow(lmt_clean) |> 
+lmt_ybin_impute = 1:nrow(lmt_clean_impute) |> 
   map_dbl(function(x){
-    if(is.na(lmt_clean$RT[x])) {
-      if(lmt_clean$correct[x] == 0) 0 else 2
+    if(is.na(lmt_clean_impute$RT[x])) {
+      if(lmt_clean_impute$correct[x] == 0) 0 else 2
     } else 1
   })
 
 #Create a matrix of cutoff times for JAGS
-threshMat_impute <- as.matrix(data.frame(thresh1 = rep(-5.001, nrow(lmt_clean)), 
-                                  thresh2 = rep(5.001, nrow(lmt_clean))))
+threshMat_impute <- as.matrix(data.frame(thresh1 = rep(-5.001, nrow(lmt_clean_impute)), 
+                                  thresh2 = rep(5.001, nrow(lmt_clean_impute))))
 
 #Create initial values for missing data
-yInit_impute = 1:nrow(lmt_clean) |> 
+yInit_impute = 1:nrow(lmt_clean_impute) |> 
   map_dbl(function(x){
     if(is.na(lmt_y_impute[x])) { # If RT has been cut off
       if(lmt_ybin_impute[x] == 0) { # And has been imputed as 'incorrect'
-        threshMat[x,1]-.001 # Initialize below the threshold
+        threshMat_impute[x,1]-.001 # Initialize below the threshold
       } else {
-        threshMat[x,2]+.001
+        threshMat_impute[x,2]+.001
       }
     } else NA
   })
 #End of data censoring procedure
 
 #Create numbers for JAGS
-lmt_nTrials    <- nrow(lmt_clean)
-lmt_nSubjects  <- length(unique(lmt_clean$subj_idx))
+lmt_nTrials    <- nrow(lmt_clean_impute)
+lmt_nSubjects  <- length(unique(lmt_clean_impute$subj_idx))
 
 #Create a list of the data; this gets sent to JAGS
 lmt_datalist <- list(y = lmt_y_impute, ybin = lmt_ybin_impute, threshMat = threshMat_impute,
-                     subject = lmt_clean$subj_idx_num,
+                     subject = lmt_clean_impute$subj_idx_num,
                      nTrials = lmt_nTrials, nSubjects = lmt_nSubjects)
 
 # JAGS Specifications
@@ -218,7 +218,7 @@ ddm_lmt_mod1 <- run.jags(method = "parallel",
                          n.chains = nChains,
                          adapt = 1000, #how long the samplers "tune"
                          burnin = 2000, #how long of a burn in
-                         sample = 12000,
+                         sample = 1000,
                          thin = 10, #thin if high autocorrelation to avoid huge files
                          modules = c("wiener", "lecuyer"),
                          summarise = F,
@@ -291,6 +291,8 @@ save(mcmc_lmt_mod2, file = 'analysis_objects/ddm_lmt_mod2.RData')
 
 ## 2.2 Flanker Task ----
 
+### 2.2.1 Model 1: Separate conditions ----
+
 # Create numeric participant IDs
 flanker_id_matches <- flanker_clean |> 
   distinct(subj_idx) |> 
@@ -311,7 +313,7 @@ flanker_nSubjects  <- length(unique(flanker_clean$subj_idx))
 flanker_nCondition <- max(flanker_condition)
 
 #Create a list of the data; this gets sent to JAGS
-flanker_datalist <- list(y = flanker_y, subject = flanker_clean$subj_idx_num, con = flanker_condition,
+flanker_datalist <- list(y = flanker_y, subject = flanker_clean$subj_idx_num, condition = flanker_condition,
                          nTrials = flanker_nTrials, nCon = flanker_nCondition,
                          nSubjects = flanker_nSubjects)
 
@@ -334,7 +336,7 @@ ddm_flanker_mod1 <- run.jags(method = "parallel",
                              n.chains = nChains,
                              adapt = 1000, #how long the samplers "tune"
                              burnin = 2000, #how long of a burn in
-                             sample = 10000,
+                             sample = 1000,
                              thin = 10, #thin if high autocorrelation to avoid huge files
                              modules = c("wiener", "lecuyer"),
                              summarise = F,
@@ -346,10 +348,39 @@ ddm_flanker_mod1 <- run.jags(method = "parallel",
 mcmc_flanker_mod1 <- as.matrix(as.mcmc.list(ddm_flanker_mod1), chains = F) |> 
   as_tibble()
 
-save(mcmc_flanker_mod1, file = 'analysis_objects/ddm_flanker_mod1.RData')
+save(mcmc_flanker_mod1, ddm_flanker_mod1, file = 'analysis_objects/ddm_flanker_mod1.RData')
 
 
+diagMCMC(as.mcmc.list(ddm_flanker_mod1))
 
+
+### 2.2.2 Model 2: Collapse across conditions ----
+
+# Run Model
+ddm_flanker_mod2 <- run.jags(method = "parallel",
+                             model = mod_base_1con,
+                             monitor = parameters,
+                             data = flanker_datalist,
+                             inits = initfunction_1con,
+                             n.chains = nChains,
+                             adapt = 1000, #how long the samplers "tune"
+                             burnin = 2000, #how long of a burn in
+                             sample = 1000,
+                             thin = 10, #thin if high autocorrelation to avoid huge files
+                             modules = c("wiener", "lecuyer"),
+                             summarise = F,
+                             plots = F)
+
+# Extract results
+
+#Convert the runjags object to a coda format
+mcmc_flanker_mod2 <- as.matrix(as.mcmc.list(ddm_flanker_mod2), chains = F) |> 
+  as_tibble()
+
+save(mcmc_flanker_mod2, ddm_flanker_mod2, file = 'analysis_objects/ddm_flanker_mod2.RData')
+
+
+diagMCMC(as.mcmc.list(ddm_flanker_mod2))
 
 ## 2.3 Processing Speed Task ----
 
@@ -407,14 +438,9 @@ mcmc_pcps_mod1 <- as.matrix(as.mcmc.list(ddm_pcps_mod1), chains = F) |>
 save(mcmc_pcps_mod1, file = 'analysis_objects/ddm_pcps_mod1.RData')
 
 
-
-
-
-
-
 ## 2.4 Attention Shifting Task ----
 
-# Will this still be here?
+### 2.4.1 Model 1: Separate conditions ----
 
 # Create numeric participant IDs
 dccs_id_matches <- dccs_clean |> 
@@ -459,7 +485,7 @@ ddm_dccs_mod1 <- run.jags(method = "parallel",
                           n.chains = nChains,
                           adapt = 1000, #how long the samplers "tune"
                           burnin = 2000, #how long of a burn in
-                          sample = 10000,
+                          sample = 1000,
                           thin = 10, #thin if high autocorrelation to avoid huge files
                           modules = c("wiener", "lecuyer"),
                           summarise = F,
@@ -471,5 +497,30 @@ ddm_dccs_mod1 <- run.jags(method = "parallel",
 mcmc_dccs_mod1 <- as.matrix(as.mcmc.list(ddm_dccs_mod1), chains = F) |> 
   as_tibble()
 
-save(mcmc_dccs_mod1, file = 'analysis_objects/ddm_dccs_mod1.RData')
+save(ddm_dccs_mod1, mcmc_dccs_mod1, file = 'analysis_objects/ddm_dccs_mod1.RData')
 
+
+### 2.4.2 Model 2: Collapse across conditions ----
+
+# Run Model
+ddm_dccs_mod2 <- run.jags(method = "parallel",
+                          model = mod_base_1con,
+                          monitor = parameters,
+                          data = dccs_datalist,
+                          inits = initfunction_1con,
+                          n.chains = nChains,
+                          adapt = 1000, #how long the samplers "tune"
+                          burnin = 2000, #how long of a burn in
+                          sample = 1000,
+                          thin = 10, #thin if high autocorrelation to avoid huge files
+                          modules = c("wiener", "lecuyer"),
+                          summarise = F,
+                          plots = F)
+
+# Extract results
+
+#Convert the runjags object to a coda format
+mcmc_dccs_mod2 <- as.matrix(as.mcmc.list(ddm_dccs_mod2), chains = F) |> 
+  as_tibble()
+
+save(ddm_dccs_mod2, mcmc_dccs_mod2, file = 'analysis_objects/ddm_dccs_mod2.RData')
