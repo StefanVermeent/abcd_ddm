@@ -4,8 +4,8 @@ ABCD DDM repository
 This repository contains data, code, and output for a manuscript
 entitled “Cognitive deficits and enhancements in youth from adverse
 conditions: An integrative assessment using Drift Diffusion Modeling in
-the ABCD study” submitted as a Registered Report at *Developmental
-Science*.
+the ABCD study”. The manuscript has received Stage 1 In-Principle
+acceptance at *Developmental Science*.
 
 ## Open Science Workflow
 
@@ -52,8 +52,15 @@ Using this same approach, we also logged other major milestones, such as
 submitting preregistrations and finalizing analyses. For an overview of
 all milestones, see the [Data Access History](data_access_history.md).
 
-![**Figure 1.** Graphical overview of the data access workflow using R
-and GitHub.](supplement/images/fig1.png)
+<div class="figure">
+
+<img src="supplement/images/fig1.png" alt="**Figure 1.** Graphical overview of the data access workflow using R and GitHub." width="1075" />
+<p class="caption">
+**Figure 1.** Graphical overview of the data access workflow using R and
+GitHub.
+</p>
+
+</div>
 
 ## Directory Structure
 
@@ -82,9 +89,14 @@ Below is a simple visualization of the full directory structure.
 
     ## .
     ## ├── analysis_objects
+    ## │   ├── ddm_flanker_mod1.RData
+    ## │   ├── ddm_flanker_mod1_parsed.RData
+    ## │   ├── ddm_lmt_mod1.RData
     ## │   ├── ddm_sim1_results.RData
     ## │   ├── ddm_sim2_results.RData
     ## │   ├── ddm_sim3_results.RData
+    ## │   ├── ddm_sim4_results.RData
+    ## │   ├── ddm_sim5_results.RData
     ## │   ├── descriptives.RData
     ## │   ├── exclusions.RData
     ## │   └── power.Rdata
@@ -93,6 +105,7 @@ Below is a simple visualization of the full directory structure.
     ## ├── data_access_history.md
     ## ├── data_access_history.Rmd
     ## ├── Dockerfile
+    ## ├── log_viz.R
     ## ├── preregistrations
     ## │   ├── 2022-09-20_preregistration_DDM.md
     ## │   └── 2022-09-20_preregistration_DDM.Rmd
@@ -102,8 +115,8 @@ Below is a simple visualization of the full directory structure.
     ## │   │   ├── fig1.png
     ## │   │   ├── fig2.png
     ## │   │   └── fig3.png
-    ## │   ├── journals
-    ## │   │   └── DevSci
+    ## │   ├── new_current_study.docx
+    ## │   ├── new_current_study.qmd
     ## │   ├── reference-doc.docx
     ## │   ├── references.bib
     ## │   ├── registered_report.docx
@@ -112,10 +125,13 @@ Below is a simple visualization of the full directory structure.
     ## │   ├── registered_report_blinded.qmd
     ## │   ├── scripts
     ## │   │   └── staging.R
-    ## │   └── staged_results.RData
+    ## │   ├── staged_results.RData
+    ## │   └── ~$gistered_report.docx
     ## ├── scripts
     ## │   ├── 0_simulations
+    ## │   │   ├── ddm_missing_imputation.R
     ## │   │   ├── ddm_trial_simulations.R
+    ## │   │   ├── ddm_validity_checks.R
     ## │   │   └── power_analysis.R
     ## │   ├── 1_data_prep
     ## │   │   ├── 1_preprocessing.R
@@ -123,17 +139,21 @@ Below is a simple visualization of the full directory structure.
     ## │   │   └── 3_data_subsets.R
     ## │   ├── 2_analyses
     ## │   │   ├── 1_ddm_fit.R
-    ## │   │   ├── 2_sem_training.R
-    ## │   │   └── 3_sem_test.R
+    ## │   │   ├── 2_ivs.R
+    ## │   │   ├── 3_ddm_extract_results.R
+    ## │   │   ├── 4_sem_training.R
+    ## │   │   └── 5_sem_test.R
     ## │   ├── custom_functions
     ## │   │   ├── DBDA2E-utilities.R
+    ## │   │   ├── ddm_functions.R
     ## │   │   ├── general-functions.R
     ## │   │   └── read-functions.R
     ## │   └── dependencies.R
     ## └── supplement
     ##     ├── apa.csl
     ##     ├── images
-    ##     │   └── fig1.png
+    ##     │   ├── fig1.png
+    ##     │   └── fig3.png
     ##     ├── reference-doc.docx
     ##     ├── references.bib
     ##     ├── scripts
@@ -189,10 +209,12 @@ provides an overview of the inputs and outputs of each script.
 
 ### Simulations
 
-| script                  | input | output                                                                       |
-|-------------------------|-------|------------------------------------------------------------------------------|
-| ddm_trial_simulations.R |       | ddm_sim1_results.RData<br> ddm_sim2_results.RData<br> ddm_sim3_results.RData |
-| power_analysis.R        |       | power.RData’                                                                 |
+| script                   | input | output                                                                       |
+|--------------------------|-------|------------------------------------------------------------------------------|
+| ddm_missing_imputation.R |       | results_sim5.RData’<br> ddm_sim5_results.RData                               |
+| ddm_trial_simulations.R  |       | ddm_sim1_results.RData<br> ddm_sim2_results.RData<br> ddm_sim3_results.RData |
+| ddm_validity_checks.R    |       | ddm_sim4_results.RData                                                       |
+| power_analysis.R         |       | power.RData’                                                                 |
 
 ### Data Prep
 
@@ -204,11 +226,13 @@ provides an overview of the inputs and outputs of each script.
 
 ### Analyses
 
-| script           | input | output                                                                                                                                                              |
-|------------------|-------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1_ddm_fit.R      |       | ddm_lmt_mod1.RData’<br> ddm_lmt_mod2.RData’<br> ddm_flanker_mod1.RData’<br> ddm_pcps_mod1.RData’<br> ddm_dccs_mod1.RData’                                           |
-| 2_sem_training.R |       | model_sub_vmodel_sub_v\_fitmodel_sub_amodel_sub_a\_fitmodel_sub_t0model_sub_t0_fitmodel_combnmodel_combn_fitmodel_fullmodel_full_fitfile=sem_training_results.RData |
-| 3_sem_test.R     |       | NA                                                                                                                                                                  |
+| script                  | input                                                                                                                                                                   | output                                                                                                                                                                                                                      |
+|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1_ddm_fit.R             |                                                                                                                                                                         | ddm_lmt_mod1.RData’<br> ddm_lmt_mod2.RData’<br> ddm_flanker_mod1.RData’<br> ddm_flanker_mod2.RData’<br> ddm_pcps_mod1.RData’<br> ddm_dccs_mod1.RData’<br> ddm_dccs_mod2.RData’                                              |
+| 2_ivs.R                 |                                                                                                                                                                         | mnlfa_ivs_clean.csv                                                                                                                                                                                                         |
+| 3_ddm_extract_results.R | ddm_lmt_mod1.RData<br> ddm_lmt_mod2.RData<br> ddm_flanker_mod1.RData<br> ddm_flanker_mod2.RData<br> ddm_dccs_mod1.RData<br> ddm_dccs_mod2.RData<br> ddm_pcps_mod1.RData | ddm_lmt_model_parsed.RData<br> ddm_lmt_model_parsed.RData<br> ddm_flanker_mod1_parsed.RData<br> ddm_flanker_mod2_parsed.RData<br> ddm_dccs_mod1_parsed.RData<br> ddm_dccs_mod2_parsed.RData<br> ddm_pcps_model_parsed.RData |
+| 4_sem_training.R        |                                                                                                                                                                         | model_sub_vmodel_sub_v\_fitmodel_sub_amodel_sub_a\_fitmodel_sub_t0model_sub_t0_fitmodel_combnmodel_combn_fitmodel_fullmodel_full_fitfile=sem_training_results.RData                                                         |
+| 5_sem_test.R            |                                                                                                                                                                         | NA                                                                                                                                                                                                                          |
 
 ## Data
 
