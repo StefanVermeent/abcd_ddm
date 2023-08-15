@@ -35,7 +35,7 @@ main_findings:
   - '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/fig1_transparent.png){.main_pic}'
   - "2. Estimate whether adversity affects **task-specific** and **task-general** processes"
   - '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/fig3_transparent.png){.main_pic}'
-logoleft_name: '![](https://raw.githubusercontent.com/brentthorne/posterdown/master/images/qr_abcd.png){.main-img-left}'
+logoleft_name: '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/qr_abcd.png){.main-img-left}'
 
 output: 
   posterdown::posterdown_betterland:
@@ -46,7 +46,7 @@ output:
 title_textsize: "75pt"
 main_textsize: "80pt"
 main_picwidth: "105%"
-mainimage_leftsize: "15%"
+mainimage_leftsize: "10%"
 link-citations: true
 bibliography: packages.bib
 ---
