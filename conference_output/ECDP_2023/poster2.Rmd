@@ -32,7 +32,7 @@ affiliation:
     address: Department of Psychology, University of Mainz
 main_findings:
   - "1. Isolate cognitive processes using **Drift Diffusion Modeling**"
-  - '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/fig1_transparent.png){.main_pic}'
+  - '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/fig1_transparent2.png){.main_pic}'
   - "2. Estimate whether adversity affects **task-specific** and **task-general** processes"
   - '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/fig3_transparent.png){.main_pic}'
 logoleft_name: '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/qr_abcd.png){.main-img-left}'
