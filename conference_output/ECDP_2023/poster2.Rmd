@@ -32,7 +32,9 @@ affiliation:
     address: Department of Psychology, University of Mainz
 main_findings:
   - "1. Isolate cognitive processes using **Drift Diffusion Modeling**"
-  - '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/registered_report/images/fig1.png){.main_pic}'
+  - '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/fig1_transparent.png){.main_pic}'
+  - "2. whether whether adversity affects **task-specific** and **task-general** processes"
+  - '![](https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/fig3_transparent.png){.main_pic}'
 logoleft_name: '![](https://raw.githubusercontent.com/brentthorne/posterdown/master/images/qr-code-black.png){.main-img-left}'
 logoright_name: '![](https://raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png){.main-img-right}'
 output: 
@@ -42,7 +44,9 @@ output:
     highlight: haddock
     number_sections: false
 title_textsize: "75pt"
-main_textsize: "100pt"
+main_fontfamily: "helvetica"
+main_textsize: "80pt"
+main_picwidth: "105%"
 link-citations: true
 bibliography: packages.bib
 ---

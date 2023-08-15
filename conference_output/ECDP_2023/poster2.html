@@ -25,7 +25,7 @@ Font-awesome icons ie github or twitter
 <!--
 Google fonts api stuff
 -->
-<link href='https://fonts.googleapis.com/css?family=Special Elite' rel='stylesheet'>
+<link href='https://fonts.googleapis.com/css?family=helvetica' rel='stylesheet'>
 <link href='https://fonts.googleapis.com/css?family=Rasa' rel='stylesheet'>
 
 <!--
@@ -61,17 +61,23 @@ margin-bottom: 2cm;
 position: sticky;
 width: 100%;
 }
-pre.sourceCode.r {
-background-color: #dddddd40;
-border-radius: 4mm;
+pre.sourceCode.r, pre.sourceCode.python {
+background-color: #ffffff20;
+border: solid #008080 1mm;
+border-radius: 0.5em;
 padding: 4mm;
-width: 75%;
 margin: auto;
 margin-top: 1em;
 margin-bottom: 1em;
 /* align-items: center; */
 }
-code.sourceCode.r{
+div.sourceCode {
+background-color: transparent;
+width: 85%;
+margin-left: auto;
+margin-right: auto;
+}
+code.sourceCode.r, code.sourceCode.python {
 background-color: transparent;
 font-size: 20pt;
 border-radius: 2mm;
@@ -80,7 +86,7 @@ code {
 font-size: 25pt;
 font-family: monospace;
 background-color: #00808024;
-color: #0b4545;
+color: #008080;
 padding: 1.2mm;
 line-height: 1;
 border-radius: 2mm;
@@ -134,9 +140,9 @@ column-count: 2;
 -webkit-column-fill: auto;
 -moz-column-fill: auto;
 column-fill: auto;
--webkit-column-rule-width: 50%;
--moz-column-rule-width: 50%;
-column-rule-width: 50%;
+-webkit-column-rule-width: 0.5;
+-moz-column-rule-width: 0.5;
+column-rule-width: 0.5;
 -webkit-column-rule-style: solid;
 -moz-column-rule-style: solid;
 column-rule-style: solid;
@@ -166,7 +172,8 @@ border-bottom: 0;
 #author {
 color: #0b4545;
 margin: 0;
-line-height: 90%;
+text-align: left;
+line-height: 65%;
 font-size: 1.17em;
 }
 #affiliation {
@@ -206,13 +213,13 @@ color: #000000;
 text-align: left;
 }
 .main {
-width: calc(46in / 2);
+width: calc(46in * 0.5);
 height: 32in;
 position: absolute;
-margin-left: calc(46in / 4);
+margin-left: calc(46in * 0.25);
 background-color: #0b4545;
 color: #FFFFFF90;
-font-family: Special Elite;
+font-family: helvetica;
 background-image: linear-gradient(#0b4545 50%, #008080);
 }
 .main strong {
@@ -231,8 +238,8 @@ bottom: 0.2in;
 position: absolute;
 }
 .main p {
-padding-top: 20%;
-font-size: 100pt;
+padding-top: 0%;
+font-size: 80pt;
 text-align: left;
 }
 .fab {
@@ -254,6 +261,21 @@ color: #00000060;
 font-size: 5px;
 text-decoration: none;
 }
+.globe {
+color: #00000060;
+font-size: 5px;
+text-decoration: none;
+}
+.github > .fab {
+color: #00000060;
+font-size: 40px;
+text-decoration: none;
+}
+.globetext {
+color: #00000060;
+font-size: 35px;
+text-decoration: none;
+}
 .poster_wrap {
 width: 46in;
 height: 32in;
@@ -272,7 +294,7 @@ span > #tab:mytable {
   padding-right: 30mm;
 }
 .main_pic {
-  width: 50%;
+  width: 105%;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -539,7 +561,7 @@ Xie, Yihui, Romain Lesur, Brent Thorne, and Xianying Tan. 2022. <em>Pagedown: Pa
 
 </div>
 <div class="main">
-<p>1. Isolate cognitive processes using <strong>Drift Diffusion Modeling</strong><br><br> <img src="https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/registered_report/images/fig1.png" class="main_pic" /></p>
+<p>1. Isolate cognitive processes using <strong>Drift Diffusion Modeling</strong><br><br> <img src="https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/fig1_transparent.png" class="main_pic" /><br><br> 2. whether whether adversity affects <strong>task-specific</strong> and <strong>task-general</strong> processes<br><br> <img src="https://raw.githubusercontent.com/stefanvermeent/abcd_ddm/master/conference_output/ECDP_2023/fig3_transparent.png" class="main_pic" /></p>
 <img src="https://raw.githubusercontent.com/brentthorne/posterdown/master/images/qr-code-black.png" class="main-img-left" />
 <img src="https://raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png" class="main-img-right" />
 </div>
