@@ -1,0 +1,145 @@
+---
+title: ""
+author:
+  - name: Stefan Vermeent
+    affil: 1,2
+    email: p.c.s.vermeent@uu.nl
+    main: true
+  - name: Ethan S. Young
+    affil: 1
+    email: young.ethan.scott@gmail.com
+    main: false
+  - name: Meriah L. DeJoseph
+    affil: 3
+    email: meriahd@stanford.edu
+    main: false
+  - name: Anna-Lena Schubert
+    affil: 4
+    email: anna-lena.schubert@uni-mainz.de
+    main: false
+  - name: <br>Willem. E. Frankenhuis
+    affil: 1,2
+    email: w.e.frankenhuis@uu.nl
+    main: false
+affiliation:
+  - num: 1
+    address: Department of Psychology, Utrecht University
+  - num: 2
+    address: Max Planck Institute for the Study of Crime, Security, and Law
+  - num: 3
+    address: Center on Early Childhood, Stanford University
+  - num: 4
+    address: Department of Psychology, University of Mainz
+main_findings:
+  - '**COGNITIVE DEFICITS AND ENHANCEMENTS IN YOUTH FROM ADVERSE CONDITIONS:<br>*AN INTEGRATIVE ASSESSMENT USING DRIFT DIFFUSION MODELING IN THE<br>ABCD STUDY***'
+
+
+output: 
+  posterdown::posterdown_betterport:
+    self_contained: false
+    pandoc_args: --mathjax
+    highlight: haddock
+    number_sections: false
+title_textsize: "65pt"
+column_numbers: 2
+main_textsize: "57pt"
+main_picwidth: "100%"
+main_fontfamily: "Lato"
+main_topsize: 0.1
+main_bottomsize: 0.01
+author_textsize: "1.1em"
+affiliation_textsize: "35px"
+authorextra_textsize: "49px"
+poster_height: "46.8in"
+poster_width: "33.1in"
+body_size: 0.95
+body_textsize: "45pt"
+mainimage_leftsize: "10%"
+link-citations: true
+bibliography: ../../registered_report/references.bib
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(results = 'asis',
+                      echo = FALSE,
+                      warning = FALSE,
+                      tidy = FALSE,
+                      message = FALSE,
+                      fig.align = 'center',
+                      out.width = "100%")
+options(knitr.table.format = "html") 
+```
+
+
+# Introduction
+
+Childhood adversity can lead to cognitive deficits or enhancements. 
+Integrating **deficit** and **adaptation-based frameworks** is crucial for understanding how adversity shapes cognition.
+Two challenges currently prevent us from doing so:
+
+1. The use of **raw performance measures** (e.g., response times), which conflate different stages of processing.
+
+2. Adversity may lower or improve performance because it affects **general processes** or **specific abilities**.
+
+# Approach
+
+We investigate the effect of **household threat** and **material deprivation** on performance on four tasks measuring **inhibition**, **attention shifting**, **mental rotation**, and **processing speed** in the ABCD sample.
+
+We address the challenges above in a two-step approach:
+
+1. Use cognitive modeling to isolate **speed of information processing**, **preparation/execution speed**, and **response caution** for each task.
+
+2. Use SEM to associate adversity with **task-specific processes** (i.e., unique to a specific task) and **task-general processes** (i.e., shared across tasks).
+
+```{r, include=FALSE}
+knitr::write_bib(c('posterdown', 'rmarkdown','pagedown'), 'packages.bib')
+```
+
+# Predictions from deficit and adaption-based frameworks
+
+**Adaptation-based framework**: Adversity enhances specific abilities that solve real-world challenges [@frankenhuis_2013; @ellis_2022]:
+
+```{r adaptation, out.width="80%"}
+knitr::include_graphics("adaptation_fig.png")
+```
+
+**Deficit-based framework**: Adversity can impair both specific abilities as well as general cognitive ability:
+
+```{r deficit, out.width="80%"}
+knitr::include_graphics("deficit_fig.png")
+```
+
+If adversity only affects **preparation/execution speed** or **response caution**, neither framework is supported.
+
+
+## Step 1: Isolate cognitive processes using **Drift Diffusion Modeling**
+
+```{r out.width="100%"}
+knitr::include_graphics("fig1_transparent.png")
+```
+
+## Step 2. Estimate whether adversity affects **task-specific** and/or **task-general** processes
+
+```{r}
+knitr::include_graphics("fig3_transparent.png")
+```
+
+# Conclusion
+
+Our findings will provide insights for theory and practice:
+
+1. Is lowered/enhanced performance the result of differences in **ability-relevant processes** (e.g., attention shifting, inhibition) or **ability-irrelevant processes** (e.g., stimulus encoding, response caution)?
+
+2. Should **interventions** focus on specific abilities (e.g., removing distractions from the classroom; providing targeted training) or on general abilities (e.g., use ecologically relevant stimuli to aid learning)?
+
+
+
+
+<br><br><br>
+*Registered Report accepted pending data analysis at Developmental Science*. 
+
+```{r out.width="18%"}
+knitr::include_graphics("qr_abcd.png")
+```
+
+<br>
