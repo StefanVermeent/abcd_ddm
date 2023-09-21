@@ -18,5 +18,6 @@ mnlfa_ivs <- read_csv("data/mnlfa_ivs.csv") |>
          high_edu_c   = HIGHEDC
   )
 
+bind_rows(training_set, test_set) |> left_join(mnlfa_ivs) |> View()
 
-write_csv(mnlfa_ivs, "data/mnlfa_ivs_clean.csv")
+write_csv(mnlfa_ivs, "data/iv_data.csv")

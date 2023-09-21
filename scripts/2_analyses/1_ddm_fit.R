@@ -1,3 +1,12 @@
+install.packages(c('runjags', 'dplyr', 'readr', 'tidyr', 'purrr'))
+library(runjags)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(purrr)
+
+runjags.options(force.summary = TRUE)
+
 lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv"))
 flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv"))
 pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv"))
@@ -20,13 +29,13 @@ mod_base_1con <- "model {
   }
   
   for (s in 1:nSubjects) {
-    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 2)
+    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
     delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
     alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
   }
   
   #priors
-  muTau ~ dunif(.0001, 2)
+  muTau ~ dunif(.0001, 1)
   muDelta ~ dunif(-10, 10)
   muAlpha~ dunif(.1, 5) 
   
@@ -49,14 +58,14 @@ mod_base_2con <- "model {
   }
   for (s in 1:nSubjects) {
     for (c in 1:nCon) {
-      tau[c, s]  ~ dnorm(muTau[c], precTau) T(.0001, 2)
+      tau[c, s]  ~ dnorm(muTau[c], precTau) T(.0001, 1)
       delta[c, s] ~ dnorm(muDelta[c] , precDelta) T(-10, 10)
     }
     alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
   }
   #priors
   for (c in 1:nCon){ 
-    muTau[c] ~ dunif(.0001, 2)
+    muTau[c] ~ dunif(.0001, 1)
     muDelta[c] ~ dunif(-10, 10)
   } 
   muAlpha~ dunif(.1, 5) 
@@ -81,13 +90,13 @@ mod_base_1con_impute <- "model {
                    delta[subject[t]])
   }
   for (s in 1:nSubjects) {
-    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 2)
+    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
     delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
     alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
   }
   
   #priors
-  muTau ~ dunif(.0001, 2)
+  muTau ~ dunif(.0001, 1)
   muDelta ~ dunif(-10, 10)
   muAlpha~ dunif(.1, 5) 
   
@@ -99,7 +108,7 @@ mod_base_1con_impute <- "model {
 initfunction_1con <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
-    muTau = runif(1, .01, 1.05),
+    muTau = runif(1, .01, .05),
     muDelta = runif(1, -9.9, 9.9),
     precAlpha = runif(1, .01, 100),
     precTau = runif(1, .01, 100),
@@ -111,7 +120,7 @@ initfunction_1con <- function(chain){
 initfunction_2con <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
-    muTau = runif(2, .01, 1.05),
+    muTau = runif(2, .01, .05),
     muDelta = runif(2, -9.9, 9.9),
     precAlpha = runif(1, .01, 100),
     precTau = runif(1, .01, 100),
@@ -124,7 +133,7 @@ initfunction_2con <- function(chain){
 initfunction_1con_impute <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
-    muTau = runif(1, .01, 1.05),
+    muTau = runif(1, .01, .05),
     muDelta = runif(1, -9.9, 9.9),
     precAlpha = runif(1, .01, 100),
     precTau = runif(1, .01, 100),
@@ -138,7 +147,7 @@ initfunction_1con_impute <- function(chain){
 
 ## 2.1 Mental Rotation Task ----
 
-### 2.1.2 Model 1: Imputed missings ----
+### 2.1.1 Model 1: Imputed missings ----
 
 # Create numeric participant IDs
 lmt_id_matches <- lmt_clean |> 
@@ -203,8 +212,7 @@ lmt_datalist <- list(y = lmt_y_impute, ybin = lmt_ybin_impute, threshMat = thres
 
 #Create list of parameters to be monitored
 parameters <- c("alpha", "tau", "delta", "muAlpha",
-                "muTau", "muDelta", "precAlpha", "precTau", "precDelta", 
-                "deviance")
+                "muTau", "muDelta")
 
 nUseSteps = 1000 # Specify number of steps to run
 nChains = 3 # Specify number of chains to run (one per processor)
@@ -216,12 +224,13 @@ ddm_lmt_mod1 <- run.jags(method = "parallel",
                          data = lmt_datalist,
                          inits = initfunction_1con_impute,
                          n.chains = nChains,
+                         check.conv = TRUE,
+                         psrf.target = 1.10,
                          adapt = 1000, #how long the samplers "tune"
                          burnin = 2000, #how long of a burn in
                          sample = 1000,
                          thin = 10, #thin if high autocorrelation to avoid huge files
                          modules = c("wiener", "lecuyer"),
-                         summarise = F,
                          plots = F)
 
 
@@ -235,7 +244,7 @@ mcmc_lmt_mod1 <- as.matrix(as.mcmc.list(ddm_lmt_mod1), chains = F) |>
 save(mcmc_lmt_mod1, file = 'analysis_objects/ddm_lmt_mod1.RData')
 
 
-### 2.1.3 Model 2: Without imputing missings ----
+### 2.1.2 Model 2: Without imputing missings ----
 
 # Dataset without missings for model that does not do imputation
 lmt_clean_noImp <- lmt_clean |> 
@@ -256,8 +265,7 @@ lmt_datalist_noImp <- list(y = lmt_y, subject = lmt_clean_noImp$subj_idx_num,
 
 #Create list of parameters to be monitored
 parameters <- c("alpha", "tau", "delta", "muAlpha",
-                "muTau", "muDelta", "precAlpha", "precTau", "precDelta", 
-                "deviance")
+                "muTau", "muDelta")
 
 nUseSteps = 1000 # Specify number of steps to run
 nChains = 3 # Specify number of chains to run (one per processor)
@@ -269,12 +277,13 @@ ddm_lmt_mod2 <- run.jags(method = "parallel",
                          data = lmt_datalist_noImp,
                          inits = initfunction_1con,
                          n.chains = nChains,
+                         check.conv = TRUE,
+                         psrf.target = 1.10,
                          adapt = 1000, #how long the samplers "tune"
                          burnin = 2000, #how long of a burn in
-                         sample = 10000,
+                         sample = 1000,
                          thin = 10, #thin if high autocorrelation to avoid huge files
                          modules = c("wiener", "lecuyer"),
-                         summarise = F,
                          plots = F)
 
 # Extract results
@@ -286,8 +295,23 @@ mcmc_lmt_mod2 <- as.matrix(as.mcmc.list(ddm_lmt_mod2), chains = F) |>
 save(mcmc_lmt_mod2, file = 'analysis_objects/ddm_lmt_mod2.RData')
 
 
+### 2.1.3 Model 1b: Imputed missings, more iterations than Model 1
 
-
+# Run Model
+ddm_lmt_mod1b <- run.jags(method = "parallel",
+                         model = mod_base_1con_impute,
+                         monitor = parameters,
+                         data = lmt_datalist,
+                         inits = initfunction_1con_impute,
+                         n.chains = nChains,
+                         check.conv = TRUE,
+                         psrf.target = 1.10,
+                         adapt = 2000, #how long the samplers "tune"
+                         burnin = 4000, #how long of a burn in
+                         sample = 2000,
+                         thin = 20, #thin if high autocorrelation to avoid huge files
+                         modules = c("wiener", "lecuyer"),
+                         plots = F)
 
 ## 2.2 Flanker Task ----
 
@@ -321,8 +345,7 @@ flanker_datalist <- list(y = flanker_y, subject = flanker_clean$subj_idx_num, co
 
 #Create list of parameters to be monitored
 parameters <- c("alpha", "tau", "delta", "muAlpha",
-                "muTau", "muDelta", "precAlpha", "precTau", "precDelta", 
-                "deviance")
+                "muTau", "muDelta")
 
 nUseSteps = 1000 # Specify number of steps to run
 nChains = 3 # Specify number of chains to run (one per processor)
@@ -334,15 +357,22 @@ ddm_flanker_mod1 <- run.jags(method = "parallel",
                              data = flanker_datalist,
                              inits = initfunction_2con,
                              n.chains = nChains,
+                             check.conv = TRUE,
+                             psrf.target = 1.10,
                              adapt = 1000, #how long the samplers "tune"
                              burnin = 2000, #how long of a burn in
                              sample = 1000,
                              thin = 10, #thin if high autocorrelation to avoid huge files
                              modules = c("wiener", "lecuyer"),
-                             summarise = F,
                              plots = F)
 
 # Extract results
+
+# Extract Rhat
+rhat_flanker_mod1 <- ddm_flanker_mod1$psrf$psrf |>
+  unlist() |>
+  as_tibble(rownames = "parameter")
+
 
 #Convert the runjags object to a coda format
 mcmc_flanker_mod1 <- as.matrix(as.mcmc.list(ddm_flanker_mod1), chains = F) |> 
@@ -363,12 +393,13 @@ ddm_flanker_mod2 <- run.jags(method = "parallel",
                              data = flanker_datalist,
                              inits = initfunction_1con,
                              n.chains = nChains,
+                             check.conv = TRUE,
+                             psrf.target = 1.10,
                              adapt = 1000, #how long the samplers "tune"
                              burnin = 2000, #how long of a burn in
                              sample = 1000,
                              thin = 10, #thin if high autocorrelation to avoid huge files
                              modules = c("wiener", "lecuyer"),
-                             summarise = F,
                              plots = F)
 
 # Extract results
@@ -383,6 +414,8 @@ save(mcmc_flanker_mod2, ddm_flanker_mod2, file = 'analysis_objects/ddm_flanker_m
 diagMCMC(as.mcmc.list(ddm_flanker_mod2))
 
 ## 2.3 Processing Speed Task ----
+
+### 2.3.1 Model 1: Standard fit with 10.000 samples per chain ----
 
 # Create numeric participant IDs
 pcps_id_matches <- pcps_clean |> 
@@ -408,8 +441,7 @@ pcps_datalist <- list(y = pcps_y, subject = pcps_clean$subj_idx_num,
 
 #Create list of parameters to be monitored
 parameters <- c("alpha", "tau", "delta", "muAlpha",
-                "muTau", "muDelta", "precAlpha", "precTau", "precDelta", 
-                "deviance")
+                "muTau", "muDelta")
 
 nUseSteps = 1000 # Specify number of steps to run
 nChains = 3 # Specify number of chains to run (one per processor)
@@ -421,12 +453,13 @@ ddm_pcps_mod1 <- run.jags(method = "parallel",
                           data = pcps_datalist,
                           inits = initfunction_1con,
                           n.chains = nChains,
+                          check.conv = TRUE,
+                          psrf.target = 1.10,
                           adapt = 1000, #how long the samplers "tune"
                           burnin = 2000, #how long of a burn in
-                          sample = 12000,
+                          sample = 1000,
                           thin = 10, #thin if high autocorrelation to avoid huge files
                           modules = c("wiener", "lecuyer"),
-                          summarise = F,
                           plots = F)
 
 # Extract results
@@ -436,6 +469,31 @@ mcmc_pcps_mod1 <- as.matrix(as.mcmc.list(ddm_pcps_mod1), chains = F) |>
   as_tibble()
 
 save(mcmc_pcps_mod1, file = 'analysis_objects/ddm_pcps_mod1.RData')
+
+### 2.3.2 Model 1b: Fit with 40.000 iterations
+
+ddm_pcps_mod1b <- run.jags(method = "parallel",
+                           model = mod_base_1con,
+                           monitor = parameters,
+                           data = pcps_datalist,
+                           inits = initfunction_1con,
+                           n.chains = nChains,
+                           check.conv = TRUE,
+                           psrf.target = 1.10,
+                           adapt = 2000, #how long the samplers "tune"
+                           burnin = 4000, #how long of a burn in
+                           sample = 4000,
+                           thin = 40, #thin if high autocorrelation to avoid huge files
+                           modules = c("wiener", "lecuyer"),
+                           plots = F)
+
+# Extract results
+
+#Convert the runjags object to a coda format
+mcmc_pcps_mod1b <- as.matrix(as.mcmc.list(ddm_pcps_mod1b), chains = F) |> 
+  as_tibble()
+
+save(mcmc_pcps_mod1b, ddm_pcps_mod1b, file = 'analysis_objects/ddm_pcps_mod1b.RData')
 
 
 ## 2.4 Attention Shifting Task ----
@@ -470,8 +528,7 @@ dccs_datalist <- list(y = dccs_y, subject = dccs_clean$subj_idx_num, condition =
 
 #Create list of parameters to be monitored
 parameters <- c("alpha", "tau", "delta", "muAlpha",
-                "muTau", "muDelta", "precAlpha", "precTau", "precDelta", 
-                "deviance")
+                "muTau", "muDelta")
 
 nUseSteps = 1000 # Specify number of steps to run
 nChains = 3 # Specify number of chains to run (one per processor)
@@ -488,7 +545,6 @@ ddm_dccs_mod1 <- run.jags(method = "parallel",
                           sample = 1000,
                           thin = 10, #thin if high autocorrelation to avoid huge files
                           modules = c("wiener", "lecuyer"),
-                          summarise = F,
                           plots = F)
 
 # Extract results
@@ -509,12 +565,13 @@ ddm_dccs_mod2 <- run.jags(method = "parallel",
                           data = dccs_datalist,
                           inits = initfunction_1con,
                           n.chains = nChains,
+                          check.conv = TRUE,
+                          psrf.target = 1.10,
                           adapt = 1000, #how long the samplers "tune"
                           burnin = 2000, #how long of a burn in
                           sample = 1000,
                           thin = 10, #thin if high autocorrelation to avoid huge files
                           modules = c("wiener", "lecuyer"),
-                          summarise = F,
                           plots = F)
 
 # Extract results
