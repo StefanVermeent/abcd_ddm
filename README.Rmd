@@ -80,8 +80,11 @@ After downloading the above files/folders, run the preprocessing scripts in the 
 ### 3. Primary Analyses
 
 1.  [`1_ddm_fit.R`](https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/1_ddm_fit.R): Fits the hierarchical Bayesian DDM models to the data of the four cognitive tasks and saves the results.
-2.  [`2_sem_training.R`](https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/2_sem_training.R): Iteratively fits the SEM model to the training set and saves the results.
-3.  [`3_sem_test.R`](https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/3_sem_test.R): Fits the final SEM model to the test set.
+2.  [`2_ivs.R`](https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/2_ivs.R): Prepare the independent variables necessary for the main analyses.
+3.  [`3_ddm_extract_results.R`](https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/3_ddm_extract_results.R): Extract and parse the DDM model objects.
+4.  [`4_sem_training.R`](https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/4_sem_training.R): Iteratively fits the SEM model to the training set and saves the results.
+5.  [`5_sem_test.R`](https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/5_sem_test.R): Fits the final SEM model to the test set.
+6.  [`6_exploratory.R`](https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/6_exploratory.R): Exploratory (i.e., not pre-registered) analyses.
 
 ### 4. Manuscript
 
