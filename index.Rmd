@@ -1,6 +1,6 @@
 ---
 title: "ABCD DDM repository"
-output: github_document
+output: html_document
 editor_options: 
   markdown: 
     wrap: sentence
