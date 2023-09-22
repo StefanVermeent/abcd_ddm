@@ -1,0 +1,22 @@
+---
+title: "Data"
+output: github_document
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+## Data {#data}
+
+This folder contains all the data that serves as input for the analysis scripts.
+ABCD data cannot be shared on open repositories.
+
+**Full reproduction**. In order to fully reproduce the analysis described in the manuscript, the interested reader needs to have their own personal access to the ABCD data repository.
+After obtaining access, the required data files can be placed in the `data` folder (see [how to reproduce this repository](#reproduce) for more information).
+
+**Computational reproduction**. To facilitate computational reproducibility, we provide synthetic data files.
+These files contain simulated data with the same variables as the original data and with the same basic characteristics.
+They are generated in the `generate_synthetic_data.R` script and can be used as input to the data analysis functions.
+The synthetic versions of files can be recognized by the "_synth" suffix.
+Note that, because the values are not identical to the real data, the output will deviate from the statistics described in the manuscript.
+The synthetic data files resemble the data after preprocessing (as done in `/scripts/1_data_prep`). Therefore, when using the synthetic data you should skip the preprocessing steps and continue to the analysis scripts (`/scripts/2_analyses`). 

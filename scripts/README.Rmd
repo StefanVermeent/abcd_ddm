@@ -1,0 +1,114 @@
+---
+title: "Scripts"
+output: github_document
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+# Data Processing Scripts
+
+There are four types of R-scripts in this repository, each with a separate folder.
+
+-   [`custom_functions/`](https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/custom_functions): Custom R-functions written for this project
+-   [`0_simulations/`](https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations): Simulation scripts for power and DDM analyses
+-   [`1_data_prep/`](https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/1_data_prep): Data processing scripts
+-   [`2_analyses/`](https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses): Primary and exploratory analysis scripts
+
+Each script takes an input(s) and produces output(s).
+All outputs are stored in [analysis_objects/](https://github.com/stefanvermeent/abcd_ddm/tree/main/analysis_objects).
+The tables below provides an overview of the inputs and outputs of each script.
+
+```{r include = FALSE}
+library(tidyverse)
+```
+
+
+```{r echo = FALSE}
+
+file_list <- list.files(pattern = ".R$", full.names = T, recursive = T) %>% 
+  map_df(function(x){
+    script_text <- 
+      read_lines(x) %>% 
+      str_subset("load.*(RData|csv)|save.image\\(.*\\)|file = .*RData|filename = .*pdf|write_csv.*csv") %>% 
+      str_remove_all("glue|\\{.*\\}| |\"|\\(|\\)|,") %>% 
+      str_c(collapse = " ") %>% 
+      str_replace_all("load","input: ") %>% 
+      str_replace("save|write_csv|save.imagefile = |save.image|filename = |file = ","~output: ") %>% 
+      str_replace_all("save|write_csv|save.imagefile = |save.image|filename = |file = ","output: ") %>% 
+      str_split("~", simplify = T)
+    
+    tibble(
+      dir       = x %>% str_remove_all("\\./") %>% str_remove_all("/.*") %>% str_remove("^\\d-"),
+      script    = x %>% str_remove_all(".*/"),
+      raw       = script_text %>% str_squish() %>% str_c(collapse = ", "),
+      n_input   = str_count(script_text[1], "input"),
+      input1    = script_text[1],
+      input2    = input1 %>% str_remove_all("input: ") %>% str_trim(),
+      input     = input2 %>% str_split(" ", simplify = T) %>% str_remove_all(".*/") %>% str_c(collapse = "<br> ") %>% ifelse(. == "<br> ","",.),
+      n_output  = str_count(script_text[2], "output") %>% ifelse(is.na(.), 0, .),
+      output1   = script_text[2],
+      output2   = output1 %>% str_remove_all("output: ") %>% str_trim(),
+      output    = output2 %>% str_split(" ", simplify = T) %>% str_remove_all(".*/") %>% str_c(collapse = "<br> ") %>%  ifelse(. == "<br> NA","",.)
+    )
+  }) 
+
+```
+
+
+### Simulations
+
+```{r, echo = FALSE, results='asis'}
+simulations <- 
+  file_list %>% 
+  select(dir, script, input, output) %>% 
+  filter(dir == "0_simulations") %>% 
+  select(-dir) 
+cat(
+  "|script|input|output|",
+  "|------|-----|------|",
+  glue::glue_data(
+    simulations,
+    "|{script}|{input}|{output}|"
+  ),
+  sep = "\n"
+)
+```
+
+### Data Prep
+
+```{r, echo = FALSE, results='asis'}
+data_prep <- 
+  file_list %>% 
+  select(dir, script, input, output) %>% 
+  filter(dir == "1_data_prep") %>% 
+  select(-dir) 
+cat(
+  "|script|input|output|",
+  "|------|-----|------|",
+  glue::glue_data(
+    data_prep,
+    "|{script}|{input}|{output}|"
+  ),
+  sep = "\n"
+)
+```
+
+### Analyses
+
+```{r, echo = FALSE, results='asis'}
+analyses <- 
+  file_list %>% 
+  select(dir, script, input, output) %>% 
+  filter(dir == "2_analyses") %>% 
+  select(-dir)
+cat(
+  "|script|input|output|",
+  "|------|-----|------|",
+  glue::glue_data(
+    analyses,
+    "|{script}|{input}|{output}|"
+  ),
+  sep = "\n"
+)
+```
