@@ -106,3 +106,7 @@ If you want to create a Docker container in which to run the scripts, you will h
 4.  Open a browser window and enter: `localhost:8787` as the URL.
 5.  You will be redirected to an Rstudio cloud login page. As the username, type *rstudio*. As the password, type *my_password*, unless you changed it under step 3.
 6.  You should now see an RStudio environment with the required dependencies pre-installed and loaded.
+
+### Contact
+
+For questions or comments, feel free to contact me at p.c.s.vermeent@gmail.com.

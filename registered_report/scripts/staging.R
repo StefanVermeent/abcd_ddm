@@ -303,7 +303,7 @@ expl_results_list <- bind_rows(
     across(
       c(Std_Coefficient, CI_low, CI_high),
       ~formatC(.,  digits = 2, width = 3, flag = "0", format = 'f')),
-    p.value = formatC(p.value,  digits = 3, width = 3, flag = "0", format = 'f') |> str_remove('^0')
+    p.value = formatC(p.value,  digits = 3, width = 3, flag = "0", format = 'f') |> str_remove('^0') %>% ifelse(. == ".000", "<.001", .)
     ) |> 
   arrange(param_task)
 

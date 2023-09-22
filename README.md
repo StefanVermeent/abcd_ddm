@@ -162,3 +162,8 @@ you will have to follow the following steps:
     unless you changed it under step 3.
 6.  You should now see an RStudio environment with the required
     dependencies pre-installed and loaded.
+
+### Contact
+
+For questions or comments, feel free to contact me at
+<p.c.s.vermeent@gmail.com>.
