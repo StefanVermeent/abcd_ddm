@@ -30,8 +30,8 @@ corr_table <- function (data, sample_size = T, use = "pairwise", method = "pears
     ps <- 
       corr_data$p %>% 
       as.data.frame() %>% 
-      mutate(across(.cols = everything(), .fns = ~ my_ifelse(as.numeric(.x) <  .01, "**", as.character(.x)))) %>% 
-      mutate(across(.cols = everything(), .fns = ~ my_ifelse(as.numeric(.x) <= .05 & !is.na(as.numeric(.x)), "*", .x))) %>% 
+      mutate(across(.cols = everything(), .fns = ~ my_ifelse(as.numeric(.x) <  .01, "", as.character(.x)))) %>% 
+      mutate(across(.cols = everything(), .fns = ~ my_ifelse(as.numeric(.x) <= .05 & !is.na(as.numeric(.x)), "", .x))) %>% 
       mutate(across(.cols = everything(), .fns = ~ my_ifelse(as.numeric(.x) >  .05 & !is.na(as.numeric(.x)), " ", .x))) %>% 
       as.matrix()
     
