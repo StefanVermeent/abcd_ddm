@@ -36,7 +36,10 @@ editor:
 library(flextable)
 library(stringr)
 library(dplyr)
+library(tidyr)
+library(tibble)
 library(english)
+library(lavaan)
 
 source("../scripts/custom_functions/general-functions.R")
 load("staged_results.RData")
@@ -229,25 +232,25 @@ Thus, it is subject to the same limitations outlined in the previous section.
 
 ## The current study {#intro_current}
 
-Here, we will analyze the Adolescent Brain Cognitive Development (ABCD) study data (http://abcdstudy.org). 
+Here, we analyzed the Adolescent Brain Cognitive Development (ABCD) study data (http://abcdstudy.org). 
 The ABCD study is ideal because it provides a large, representative, and socioeconomically and ethnically diverse sample of 9- to 10 year-olds--—an age range characterized by rapid growth in cognitive abilities [@blakemore_2006]. 
 
-We will study two dimensions of adversity: household threat and material deprivation.
+We studied two dimensions of adversity: household threat and material deprivation.
 These forms of adversity have been widely studied in their relation to cognitive outcomes---from both deficit and strength-based perspectives [@fields_2021; @schafer_2022; @sheridan_2022; @young_2022]---and are central to contemporary conceptualizations of adversity [e.g., @mclaughlin_2021; @sheridan_2014]. 
 Prior work has shown that cognitive deprivation is more strongly associated with lower cognitive performance than threat exposure [@salhi_2021; @sheridan_2020]. 
 Although material deprivation (as measured here) and cognitive deprivation (in previous studies) are not identical, both seem related to access to resources that support cognitive development (e.g., books in the home, formal education). 
 Indeed, in the ABCD sample material deprivation is highly or moderately correlated with income (-.81) and education (-.56), while correlations with household threat are lower [-.25 and -.12, respectively\; @dejoseph_2022]. 
 Therefore, to the extent that the deprivation-versus-threat literature has captured ability-relevant processes, we may expect material deprivation to be more strongly associated with lower drift rates than threat exposure.
 
-We will analyze four cognitive abilities that have been studied in relation to adversity. 
-We include *attention shifting* because previous work has reported enhancement of this ability in children and (young) adults with more exposure to environmental unpredictability [based on raw performance switch costs\; @fields_2021; @mittal_2015; @young_2022; but see @nweze_2021]. 
+We analyzed four cognitive abilities that have been studied in relation to adversity. 
+We included *attention shifting* because previous work has reported enhancement of this ability in children and (young) adults with more exposure to environmental unpredictability [based on raw performance switch costs\; @fields_2021; @mittal_2015; @young_2022; but see @nweze_2021]. 
 Theoretically, attention shifting is thought to enable people to rapidly adjust to, and take advantage of, a changing environment (e.g., seize fleeting opportunities). 
-We include *inhibition* because previous research suggests that children with more adverse experiences are worse at inhibiting distracting information [based on raw RT difference scores\; @fields_2021; @mezzacappa_2004; @mittal_2015; @tibu_2016].
-We include *mental rotation* because previous studies have found negative associations between SES and mental rotation ability [based on RTs and accuracy\; @assari_2020; @bignardi_2022]. 
+We included *inhibition* because previous research suggests that children with more adverse experiences are worse at inhibiting distracting information [based on raw RT difference scores\; @fields_2021; @mezzacappa_2004; @mittal_2015; @tibu_2016].
+We included *mental rotation* because previous studies have found negative associations between SES and mental rotation ability [based on RTs and accuracy\; @assari_2020; @bignardi_2022]. 
 To the extent that these performance differences reflect differences in the respective abilities---as they have been interpreted---they should show up in *task-specific drift rates*.
-We also include a measure of *processing speed*, which will not be measured in relation to adversity but provides a direct measure of the type of basic processing speed that plays a role in the other tasks. 
-Taken together, the four tasks provide a broad assessment of cognitive domains, which makes them well-suited for isolating task-general processes. 
-As all four tasks adhere to DDM assumptions, we can compare them based on the same model parameters.
+We also included a measure of *processing speed*, which was not measured in relation to adversity but provided a direct measure of the type of basic processing speed that plays a role in the other tasks. 
+Taken together, the four tasks provideda broad assessment of cognitive domains, which makes them well-suited for isolating task-general processes. 
+As all four tasks adhere to DDM assumptions, we could compare them based on the same model parameters.
 
 Adaptation-based frameworks predict increased task-specific drift rates.
 This follows from the key assumption that adversity shapes specific abilities, rather than general cognitive processes [@ellis_2022; @frankenhuis_2020; @frankenhuis_2016; @frankenhuis_2013].
@@ -271,20 +274,20 @@ If the drift rates we observe align with previous interpretations of performance
 However, if not drift rates, but non-decision time or boundary separation account for the existing findings, and drift rates do not, neither deficit- or adaptation-based frameworks are supported. 
 This would at a minimum invite reflection---perhaps revision---of the evidence base for (parts of) these frameworks.
 At the same time, such findings would offer clear directions for future research in this field (e.g., which factors explain variation in non-decision times and/or boundary separation across levels of adversity).
-Thus, regardless of the specific pattern of outcomes, our analyses will contribute to an accurate and refined understanding of how early-life adversity shapes cognitive abilities.
+Thus, regardless of the specific pattern of outcomes, our analyses contribute to an accurate and refined understanding of how early-life adversity shapes cognitive abilities.
 
 # Methods {#methods}
 
 ## Sample {#meth_sample}
 
 The ABCD study ([http://abcdstudy.org](http://abcdstudy.org)), is a prospective, longitudinal study of approximately 12,000 youth across the United States.
-We focus on the baseline assessment, which has the largest collection of cognitive tasks suitable for DDM [@luciana_2018]. 
-There are four tasks: (1) Processing Speed Task (Pattern Comparison Processing Speed Task), (2) Attention Shifting Task (Dimensional Change Card Sort Task), (3) Inhibition Task (Flanker Task), and (4) Mental Rotation Task (Little Man Task).
+We focused on the baseline assessment, which has the largest collection of cognitive tasks suitable for DDM [@luciana_2018]. 
+There were four tasks: (1) Processing Speed Task (Pattern Comparison Processing Speed Task), (2) Attention Shifting Task (Dimensional Change Card Sort Task), (3) Inhibition Task (Flanker Task), and (4) Mental Rotation Task (Little Man Task).
 At baseline, the study included 11,878 youths (aged between 9 and 10 years old, measured in months) recruited across 21 sites. 
 The study used multi-stage probability sampling to obtain a nationally representative sample [@heeringa_2010]. 
 Baseline assessments were completed between September 1^st^ 2016 and August 31^st^ 2018 [see @garavan_2018].
 Our analysis sample includes `r descriptives$precleaning_n$full_n_trial` participants who had trial-level data available on all four^2^ cognitive tasks.
-We will provide descriptive statistics of the youth included in the final sample (i.e., age, income-to-needs ratio, parent education level, ethnicity) in Stage 2 of this Registered Reports submission.
+*We will provide descriptive statistics of the youth included in the final sample (i.e., age, income-to-needs ratio, parent education level, ethnicity) in Stage 2 of this Registered Reports submission.*
 
 ## Open Science Statement {#meth_os}
 
@@ -360,44 +363,44 @@ The standard outcome measure is an efficiency measure, calculated as the percent
 
 ### Adversity measures {#meth_adversity}
 
-**Material deprivation.** We will assess material deprivation with seven items from the parent-reported ABCD Demographics Questionnaire.
+**Material deprivation.** We assessed material deprivation with seven items from the parent-reported ABCD Demographics Questionnaire.
 These items originate from the Parent-Reported Financial Adversity Questionnaire [@diemer_2012].
 The items assess whether or not (1 = Yes, 0 = No) the youth's family experienced several economic hardships over the 12 months prior to the assessment (e.g., 'Needed food but couldn't afford to buy it or couldn't afford to go out to get it').
 
-We will use a previously created factor score of this measure derived from MNLFA [@bauer_2017].
+We used a previously created factor score of this measure derived from MNLFA [@bauer_2017].
 This score empirically adjusts for measurement non-invariance across sociodemographic characteristics and creates person-specific factor scores that enhance measurement precision and individual variation [@curran_2014].
 In short, MNLFA scores assume a common scale of measurement across groups and age, as well as adjust for measurement biases that would have otherwise biased our substantive analyses.
 @dejoseph_2022 describe how this score was computed.
 Higher scores indicate more material deprivation.
 
-**Household threat.** We will assess threat experienced in the youth's home using the Family Conflict subscale of the ABCD Family Environment Scale [@moos_1994; @zucker_2018].
+**Household threat.** We assessed threat experienced in the youth's home using the Family Conflict subscale of the ABCD Family Environment Scale [@moos_1994; @zucker_2018].
 The subscale consisted of nine items assessing conflict with family members (e.g., 'We fight a lot in our family').
 Items were endorsed with either 1 (True) or 0 (False).
 Two items are positively valenced and will therefore be reverse-scored.
-Similar to material deprivation, we will use a previously-created factor score of this measure derived from MNLFA [@dejoseph_2022].
+Similar to material deprivation, we used a previously-created factor score of this measure derived from MNLFA [@dejoseph_2022].
 Higher scores indicate more threat exposure.
 
-**Sociodemographic covariates.** Several sociodemographic covariates will be included in the SEM models (see [Planned Main Analyses](#meth_proposed)) that use the MNLFA scores representing material deprivation and household threat exposure.
+**Sociodemographic covariates.** Several sociodemographic covariates were included in the SEM models (see [Planned Main Analyses](#meth_proposed)) that use the MNLFA scores representing material deprivation and household threat exposure.
 This is because MNLFA scores are adjusted for these covariates.
 Thus, it is recommended that variation in these covariates is also adjusted for in dependent variables [@bauer_2017].
 
-We will calculate income-to-needs ratios by first taking the average of each binned income (\< \$5000, \$5,000--\$11,999, \$12,000--\$15,999, \$16,000--\$24,999, \$25,000--\$34,999, \$35,000--\$49,999, \$50,000--\$74,999, \$75,000--\$99,999, \$100,000--\$199,999, \≥ \$200,000) as a rough approximation of the family's total reported income.
-Then we will divide income by the federal poverty threshold for the year at which a family was interviewed (range = \$12,486--\$50,681), adjusted for the number of persons in the home.
-We will use highest education (in years) out of the two caregivers (or one if a second caregiver was not provided) as a continuous variable.
-We will collapse youth race into 4 levels (White, Black, Hispanic, Other) and subsequently dummy-code with White (the most numerous racial group) serving as the reference category in all models.
-We will dichotomize youth sex such that 1 = Female and 0 = Male.
-We will use youth age (in months) as a continuous variable and centered on the mean.
+We calculated income-to-needs ratios by first taking the average of each binned income (\< \$5000, \$5,000--\$11,999, \$12,000--\$15,999, \$16,000--\$24,999, \$25,000--\$34,999, \$35,000--\$49,999, \$50,000--\$74,999, \$75,000--\$99,999, \$100,000--\$199,999, \≥ \$200,000) as a rough approximation of the family's total reported income.
+Then we divided income by the federal poverty threshold for the year at which a family was interviewed (range = \$12,486--\$50,681), adjusted for the number of persons in the home.
+We used highest education (in years) out of the two caregivers (or one if a second caregiver was not provided) as a continuous variable.
+We collapsed youth race into 4 levels (White, Black, Hispanic, Other) and subsequently dummy-coded with White (the most numerous racial group) serving as the reference category in all models.
+We dichotomized youth sex such that 1 = Female and 0 = Male.
+We used youth age (in months) as a continuous variable and centered on the mean.
 
 ## Proposed Analysis Pipeline {#meth_analyses}
 
 ### Planned main analyses {#meth_proposed}
 
-Before conducting analyses, we will split the full sample up in a training set (*n* = 1,500) and a test set (*n* \≈ 8,500).
-We will conduct our main analyses in three steps (each discussed in more detail below): (1) fit the DDM to the cognitive task data; (2) fit the SEM model to the adversity and DDM data and optimize it where necessary based on the training set; (3) Refit the model to the test data and interpret the regression coefficients.
+Before conducting analyses, we split the full sample up in a training set (*n* = 1,500) and a test set (*n* \≈ 8,500).
+We conducted our main analyses in three steps (each discussed in more detail below): (1) fitting the DDM to the cognitive task data; (2) fitting the SEM model to the adversity and DDM data and optimize it where necessary based on the training set; (3) Refitting the model to the test data and interpret the regression coefficients.
 We conducted a simulation-based power analysis based on the main SEM model (see Figure 3), with standardized regression coefficients of 0.06, 0.08 and 0.1 and the alpha level set to .05.
-The analysis indicated that we will have more than 90% power for all regression paths with *N* between 2,500 ($\beta$ = 0.1) and 6,500 ($\beta$ = 0.06).
+The analysis indicated that we would have more than 90% power for all regression paths with *N* between 2,500 ($\beta$ = 0.1) and 6,500 ($\beta$ = 0.06).
 
-All analyses will be conducted in R 4.2.1 [@Rcoreteam_2022].
+All analyses were conducted in R 4.2.1 [@Rcoreteam_2022].
 The source code can be found on the Github repository ([https://anonymous.4open.science/r/anon-255D/scripts](https://anonymous.4open.science/r/anon-255D/scripts)).
 
 <br>
@@ -406,34 +409,34 @@ The source code can be found on the Github repository ([https://anonymous.4open.
 <br>
 <br>
 
-**Step 1: DDM estimation.** The DDM will be fit to each cognitive task in a hierarchical Bayesian framework which estimates DDM parameters both on the individual and group level [@vandekerckhove_2011; @wiecki_2013].
+**Step 1: DDM estimation.** The DDM was fit to each cognitive task in a hierarchical Bayesian framework which estimates DDM parameters both on the individual and group level [@vandekerckhove_2011; @wiecki_2013].
 We use code provided by @johnson_2017.
 The benefit of this approach is that group-level information is leveraged to estimate individual-level estimates.
 This differs from classic DDM estimation approaches where the model is fitted to the data of each participant separately [@voss_2013].
 This is particularly useful in developmental samples like the ABCD dataset which have a limited number of trials per participant but substantially larger sample sizes than is typical in the DDM literature^3^.
 
-All models will freely estimate the drift rate, non-decision time, and boundary separation while constraining response bias to 0.5 (i.e., assuming no bias towards a particular response option).
-For the Flanker and Attention Shifting Task, we will compare model versions that separately estimate drift rate and non-decision-time per task condition or collapsed across conditions.
-Boundary separation will be constrained to be the same across conditions.
-For the Processing Speed Task and the Mental Rotation Task, we estimate DDM parameters across all trials.
-The best-fitting model of each task will be used to estimate participant-level DDM parameters.
+All models freely estimated the drift rate, non-decision time, and boundary separation while constraining response bias to 0.5 (i.e., assuming no bias towards a particular response option).
+For the Flanker and Attention Shifting Task, we compared model versions that separately estimate drift rate and non-decision-time per task condition or collapsed across conditions.
+Boundary separation was constrained to be the same across conditions.
+For the Processing Speed Task and the Mental Rotation Task, we estimated DDM parameters across all trials.
+The best-fitting model of each task was used to estimate participant-level DDM parameters.
 See the supplement for more information about model fitting procedures.
 
-**Step 2: Model optimization in training set.** We will first estimate and (where necessary) optimize the SEM in the training set using the *lavaan* package [@rosseel_2012].
-This goal of this step is to investigate whether we need to adjust the model specification in any way (e.g., add residual correlations, introduce or reduce constraints of factor loadings, etc.) to achieve good model fit.
-For this reason, the model fitted in this step will not be interpreted to address our research aims.
+**Step 2: Model optimization in training set.** We first estimated and (where necessary) optimized the SEM in the training set using the *lavaan* package [@rosseel_2012].
+This goal of this step was to investigate whether we needed to adjust the model specification in any way (e.g., add residual correlations, introduce or reduce constraints of factor loadings, etc.) to achieve good model fit.
+For this reason, the model fitted in this step was not interpreted to address our research aims.
 
 See Figure 3 for the *a-priori* specification of the model.
-In the measurement model, all three DDM parameters across all tasks (i.e., drift rates, non-decision times, and boundary separations) will load on separate latent factors for each parameter type.
-Unique (residual) variances of the manifest (i.e., measured) DDM parameters will be captured in additional latent factors (one per parameter).
-The structural model will estimate regression paths going from each adversity measure (see [Adversity measures](#meth_adversity)) to the general latent factors and to the unique variances of the DDM parameters of each task.
-For model identification reasons, we will not estimate regression paths to the unique variances of the Processing Speed Task.
-We will first estimate and optimize the measurement models separately for each diffusion model parameter, which will allow us to efficiently detect sources of potential badness of fit.
-Once measurement models provide an adequate account of the data, we will integrate them into the structural model shown in Figure 3.
-In addition, clustering of siblings and twins within families will be accounted for using the *lavaan.survey* package [@oberski_2014].
-Finally, the sociodemographic covariates that are included in the MNLFA scores (see Measures section above) will be controlled for in the SEM. 
-Goodness-of-fit will be assessed using the root mean square error of approximation (RMSEA) and the comparative fit index (CFI).
-Following @hu_1999, CFI values \> .90 and RMSEA values \< .08 will be interpreted as acceptable model fit and CFI values \> .95 and RMSEA values \≤ .06 as good model fit.
+In the measurement model, all three DDM parameters across all tasks (i.e., drift rates, non-decision times, and boundary separations) loaded on separate latent factors for each parameter type.
+Unique (residual) variances of the manifest (i.e., measured) DDM parameters were captured in additional latent factors (one per parameter).
+The structural model estimated regression paths going from each adversity measure (see [Adversity measures](#meth_adversity)) to the general latent factors and to the unique variances of the DDM parameters of each task.
+For model identification reasons, we did not estimate regression paths to the unique variances of the Processing Speed Task.
+We first estimated and optimized the measurement models separately for each diffusion model parameter, which allowed us to efficiently detect sources of potential badness of fit.
+Once measurement models provided an adequate account of the data, we integrated them into the structural model shown in Figure 3.
+In addition, clustering of siblings and twins within families was accounted for using the *lavaan.survey* package [@oberski_2014].
+Finally, the sociodemographic covariates that were included in the MNLFA scores (see Measures section above) were controlled for in the SEM. 
+Goodness-of-fit was assessed using the root mean square error of approximation (RMSEA) and the comparative fit index (CFI).
+Following @hu_1999, CFI values \> .90 and RMSEA values \< .08 were interpreted as acceptable model fit and CFI values \> .95 and RMSEA values \≤ .06 as good model fit.
 
 <br>
 <br>
@@ -441,84 +444,58 @@ Following @hu_1999, CFI values \> .90 and RMSEA values \< .08 will be interprete
 <br>
 <br>
 
-**Step 3: Model validation in test set.** After optimizing the model based on the training set, we will refit it to the test data.
-Model fit will be assessed the same way as at Step 2.
-The regression coefficients of these models will be interpreted to address our research questions.
-We will control for multiple testing in the regression paths based on the false discovery rate [@benjamini_1995; @cribbie_2007].
-We will do so separately for tests involving drift rates, non-decision times, and boundary separations, as we have different hypotheses for each of these parameters.
-In addition, we are interested in determining if effects that fall between -.10 and .10 are consistent with an actual null effect.
-For regression coefficients falling within these bounds, we therefore use two one-sided tests (TOST) equivalence testing using -.10 and .10 as bounds.
+**Step 3: Model validation in test set.** After optimizing the model based on the training set, we refit it to the test data.
+Model fit was assessed the same way as at Step 2.
+The regression coefficients of these models were interpreted to address our research questions.
+We controlled for multiple testing in the regression paths based on the false discovery rate [@benjamini_1995; @cribbie_2007].
+We did so separately for tests involving drift rates, non-decision times, and boundary separations, as we had different hypotheses for each of these parameters.
+In addition, we were interested in determining if standardized effects that fell between -.10 and .10 were consistent with an actual null effect.
+For regression coefficients falling within these bounds, we therefore used two one-sided tests (TOST) equivalence testing using -.10 and .10 as bounds.
 
 # Results
 
-## DDM fit
+## Model fit
 
-Based on model fit, we selected the following good-fitting DDM models for the substantive analysis: the base model for the Mental Rotation Task with imputed RTs; the model with one set of parameter estimates across conditions for the Flanker Task and the Attention Shifting Task, and a model with RTs < 1s excluded for the Processing Speed Task (see the supplemental materials for a detailed overview of the results).
-For both the Flanker Task and the Attention Shifting Task, estimating separate drift rates and non-decision times per condition resulted in fit indices below our pre-specified cut-offs. 
-Thus, we selected the model estimating one drift rate and non-decision time across conditions.
+### DDM
 
-For the Processing Speed Task, we found a high degree of Kurtosis in the left-hand tail of the non-decision time distribution.
-This tail consisted of participants with the lowest RTs (between 0.3s and ~1s).
-Although overall accuracy on the Processing Speed Task was very high (`r pcps_clean |> summarise(acc = round(sum(correct)/n()*100,2)) |> pull(acc)`%), overall accuracy for RTs < 1s was below chance, with accuracy increasing above change starting at 1s.
-Therefore, we decided to remove RTs < 1s (`r round(sum(pcps_clean$RT < 1)/nrow(pcps_clean)*100,1)`% of trials) and refit the model, which solved the kurtosis in non-decision times.
-Recovery of RTs was above the cut-off of .80 for each quantile (all > XXX), but recovery of accuracy was just below (XXX). 
-This seemed due to a ceiling effect in accuracy, and not due to bad fit.
-Thus, we selected this model for the main analyses.
+Based on a model fit assessment, we selected the following good-fitting DDM models for the substantive analysis: 1) *Mental Rotation Task*, the base model with imputed RTs; 2) *Flanker Task*, the model with one set of parameter estimates across conditions; 3) *Attention Shifting Task*, the model with one set of parameter estimates across conditions; 4) *Processing Speed Task*, the base model, but with RTs < 1 s excluded to solve issues with fast outliers.
+See the supplemental materials for a full overview of the DDM fitting results.
 
-## SEM fit
+Our model fit procedure deviated from the preregistered plan by simulating 100 trials instead of the same number of trials as the participants.
+As the number of trials for each task was low, simulating the same number of trials led to a very low number of data points at each RT quantile.
+While we increased the number of simulated trials, the real data still only had a low number of data points at each quantile.
+The fact that correlations for both RTs and accuracy were high across all tasks (all ≥ .79, with many >.90) increased our confidence that the estimates were reliable, and that further changes were unnecessary.
+The supplemental materials present model fit results for both the preregistered approach and the updated approach.
 
-All models provided acceptable to good fit (see Table 1 and the supplemental materials).
-We did not---as preregistered---add age as a covariate to the manifest DDM parameters, as age was already included as a covariate for all the latent factors in the context of the MNLFA procedure.
-Thus, together with sex, ethnicity, and highest parental education, age effects were accounted for on a latent level.
+Table 1 shows bivariate correlations between DDM parameters and adversity measures.
+Both material deprivation and household threat showed small, negative associations with drift rates across all four tasks, suggesting that participants with more adversity exposure processed information more slowly.
+In addition, both material deprivation and household threat tended to be positively associated with boundary separation (indicating more response caution, except for Mental Rotation), although most correlations were very small.
+Finally, material deprivation and household threat showed a small, negative correlation with non-decision times on the Mental Rotation Task, but not with non-decision times on the other tasks.
+
 
 \pagebreak
 
 ```{r}
 #| tab.id: table1
 #| results: markup
-
 table1
 ```
 
+### SEM
+
+The SEM model was incrementally constructed in the training data in order to detect any parts that might need adjustments. 
+All parts of the model provided an acceptable to good account of the training data (full training model: CFI = `r training_sem_full_cluster |> fitmeasures() |> enframe() |> filter(name == 'cfi') |> pull(value) |> formatC(digits = 3, width = 3, flag = "0", format = 'f') |> str_remove(pattern = "^0")`, RMSEA = `r training_sem_full_cluster |> fitmeasures() |> enframe() |> filter(name == 'rmsea') |> pull(value) |> formatC(digits = 3, width = 3, flag = "0", format = 'f') |> str_remove(pattern = "^0")`).
+Therefore, we did not make any adjustments to the model before applying it to the test data (N = 9063).
+The full model also provided a good account of the test data (CFI = `r test_sem_full_cluster |> fitmeasures() |> enframe() |> filter(name == 'cfi') |> pull(value) |> formatC(digits = 3, width = 3, flag = "0", format = 'f') |> str_remove(pattern = "^0")`, RMSEA = `r test_sem_full_cluster |> fitmeasures() |> enframe() |> filter(name == 'rmsea') |> pull(value) |> formatC(digits = 3, width = 3, flag = "0", format = 'f') |> str_remove(pattern = "^0")`).
+
+Figure 4 presents a simplified overview of the measurement part of the final model in the test data (excluding task-specific covariances and regression paths). 
+The factor loadings of the Mental Rotation Task were low for all DDM parameters, suggesting that performance on this task differs substantially from performance on the other tasks. 
+All tasks showed a statistically significant portion of task-specific variance after accounting for task-general effects. 
+Task-general drift rate and task-general boundary separation were negatively correlated (*r* = `r test_sem_full_cluster |> parameterEstimates(standardized = T) |> filter(op == "~~", lhs == "v_general", rhs == "a_general") |> pull(std.all) |> formatC(digits = 2, width = 3, flag = "0", format = 'f') |> str_remove(pattern = "^0")`).
+Task-general boundary separation and task-general non-decision time were positively correlated (*r* = `r test_sem_full_cluster |> parameterEstimates(standardized = T) |> filter(op == "~~", lhs == "a_general", rhs == "t_general") |> pull(std.all) |> formatC(digits = 2, width = 3, flag = "0", format = 'f') |> str_remove(pattern = "^0")`).
+Task-specific correlations between DDM parameters of the same tasks ranged between *r* = `r test_sem_full_cluster |> parameterEstimates(standardized = T) |> filter(op == "~~", str_detect(lhs, "_l$"), str_detect(rhs, "_l$")) |> drop_na(z) |> filter(lhs != rhs) |> pull(std.all) |> abs() |> min() |> formatC(digits = 2, width = 3, flag = "0", format = 'f') |> str_remove(pattern = "^0")` and *r* = `r test_sem_full_cluster |> parameterEstimates(standardized = T) |> filter(op == "~~", str_detect(lhs, "_l$"), str_detect(rhs, "_l$")) |> drop_na(z) |> filter(lhs != rhs) |> pull(std.all) |> abs() |> max() |> formatC(digits = 2, width = 3, flag = "0", format = 'f') |> str_remove(pattern = "^0")`.
+
 <br>
-
-## Primary analysis
-
-Table 1 shows bivariate correlations between DDM parameters and adversity measures.
-Both material deprivation and household threat showed small, negative correlations with drift rates across all four tasks, indicating that participants with more adversity exposure processed information more slowly.
-In addition, both material deprivation and household threat were positively correlated with boundary separation (indicating more response caution), except for Mental Rotation, where we found a small, negative correlation.
-Non-decision times were showed either no, or small, negative associations with both material deprivation and household threat.
-
-```{r}
-#| tab.id: table2
-#| results: markup
-table2
-```
-
-<br>
-
-Our primary analysis examined to what extent household threat and material deprivation were associated with task-specific and task-general aspects of information processing (drift rates), response caution (boundary-separations), and task preparation/execution (non-decision times).
-Task-general effects capture variance that is shared across tasks, whereas task-specific effects capture variance that is unique to specific tasks.
-The results are summarized in Figure 4.
-
-For household threat, we found a significant, negative association with the task-general drift rate ($\beta$ = `r test_reg_coef_list$v_general_threat_mnlfa$est.std`, 95% CI = [`r test_reg_coef_list$v_general_threat_mnlfa$ci.lower`, `r test_reg_coef_list$v_general_threat_mnlfa$ci.upper`], *p* `r test_reg_coef_list$v_general_threat_mnlfa$pvalue_adj_chr`), indicating that participants with more exposure to household threat processed information more slowly in general.
-All task-specific drift rates were practically equivalent at different levels of household threat.
-We also found a significant, positive association with the task-general boundary separation ($\beta$ = `r test_reg_coef_list$a_general_threat_mnlfa$est.std`, 95% CI = [`r test_reg_coef_list$a_general_threat_mnlfa$ci.lower`, `r test_reg_coef_list$a_general_threat_mnlfa$ci.upper`], *p* `r test_reg_coef_list$a_general_threat_mnlfa$pvalue_adj_chr`), indicating that participants with more exposure to household threat generally responded with more caution.
-In contrast, we found a negative association between household threat and task-specific boundary separation on the Attention Shifting Task ($\beta$ = `r test_reg_coef_list$dccs_a_l_threat_mnlfa$est.std`, 95% CI = [`r test_reg_coef_list$dccs_a_l_threat_mnlfa$ci.lower`, `r test_reg_coef_list$dccs_a_l_threat_mnlfa$ci.upper`], *p* = `r test_reg_coef_list$dccs_a_l_threat_mnlfa$pvalue_adj_chr`), indicating that participants with more exposure to household threat responded with less caution.
-The association between household threat and task-specific boundary separation on the Flanker Task was also significant, but fell in the region of practical equivalence.
-Both the task-general non-decision time and task-specific non-decision times were practically equivalent at different levels of household threat.
-
-For material deprivation, the task-general drift rate, as well as the task-specific drift rates of the Flanker Task and the Mental Rotation Task, were practically equivalent.
-However, we found a significant, negative association between material deprivation and the task-specific drift rate of the Attention Shifting Task ($\beta$ = `r test_reg_coef_list$dccs_v_l_dep_mnlfa$est.std`, 95% CI = [`r test_reg_coef_list$dccs_v_l_dep_mnlfa$ci.lower`, `r test_reg_coef_list$dccs_v_l_dep_mnlfa$ci.upper`], *p* `r test_reg_coef_list$dccs_v_l_dep_mnlfa$pvalue_adj_chr`), indicating that participants with higher levels of material deprivation were slower at shifting attention.
-We found a non-significant association with task-general boundary separation, ($\beta$ = `r test_reg_coef_list$a_general_dep_mnlfa$est.std`, 95% CI = [`r test_reg_coef_list$a_general_dep_mnlfa$ci.lower`, `r test_reg_coef_list$a_general_dep_mnlfa$ci.upper`], *p* = `r test_reg_coef_list$a_general_dep_mnlfa$pvalue_adj_chr`), although we also did not find evidence for practical significance. 
-Thus, participants with more exposure to material deprivation generally responded with somewhat more caution.
-All of the task-specific boundary separations were practically equivalent at different levels of material deprivation.
-Both the task-general non-decision time and task-specific non-decision times were practically equivalent at different levels of material deprivation.
-
-Taken together, we did not find task-specific enhanced abilities in line with the adaptation-based framework.
-The lowered task-general drift rate was in line with the deficit framework, as is the lowered task-specific drift rate on the Attention Shifting Task.
-However, all other task-specific drift rates were practically equivalent at different levels of adversity, which is not in line with either framework.
-In addition, we found differences in boundary separation both on a task-general and task-specific level, which leads to performance differences that are unrelated to ability.
 
 ```{r}
 #| label: Figure4
@@ -527,11 +504,63 @@ In addition, we found differences in boundary separation both on a task-general 
 #| dpi: 600
 #| out-width: 6in
 #| fig-cap: |
-#|   **Figure 4.** Results of the SEM model testing the effect of household threat and material deprivation on task-specific and task-general DDM parameters. The top row plots the drift rates, the middle row plots the boundary separations, and the bottom row plots the non-decision times. The gray area reflects the area of practical equivalence. Solid points indicate effects that are outside the area of practical equivalence. Hollow points indicate effects that fall inside the area of practical equivalence. Standard-errors represent 95% confidence intervals. Statistical significance (tested against zero) is indicated with significance stars. \
+#|   **Figure 4.** Simplified overview of the measurement part of the final SEM model, including standardized factor loadings, unstandardized residual variances, and correlations between the general latent factors. Excluding task-specific residual covariances and regression paths (see Figure 5). The latent factors at the top (the elipses) represent the task-general factors. The latent factors at the bottom (the circles) represent task-specific factors. *v* = drift rate; *a* = boundary separation; *t0* = non-decision time; PS = Processing Speed Task; AS = Attention Shifting Task; MR = Mental Rotation Task; Fl = FLanker Task.
+
+knitr::include_graphics("images/fig4.png")
+```
+
+## Primary analysis
+
+Our primary analysis examined to what extent household threat and material deprivation were associated with task-specific and task-general aspects of speed of information processing (drift rates), response caution (boundary-separations), and task preparation/execution (non-decision times).
+Task-general effects capture variance that is shared across tasks, whereas task-specific effects capture variance that is unique to specific tasks.
+The results are summarized in Figure 4.
+
+```{r}
+#| label: Figure5
+#| fig-width: 6.25
+#| fig-height: 7
+#| dpi: 600
+#| out-width: 6in
+#| fig-cap: |
+#|   **Figure 4.** Results of the structural part of the SEM model testing the effect of household threat and material deprivation on task-specific and task-general DDM parameters. The top row plots the drift rates, the middle row plots the boundary separations, and the bottom row plots the non-decision times. The gray area reflects the area of practical equivalence. Solid points indicate effects that are outside the area of practical equivalence. Hollow points indicate effects that fall inside the area of practical equivalence. Standard-errors represent 95% confidence intervals. Statistical significance (tested against zero) is indicated with significance stars. \
 #|   \*\*\* *p* < .001,  \*\* *p* < .01,  \* *p* < .05
 
-fig4
+fig5
 ```
+
+For household threat, we found a significant, negative association with task-general drift rate ($\beta$ = `r test_reg_coef_list$v_general_threat_mnlfa$est.std`, 95% CI = [`r test_reg_coef_list$v_general_threat_mnlfa$ci.lower`, `r test_reg_coef_list$v_general_threat_mnlfa$ci.upper`], *p* `r test_reg_coef_list$v_general_threat_mnlfa$pvalue_adj_chr`), indicating that participants with more exposure to household threat processed information more slowly in general.
+All task-specific drift rates were practically equivalent at different levels of household threat.
+We also found a significant, positive association between household threat and task-general boundary separation ($\beta$ = `r test_reg_coef_list$a_general_threat_mnlfa$est.std`, 95% CI = [`r test_reg_coef_list$a_general_threat_mnlfa$ci.lower`, `r test_reg_coef_list$a_general_threat_mnlfa$ci.upper`], *p* `r test_reg_coef_list$a_general_threat_mnlfa$pvalue_adj_chr`), indicating that participants with more exposure to household threat generally responded with more caution.
+In contrast, we found a negative association between household threat and task-specific boundary separation on the Attention Shifting Task ($\beta$ = `r test_reg_coef_list$dccs_a_l_threat_mnlfa$est.std`, 95% CI = [`r test_reg_coef_list$dccs_a_l_threat_mnlfa$ci.lower`, `r test_reg_coef_list$dccs_a_l_threat_mnlfa$ci.upper`], *p* = `r test_reg_coef_list$dccs_a_l_threat_mnlfa$pvalue_adj_chr`), indicating that participants with more exposure to household threat responded with less caution.
+The association between household threat and task-specific boundary separation on the Flanker Task was also significant, but fell in the region of practical equivalence.
+Both task-general non-decision time and task-specific non-decision times were practically equivalent at different levels of household threat.
+
+For material deprivation, the associations with task-general drift rate, as well as with all task-specific drift rates, were not significantly different from zero.
+We found evidence for practical equivalence for task-general drift rate and the task-specific drift rates of the Flanker Task and the Mental Rotation Task.
+However, we did not find evidence for practical equivalence for the task-specific drift rate of Attention Shifting, suggesting that participants with higher levels of material deprivation might be somewhat slower at shifting attention.
+the association between material deprivation and task-general boundary separation was not significantly different from zero ($\beta$ = `r test_reg_coef_list$a_general_dep_mnlfa$est.std`, 95% CI = [`r test_reg_coef_list$a_general_dep_mnlfa$ci.lower`, `r test_reg_coef_list$a_general_dep_mnlfa$ci.upper`], *p* = `r test_reg_coef_list$a_general_dep_mnlfa$pvalue_adj_chr`), although we also did not find evidence for practical significance. 
+Thus, participants with more exposure to material deprivation might generally respond with somewhat more caution.
+All of the task-specific boundary separations were practically equivalent at different levels of material deprivation.
+Both task-general non-decision time and task-specific non-decision times were practically equivalent at different levels of material deprivation.
+
+Taken together, we did not find task-specific enhanced abilities in line with adaptation-based frameworks.
+Our finding of a negative association between household threat and task-general drift rate was in line with the deficit framework, as was the negative association between material deprivation and the task-specific drift rate of the Attention Shifting Task (although the evidence for this association was mixed).
+However, all other task-specific drift rates were practically equivalent at different levels of adversity, which is not in line with either framework.
+In addition, we found differences in boundary separation both on a task-general and task-specific level, which leads to performance differences that are unrelated to ability.
+
+## Exploratory analysis
+
+To contextualize our primary, preregistered findings, we decided to run additional exploratory models in the test data that analyzed the associations between adversity and traditional, raw performance measures of the four cognitive tasks.
+We used the measures as provided in the ABCD database [@luciana_2018].
+For the Processing Speed Task, the traditional raw measure is the number of correctly completed trials.
+For the Mental Rotation Task, the traditional raw measure is the percentage correct divided by the mean response time on correct trials.
+For the Attention Shifting and Flanker Task, the traditional raw measure is a composite of accuracy and RT [@slotkin_2012].
+Per task, we ran a linear regression model including the traditional outcome measure as the dependent variable, and including as independent variables the MNLFA-corrected material deprivation and household threat measures, as well as the covariates used in calculating the MNLFA scores (age (in months, centered), sex (dummy-coded), ethnicity (dummy-coded, with "white" as the reference category), and highest parental education).
+
+Household threat was significantly negatively associated with raw performance on the Processing Speed Task ($\beta$ = `r expl_results_list$threat_mnlfa_pcps$Std_Coefficient`, 95% CI = [`r expl_results_list$threat_mnlfa_pcps$CI_low`, `r expl_results_list$threat_mnlfa_pcps$CI_high`], *p* `r expl_results_list$threat_mnlfa_pcps$p.value`) and the Attention Shifting Task ($\beta$ = `r expl_results_list$threat_mnlfa_dccs$Std_Coefficient`, 95% CI = [`r expl_results_list$threat_mnlfa_dccs$CI_low`, `r expl_results_list$threat_mnlfa_pcps$CI_high`], *p* `r expl_results_list$threat_mnlfa_pcps$p.value`). Household threat was not associated with raw performance on the Flanker Task (*p* = `r expl_results_list$threat_mnlfa_flanker$p.value`) and Mental Rotation Task (*p* = `r expl_results_list$threat_mnlfa_lmt$p.value`).
+Material deprivation was not significantly associated with any of the tasks (all *p*s > `r expl_results_list$dep_mnlfa_dccs$p.value`).
+
+*I am contemplating adding an exploratory analysis looking at associations with raw performance measures (using simple linear regression models) to provide context for the results in Figure 5.*
 
 \pagebreak
 

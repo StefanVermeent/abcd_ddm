@@ -1,19 +1,24 @@
+
+# 1. Load dependencies -------------------------------------------------------
+
+# Custom functions and libraries
 source('scripts/custom_functions/corr_plot.R')
+library(flextable)
 
-
+# Data objects
 load('data/tasks_raw.RData')
-load("analysis_objects/descriptives.RData")
-load("analysis_objects/exclusions.RData")
-
 lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv"))
 flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv"))
 pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv"))
 dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv"))
-
 ddm_data      <- readr::read_csv('data/ddm_data.csv')
 
+# Analysis objects
+load("analysis_objects/descriptives.RData")
+load("analysis_objects/exclusions.RData")
 load("analysis_objects/results_sem_training.RData")
 load("analysis_objects/results_sem_test.RData")
+load("analysis_objects/exploratory_analysis.RData")
 
 # set up flextable for tables
 set_flextable_defaults(
@@ -27,7 +32,7 @@ set_flextable_defaults(
   padding.right = 1
 )
 
-# Task-descriptives -------------------------------------------------------
+# 2. Task-descriptives -------------------------------------------------------
 
 get_descriptives <- function(data, conditions = FALSE) {
   
@@ -122,9 +127,7 @@ descriptives$task_descriptives_table <-
   select(task, mean_rt, mean_acc, acc_min, acc_max)
 
 
-# Results -----------------------------------------------------------------
-
-## Training set ----
+# 3. Training results -----------------------------------------------------
 
 sem_fit_measures <- bind_rows(
   fitmeasures(training_sem_sub_v_cluster)[c('cfi', 'rmsea')] |> enframe() |> pivot_wider(names_from = 'name', values_from = 'value') |> mutate(model = "Training - Drift rate measurement model"), 
@@ -135,27 +138,32 @@ sem_fit_measures <- bind_rows(
   fitmeasures(test_sem_full_cluster)[c('cfi', 'rmsea')] |> enframe() |> pivot_wider(names_from = 'name', values_from = 'value') |> mutate(model = "Test - Full model")
 )
 
-## SEM model fit ----
 
-table1 <- sem_fit_measures |> 
-  select(Model = model, CFI = cfi, RMSEA = rmsea) %>%
-  mutate(across(c(CFI, RMSEA), ~formatC(.,  digits = 3, width = 3, flag = "0", format = 'f'))) |> 
-  flextable() |> 
-  autofit() |> 
-  border(i = 1, border.top = fp_border_default(style = "none", width = 0), part = "header") |> 
-  add_header_row(
-    values = " ",
-    colwidths = 3
-  ) |> 
-  compose(
-    i = 1, j = 1, 
-    as_paragraph(as_b("Table 1. "), "SEM fit statistics for the training and test set."),
-    part = "header"
+
+# 4. Test results ---------------------------------------------------------
+
+test_reg_coef_list <- test_reg_coef |> 
+  mutate(par_combi = paste0(lhs, "_", rhs)) |> 
+  mutate(
+    across(
+      c(est.std, se, ci.lower, ci.upper), 
+      ~formatC(.,  digits = 2, width = 3, flag = "0", format = 'f')
+    ),
+    pvalue_adj_chr = ifelse(pvalue_adj < .001, "<.001", 
+                            formatC(pvalue_adj,  digits = 3, width = 3, flag = "0", format = 'f') |> str_remove("^0"))
   ) 
 
-## Correlations between DDM parameters ----
+test_reg_coef_keys <- test_reg_coef_list |> group_keys(par_combi) |> pull()
 
-table2 <- ddm_data |>
+test_reg_coef_list <- test_reg_coef_list |> 
+  group_split(par_combi) |> 
+  setNames(test_reg_coef_keys)
+
+
+
+# 5. Tables ---------------------------------------------------------------
+
+table1 <- ddm_data |>
   left_join(iv_data |> select(subj_idx, dep_mnlfa, threat_mnlfa)) |> 
   select(
     flanker_v, dccs_v, rotation_v, pcps_v,
@@ -166,9 +174,9 @@ table2 <- ddm_data |>
   corr_table(
     numbered = T,
     sample_size = F,
-    c.names = c("Fl.", "Att. Sh.", "Men. Rot.", "Proc. Sp.",
-                "Fl.", "Att. Sh.", "Men. Rot.", "Proc. Sp.",
-                "Fl.", "Att. Sh.", "Men. Rot.", "Proc. Sp.",
+    c.names = c("Flanker", "Att. Shift.", "Men. Rot.", "Proc. Speed",
+                "Flanker", "Att. Shift.", "Men. Rot.", "Proc. Speed",
+                "Flanker", "Att. Shift.", "Men. Rot.", "Proc. Speed",
                 "Mat. Dep.", "Househ. Thr."
                 ),
     stats = c("mean", "sd", "skew", "kurtosis")
@@ -201,33 +209,16 @@ table2 <- ddm_data |>
   ) |> 
   compose(
     i = 1, j = 1, 
-    as_paragraph(as_i("Note: "), "Fl. = Flanker; Att. Sh. = Attention Shifting; Men. Rot. = Mental Rotation; Proc. Sp. = Processing Speed; Mat. Dep. = Material Deprivation; Househ. Thr. = Household Threat\n", as_i("* p "), "< .05, ", as_i("** p "), "< .01"), 
+    as_paragraph(as_i("Note: "), "Att. Shift. = Attention Shifting; Men. Rot. = Mental Rotation; Proc. Speed = Processing Speed; Mat. Dep. = Material Deprivation; Househ. Thr. = Household Threat\n"), 
     part = "footer"
   ) |> 
   width(width = c(1.2,rep(0.5, 14)))
 
 
 
-## Test set
+# 6. Figures --------------------------------------------------------------
 
-test_reg_coef_list <- test_reg_coef |> 
-  mutate(par_combi = paste0(lhs, "_", rhs)) |> 
-  mutate(
-    across(
-      c(est.std, se, ci.lower, ci.upper), 
-      ~formatC(.,  digits = 2, width = 3, flag = "0", format = 'f')
-    ),
-    pvalue_adj_chr = ifelse(pvalue_adj < .001, "<.001", 
-                        formatC(pvalue_adj,  digits = 3, width = 3, flag = "0", format = 'f') |> str_remove("^0"))
-  ) 
-
-test_reg_coef_keys <- test_reg_coef_list |> group_keys(par_combi) |> pull()
-
-test_reg_coef_list <- test_reg_coef_list |> 
-  group_split(par_combi) |> 
-  setNames(test_reg_coef_keys)
-
-fig4 <- test_reg_coef |> 
+fig5 <- test_reg_coef |> 
   left_join(equivalence_tests |> select(lhs, rhs, eq_pvalue)) |> 
   ungroup() |> 
   add_row(
@@ -297,9 +288,30 @@ fig4 <- test_reg_coef |>
     x = "",
     y = "Standardized regression coefficient"
   )
- 
 
+# 7. Exploratory Analysis ----------------------------------------------------
+
+expl_results_list <- bind_rows(
+  raw_fit_flanker_std |> as_tibble() |>  mutate(task = "flanker"),
+  raw_fit_dccs_std |> as_tibble() |> mutate(task = "dccs"),
+  raw_fit_pcps_std |> as_tibble() |> mutate(task = "pcps"),
+  raw_fit_lmt_std |> as_tibble() |> mutate(task = "lmt")
+) |> 
+  filter(str_detect(Parameter, "mnlfa")) |> 
+  mutate(param_task = paste0(Parameter, "_", task)) |> 
+  mutate(
+    across(
+      c(Std_Coefficient, CI_low, CI_high),
+      ~formatC(.,  digits = 2, width = 3, flag = "0", format = 'f')),
+    p.value = formatC(p.value,  digits = 3, width = 3, flag = "0", format = 'f') |> str_remove('^0')
+    ) |> 
+  arrange(param_task)
+
+expl_results_keys <- expl_results_list |> pull(param_task)
   
+expl_results_list <- expl_results_list |> 
+  group_split(param_task) |> 
+  setNames(expl_results_keys)
 
 
 
@@ -311,8 +323,14 @@ save(
   descriptives,
   exclusions,
   
+  sem_fit_measures,
   test_reg_coef_list,
-  fig4,
+  training_sem_full_cluster,
+  test_sem_full_cluster,
+  
+  expl_results_list,
+  
+  fig5,
   table1,
   table2,
   file = "registered_report/staged_results.RData"
