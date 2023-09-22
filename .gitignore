@@ -52,5 +52,11 @@ vignettes/*.pdf
 /data/dccs_clean.csv
 /data/pcps_clean.csv
 /data/mnlfa_ivs*
+/data/ddm_data.csv
+/data/iv_data.csv
 
 /analysis_objects/ddm*
+/analysis_objects/results*
+/analysis_objects/rhat*
+/analysis_objects/exploratory*
+/
