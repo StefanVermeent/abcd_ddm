@@ -1,32 +1,7 @@
 ---
 bibliography: references.bib
 csl: apa.csl
-format: 
-  docx:
-    reference-doc: reference-doc.docx
-output:
-  officedown::rdocx_document:
-    page_margins:
-      bottom: 1
-      footer: 0
-      gutter: 0
-      header: 0.5
-      left: 1
-      right: 1
-      top: 1
-    plots:
-      align: center
-      caption:
-        pre: 'Figure '
-        sep: '. '
-        style: Image Caption
-    tables:
-      caption:
-        pre: 'Table '
-        sep: '. '
-        style: Table Caption
-  pdf_document: default
-  word_document: default
+output: html_document
 editor: 
   markdown: 
     wrap: sentence
@@ -84,7 +59,7 @@ set_flextable_defaults(
 
 #### ^4^ Department of Psychology, University of Mainz, Mainz, Germany
 
-#### ^5^ Department of Science, University of Amsterdam, Amsterdam, The Netherlands
+#### ^5^ Evolutionary and Population Biology, Institute for Biodiversity and Ecosystem Dynamics, University of Amsterdam, Amsterdam, the Netherlands
 
 <br>
 
@@ -560,7 +535,19 @@ Per task, we ran a linear regression model including the traditional outcome mea
 Household threat was significantly negatively associated with raw performance on the Processing Speed Task ($\beta$ = `r expl_results_list$threat_mnlfa_pcps$Std_Coefficient`, 95% CI = [`r expl_results_list$threat_mnlfa_pcps$CI_low`, `r expl_results_list$threat_mnlfa_pcps$CI_high`], *p* `r expl_results_list$threat_mnlfa_pcps$p.value`) and the Attention Shifting Task ($\beta$ = `r expl_results_list$threat_mnlfa_dccs$Std_Coefficient`, 95% CI = [`r expl_results_list$threat_mnlfa_dccs$CI_low`, `r expl_results_list$threat_mnlfa_pcps$CI_high`], *p* `r expl_results_list$threat_mnlfa_pcps$p.value`). Household threat was not associated with raw performance on the Flanker Task (*p* = `r expl_results_list$threat_mnlfa_flanker$p.value`) and Mental Rotation Task (*p* = `r expl_results_list$threat_mnlfa_lmt$p.value`).
 Material deprivation was not significantly associated with any of the tasks (all *p*s > `r expl_results_list$dep_mnlfa_dccs$p.value`).
 
-*I am contemplating adding an exploratory analysis looking at associations with raw performance measures (using simple linear regression models) to provide context for the results in Figure 5.*
+# Discussion
+
+Our aim was to better understand patterns how adverse experience can lead to enhanced and impaired performance on cognitive tasks.
+We addressed two common methodological issues.
+First, traditional raw performance measures---such as response times and accuracy---conflate (at least) three distinct processes: 1) speed of information processing, 2) response caution, and 3) speed of preparation and response execution.
+This makes it difficult to understand 
+
+## Main insights
+
+
+
+
+## Strengths, limitations, and future directions
 
 \pagebreak
 
