@@ -1,7 +1,7 @@
 ---
 bibliography: references.bib
 csl: apa.csl
-output: html_document
+output: github_document
 editor: 
   markdown: 
     wrap: sentence
