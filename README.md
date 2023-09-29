@@ -12,12 +12,7 @@ editor_options:
 
 
 
-```{r setup, include=F, echo=F}
-library(tidyverse)
-#source('scripts/dependencies.R')
-knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
-```
 <br>
 This repository contains data, code, and output for a manuscript entitled "Cognitive deficits and enhancements in youth from adverse conditions: An integrative assessment using Drift Diffusion Modeling in the ABCD study". The manuscript has received Stage 1 In-Principle acceptance at *Developmental Science*.
 
