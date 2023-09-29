@@ -202,7 +202,7 @@ ddm_sim5_data_complete <- mcmc_sim5_complete |>
       mutate(parameter = str_remove_all(parameter, "_sim$")) 
   )
 
-save(ddm_sim5_data_complete,ddm_sim5_traces_complete,mcmc_sim5_complete, file = 'analysis_objects/results_sim5.RData')
+save(ddm_sim5_data_complete,ddm_sim5_traces_complete,mcmc_sim5_complete, file = "analysis_objects/results_sim5.RData")
 
 
 
@@ -371,9 +371,4 @@ ddm_sim5_data_missing <- mcmc_sim5_missing |>
 ddm_sim5_data <- 
   left_join(ddm_sim5_data_complete, ddm_sim5_data_missing)
 
-save(
-  sim_RT5_complete, ddm_sim5_traces_complete, ddm_sim5_data_complete,
-  sim_RT5_missing, ddm_sim5_traces_missing, ddm_sim5_data_missing,
-  ddm_sim5_data,
-  file = "analysis_objects/ddm_sim5_results.RData"
-)
+save(sim_RT5_complete, ddm_sim5_traces_complete, ddm_sim5_data_complete, sim_RT5_missing, ddm_sim5_traces_missing, ddm_sim5_data_missing, ddm_sim5_data, file = "analysis_objects/ddm_sim5_results.RData")

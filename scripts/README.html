@@ -11,7 +11,7 @@
 
 
 
-<title>Scripts</title>
+<title>README.knit</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -223,7 +223,7 @@ ul.task-list{list-style: none;}
 
 
 
-<style type="text/css">body {font-family: Arial, sans-serif;line-height: 1.6;padding: 20px;max-width: 800px;margin: auto;background-color: #f9f9f9;}h1, h2, h3 {color: #333;}a {color: #007BFF;text-decoration: none;}a:hover {text-decoration: underline;}ul, ol {padding-left: 20px;}header {padding: 10px 0;border-bottom: 1px solid #ddd;}footer {padding: 20px 0;border-top: 1px solid #ddd;margin-top: 40px;font-size: 0.9em;color: #777;}nav ul {list-style-type: none;padding: 0;}nav ul li {display: inline;margin-right: 20px;}.banner {background-color: #333;color: white;padding: 20px 0;text-align: center;}.banner h1 {margin: 0;padding: 0;font-size: 2em;}.buttons {margin-top: 20px;}.btn {display: inline-block;padding: 10px 20px;margin: 0 5px;background-color: #007BFF;color: white;border: none;border-radius: 5px;transition: background-color 0.3s;}.btn:hover {background-color: #0056b3;text-decoration: none;}</style>
+<style type="text/css">body {font-family: Arial, sans-serif;line-height: 1.6;padding: 20px;max-width: 800px;margin: auto;background-color: #f9f9f9;}h1, h2, h3 {color: #333;}a {color: #007BFF;text-decoration: none;}a:hover {text-decoration: underline;}ul, ol {padding-left: 20px;}header {padding: 10px 0;border-bottom: 1px solid #ddd;}footer {padding: 20px 0;border-top: 1px solid #ddd;margin-top: 40px;font-size: 0.9em;color: #777;}nav ul {list-style-type: none;padding: 0;}nav ul li {display: inline;margin-right: 20px;}nav {background-color: #333;padding: 0;margin: 0;line-height: 30px; }.title {display: inline-block;font-size: 1.2em;padding: 14px 30px 14px 15px;margin-right: 30px;vertical-align: middle; }.title a {color: white;}.dropdown {display: inline-block;float: right;margin-right: 20px; vertical-align: middle; }.dropbtn {background-color: #333;color: white;padding: 20px 16px;border: none;cursor: pointer;width: 30px;display: flex;flex-direction: column;justify-content: center;align-items: center;}.dropbtn div {width: 20px;height: 3px;background-color: white; margin: 1px 0;}.dropdown-content {display: none;position: absolute;background-color: #f9f9f9; min-width: 200px;box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);z-index: 1000;right: 0; }.dropdown-content a {color: black;padding: 12px 16px;text-decoration: none;display: block;}.dropdown-content a:hover {background-color: #ddd; }.dropbtn:hover, .dropdown:hover .dropbtn {background-color: #111;}.dropdown:hover .dropdown-content {display: block;}</style>
 
 
 
@@ -320,21 +320,30 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Scripts</h1>
 
 </div>
 
-<div class="banner">
-    <h1>Research Project</h1>
-    <div class="buttons">
-        <a href="/scripts/README.md" class="btn">Scripts</a>
-        <a href="/registered_report/README.md" class="btn">Registered Report</a>
-        <a href="/supplement/README.md" class="btn">Supplement</a>
-        <a href="/data/README.md" class="btn">Data</a>
-        <a href="/analysis_objects/README.md" class="btn">Analysis Objects</a>
-        <a href="/codebooks/README.md" class="btn">Codebooks</a>
+<nav>
+    <div class="title"><a href="/abcd_ddm/index.html">Vermeent et al. (Stage 1 Accepted RR)</a></div>
+    <div class="dropdown">
+        <button class="dropbtn">
+            <div></div>
+            <div></div>
+            <div></div>
+        </button>
+        <div class="dropdown-content">
+            <a href="/abcd_ddm/opensci_workflow/README.html">Open Science Workflow</a>
+            <a href="/abcd_ddm/scripts/README.html">Scripts</a>
+            <a href="/abcd_ddm/registered_report/index.html">Registered Report</a>
+            <a href="/abcd_ddm/supplement/README.md">Supplement</a>
+            <a href="/abcd_ddm/data/README.html">Data</a>
+            <a href="/abcd_ddm/analysis_objects/README.html">Analysis Objects</a>
+            <a href="/abcd_ddm/codebooks/README.md">Codebooks</a>
+        </div>
     </div>
-</div>
+</nav>
+
+
 <div id="data-processing-scripts" class="section level1">
 <h1>Data Processing Scripts</h1>
 <p>There are four types of R-scripts in this repository, each with a
@@ -370,30 +379,25 @@ script.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td>ddm_missing_imputation.R</td>
-<td></td>
-<td>results_sim5.RData’<br> ddm_sim5_results.RData</td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations/ddm_missing_imputation.R">ddm_missing_imputation.R</a></td>
+<td>lmt_cleandata_suffix.csv</td>
+<td>results_sim5.RData<br> ddm_sim5_results.RData</td>
 </tr>
 <tr class="even">
-<td>ddm_trial_simulations.R</td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations/ddm_trial_simulations.R">ddm_trial_simulations.R</a></td>
 <td></td>
 <td>ddm_sim1_results.RData<br> ddm_sim2_results.RData<br>
 ddm_sim3_results.RData</td>
 </tr>
 <tr class="odd">
-<td>ddm_validity_checks.R</td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations/ddm_validity_checks.R">ddm_validity_checks.R</a></td>
 <td></td>
 <td>ddm_sim4_results.RData</td>
 </tr>
 <tr class="even">
-<td>power_alternative.R</td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations/power_analysis.R">power_analysis.R</a></td>
 <td></td>
-<td>power.RData’</td>
-</tr>
-<tr class="odd">
-<td>power_analysis.R</td>
-<td></td>
-<td>power.RData’</td>
+<td>power.RData</td>
 </tr>
 </tbody>
 </table>
@@ -415,19 +419,21 @@ ddm_sim3_results.RData</td>
 </thead>
 <tbody>
 <tr class="odd">
-<td>1_preprocessing.R</td>
-<td></td>
-<td>tasks_raw.RData’<br> descriptives.RData’</td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/1_data_prep/1_preprocessing.R">1_preprocessing.R</a></td>
+<td>baseline_year_1_arm_1’full.names=TRUE<br> NIHTB’full.names=TRUE</td>
+<td>&gt;str_subsetpattern=‘Narrow_Structure’<br>
+NIHTB’full.names=TRUE</td>
 </tr>
 <tr class="even">
-<td>2_clean_data.R</td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/1_data_prep/2_clean_data.R">2_clean_data.R</a></td>
 <td>tasks_raw.RData</td>
 <td>lmt_clean.csv<br> flanker_clean.csv<br> pcps_clean.csv<br>
 dccs_clean.csv<br> exclusions.RData</td>
 </tr>
 <tr class="odd">
-<td>3_data_subsets.R</td>
-<td></td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/1_data_prep/3_data_subsets.R">3_data_subsets.R</a></td>
+<td>lmt_clean.csv<br> flanker_clean.csv<br> pcps_clean.csv<br>
+dccs_clean.csv</td>
 <td>training_set.csv<br> test_set.csv</td>
 </tr>
 </tbody>
@@ -450,28 +456,31 @@ dccs_clean.csv<br> exclusions.RData</td>
 </thead>
 <tbody>
 <tr class="odd">
-<td>1_ddm_fit.R</td>
-<td></td>
-<td>rhat_lmt_mod1.RData<br> ddm_lmt_mod1.RData’<br>
-rhat_flanker_mod2.RData<br> ddm_lmt_mod2.RData’<br>
-rhat_flanker_mod1.RData<br> ddm_flanker_mod1.RData’<br>
-rhat_flanker_mod2.RData<br> ddm_flanker_mod2.RData’<br>
-rhat_pcps_mod1.RData<br> ddm_pcps_mod1.RData’<br>
-rhat_pcps_mod2.RData<br> ddm_pcps_mod2.RData’<br>
-rhat_dccs_mod1.RData<br> ddm_dccs_mod1.RData’<br>
-ddm_dccs_mod2.RData’<br> rhat_dccs_mod2.RData</td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/1_ddm_fit.R">1_ddm_fit.R</a></td>
+<td>lmt_cleandata_suffix.csv<br> flanker_cleandata_suffix.csv<br>
+pcps_cleandata_suffix.csv<br> dccs_cleandata_suffix.csv</td>
+<td>rhat_lmt_mod1.RData<br> ddm_lmt_mod1.RData<br>
+rhat_flanker_mod2.RData<br> ddm_lmt_mod2.RData<br>
+rhat_flanker_mod1.RData<br> ddm_flanker_mod1.RData<br>
+rhat_flanker_mod2.RData<br> ddm_flanker_mod2.RData<br>
+rhat_pcps_mod1.RData<br> ddm_pcps_mod1.RData<br>
+rhat_pcps_mod2.RData<br> ddm_pcps_mod2.RData<br>
+rhat_dccs_mod1.RData<br> ddm_dccs_mod1.RData<br> ddm_dccs_mod2.RData<br>
+rhat_dccs_mod2.RData</td>
 </tr>
 <tr class="even">
-<td>2_ivs.R</td>
-<td></td>
-<td>iv_data.csv</td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/2_ivs.R">2_ivs.R</a></td>
+<td>training_setdata_suffix.csv<br> test_setdata_suffix.csv<br>
+mnlfa_ivs.csv</td>
+<td>&gt;</td>
 </tr>
 <tr class="odd">
-<td>3_ddm_extract_results.R</td>
-<td>ddm_lmt_mod1.RData<br> ddm_lmt_mod2.RData<br>
-ddm_flanker_mod1.RData<br> ddm_flanker_mod2.RData<br>
-ddm_dccs_mod1.RData<br> ddm_dccs_mod2.RData<br> ddm_pcps_mod1.RData<br>
-ddm_pcps_mod2.RData</td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/3_ddm_extract_results.R">3_ddm_extract_results.R</a></td>
+<td>lmt_cleandata_suffix.csv<br> flanker_cleandata_suffix.csv<br>
+pcps_cleandata_suffix.csv<br> dccs_cleandata_suffix.csv<br>
+ddm_lmt_mod1.RData<br> ddm_lmt_mod2.RData<br> ddm_flanker_mod1.RData<br>
+ddm_flanker_mod2.RData<br> ddm_dccs_mod1.RData<br>
+ddm_dccs_mod2.RData<br> ddm_pcps_mod1.RData<br> ddm_pcps_mod2.RData</td>
 <td>ddm_lmt_mod1_parsed.RData<br> ddm_lmt_mod2_parsed.RData<br>
 ddm_flanker_mod1_parsed.RData<br> ddm_flanker_mod2_parsed.RData<br>
 ddm_dccs_mod1_parsed.RData<br> ddm_dccs_mod2_parsed.RData<br>
@@ -484,19 +493,21 @@ ddm_dccs_mod1_orig_parsed.RData<br> ddm_dccs_mod2_orig_parsed.RData<br>
 ddm_pcps_mod1_orig_parsed.RData<br> ddm_pcps_mod2_orig_parsed.RData</td>
 </tr>
 <tr class="even">
-<td>4_sem_training.R</td>
-<td></td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/4_sem_training.R">4_sem_training.R</a></td>
+<td>ddm_data.csv’<br> iv_datadata_suffix.csv<br>
+training_setdata_suffix.csv</td>
 <td>results_sem_training.RData</td>
 </tr>
 <tr class="odd">
-<td>5_sem_test.R</td>
-<td></td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/5_sem_test.R">5_sem_test.R</a></td>
+<td>ddm_data.csv’<br> iv_datadata_suffix.csv<br>
+test_setdata_suffix.csv</td>
 <td>test_sem_full_clustertest_factor_input:<br>
 results_sem_test.RData</td>
 </tr>
 <tr class="even">
-<td>6_exploratory.R</td>
-<td></td>
+<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/6_exploratory.R">6_exploratory.R</a></td>
+<td>test_set.csv<br> iv_data.csv<br> lmt_clean.csv</td>
 <td>exploratory_analysis.RData</td>
 </tr>
 </tbody>

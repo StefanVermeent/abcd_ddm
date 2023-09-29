@@ -291,7 +291,7 @@ power <- power_results |>
   ) |> 
   ungroup() 
 
-save(power, file = 'closed_data/power.RData')
+save(power, file = "analysis_objects/power.RData")
 
 
 

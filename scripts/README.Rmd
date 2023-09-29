@@ -1,5 +1,5 @@
 ---
-title: "Scripts"
+title: ""
 output: 
   html_document:
     template: ../assets/template.html
@@ -33,7 +33,7 @@ file_list <- list.files(pattern = ".R$", full.names = T, recursive = T) %>%
   map_df(function(x){
     script_text <- 
       read_lines(x) %>% 
-      str_subset("load.*(RData|csv)|save.image\\(.*\\)|file = .*RData|filename = .*pdf|write_csv.*csv") %>% 
+      str_subset("load.*(RData)|read.*(csv)|save.image\\(.*\\)|file = .*RData|filename = .*pdf|write_csv.*csv") %>% 
       str_remove_all("glue|\\{.*\\}| |\"|\\(|\\)|,") %>% 
       str_c(collapse = " ") %>% 
       str_replace_all("load","input: ") %>% 
@@ -53,7 +53,10 @@ file_list <- list.files(pattern = ".R$", full.names = T, recursive = T) %>%
       output1   = script_text[2],
       output2   = output1 %>% str_remove_all("output: ") %>% str_trim(),
       output    = output2 %>% str_split(" ", simplify = T) %>% str_remove_all(".*/") %>% str_c(collapse = "<br> ") %>%  ifelse(. == "<br> NA","",.)
-    )
+    ) |> 
+      mutate(
+        script = paste0("[", script, "]", "(", "https://github.com/stefanvermeent/abcd_ddm/tree/main", "/scripts/", dir, "/", script, ")")
+      )
   }) 
 
 ```
@@ -115,3 +118,5 @@ cat(
   sep = "\n"
 )
 ```
+
+

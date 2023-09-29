@@ -1,9 +1,9 @@
 runjags.options(force.summary = TRUE)
 
-lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv"))
-flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv"))
-pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv"))
-dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv"))
+lmt_clean     <- read_csv(paste0("data/lmt_clean", data_suffix, ".csv"))
+flanker_clean <- read_csv(paste0("data/flanker_clean", data_suffix, ".csv"))
+pcps_clean    <- read_csv(paste0("data/pcps_clean", data_suffix, ".csv"))
+dccs_clean    <- read_csv(paste0("data/dccs_clean", data_suffix, ".csv"))
 
 pcps_clean_mod2 <- pcps_clean |> 
   filter(RT >= 1)
@@ -286,7 +286,7 @@ mcmc_lmt_mod1 <- as.matrix(as.mcmc.list(ddm_lmt_mod1), chains = F) |>
   as_tibble()
 
 
-save(ddm_lmt_mod1, mcmc_lmt_mod1, file = 'analysis_objects/ddm_lmt_mod1.RData')
+save(ddm_lmt_mod1, mcmc_lmt_mod1, file = "analysis_objects/ddm_lmt_mod1.RData")
 
 
 ### 2.1.2 Model 2: Without imputing missings ----
@@ -345,7 +345,7 @@ save(rhat_lmt_mod2, file = "analysis_objects/rhat_flanker_mod2.RData")
 mcmc_lmt_mod2 <- as.matrix(as.mcmc.list(ddm_lmt_mod2), chains = F) |> 
   as_tibble()
 
-save(ddm_lmt_mod2, mcmc_lmt_mod2, file = 'analysis_objects/ddm_lmt_mod2.RData')
+save(ddm_lmt_mod2, mcmc_lmt_mod2, file = "analysis_objects/ddm_lmt_mod2.RData")
 
 
 ## 2.2 Flanker Task ----
@@ -416,7 +416,7 @@ save(rhat_flanker_mod1, file = "analysis_objects/rhat_flanker_mod1.RData")
 mcmc_flanker_mod1 <- as.matrix(as.mcmc.list(ddm_flanker_mod1), chains = F) |> 
   as_tibble()
 
-save(mcmc_flanker_mod1, ddm_flanker_mod1, file = 'analysis_objects/ddm_flanker_mod1.RData')
+save(mcmc_flanker_mod1, ddm_flanker_mod1, file = "analysis_objects/ddm_flanker_mod1.RData")
 
 
 ### 2.2.2 Model 2: Collapse across conditions ----
@@ -452,7 +452,7 @@ save(rhat_flanker_mod2, file = "analysis_objects/rhat_flanker_mod2.RData")
 mcmc_flanker_mod2 <- as.matrix(as.mcmc.list(ddm_flanker_mod2), chains = F) |> 
   as_tibble()
 
-save(mcmc_flanker_mod2, ddm_flanker_mod2, file = 'analysis_objects/ddm_flanker_mod2.RData')
+save(mcmc_flanker_mod2, ddm_flanker_mod2, file = "analysis_objects/ddm_flanker_mod2.RData")
 
 
 ## 2.3 Processing Speed Task ----
@@ -518,7 +518,7 @@ save(rhat_pcps_mod1, file = "analysis_objects/rhat_pcps_mod1.RData")
 mcmc_pcps_mod1 <- as.matrix(as.mcmc.list(ddm_pcps_mod1), chains = F) |> 
   as_tibble()
 
-save(ddm_pcps_mod1, mcmc_pcps_mod1, file = 'analysis_objects/ddm_pcps_mod1.RData')
+save(ddm_pcps_mod1, mcmc_pcps_mod1, file = "analysis_objects/ddm_pcps_mod1.RData")
 
 
 ### 2.3.2 Model 2: Standard fit with 10.000 samples per chain, remove RTs <= 1s ----
@@ -582,7 +582,7 @@ save(rhat_pcps_mod2, file = "analysis_objects/rhat_pcps_mod2.RData")
 mcmc_pcps_mod2 <- as.matrix(as.mcmc.list(ddm_pcps_mod2), chains = F) |> 
   as_tibble()
 
-save(ddm_pcps_mod2, mcmc_pcps_mod2, file = 'analysis_objects/ddm_pcps_mod2.RData')
+save(ddm_pcps_mod2, mcmc_pcps_mod2, file = "analysis_objects/ddm_pcps_mod2.RData")
 
 
 ## 2.4 Attention Shifting Task ----
@@ -652,7 +652,7 @@ save(rhat_dccs_mod1, file = "analysis_objects/rhat_dccs_mod1.RData")
 mcmc_dccs_mod1 <- as.matrix(as.mcmc.list(ddm_dccs_mod1), chains = F) |> 
   as_tibble()
 
-save(ddm_dccs_mod1, mcmc_dccs_mod1, file = 'analysis_objects/ddm_dccs_mod1.RData')
+save(ddm_dccs_mod1, mcmc_dccs_mod1, file = "analysis_objects/ddm_dccs_mod1.RData")
 
 
 ### 2.4.2 Model 2: Collapse across conditions ----
@@ -680,7 +680,7 @@ ddm_dccs_mod2 <- run.jags(method = "parallel",
 mcmc_dccs_mod2 <- as.matrix(as.mcmc.list(ddm_dccs_mod2), chains = F) |> 
   as_tibble()
 
-save(ddm_dccs_mod2, mcmc_dccs_mod2, file = 'analysis_objects/ddm_dccs_mod2.RData')
+save(ddm_dccs_mod2, mcmc_dccs_mod2, file = "analysis_objects/ddm_dccs_mod2.RData")
 
 # Extract Rhat
 rhat_dccs_mod2 <- ddm_dccs_mod2$psrf$psrf |>
