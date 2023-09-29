@@ -1,48 +1,128 @@
+/* General styles */
 body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-  padding: 20px;
-  max-width: 800px;
-  margin: auto;
-  background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+    background-color: #f9f9f9;
 }
 
 h1, h2, h3 {
-  color: #333;
+    color: #333;
 }
 
 a {
-  color: #007BFF;
+    color: #007BFF;
     text-decoration: none;
 }
 
 a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 ul, ol {
-  padding-left: 20px;
+    padding-left: 20px;
 }
 
 header {
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
 }
 
 footer {
-  padding: 20px 0;
-  border-top: 1px solid #ddd;
-  margin-top: 40px;
-  font-size: 0.9em;
-  color: #777;
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+    margin-top: 40px;
+    font-size: 0.9em;
+    color: #777;
 }
 
 nav ul {
-  list-style-type: none;
-  padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 
 nav ul li {
-  display: inline;
-  margin-right: 20px;
+    display: inline;
+    margin-right: 20px;
+}
+
+/* Styles for the navigation bar */
+nav {
+    background-color: #333;
+    padding: 0;
+    margin: 0;
+    line-height: 30px;  /* Set a height for the navigation bar */
+}
+
+.title {
+    display: inline-block;
+    font-size: 1.2em;
+    padding: 14px 30px 14px 15px;
+    margin-right: 30px;
+    vertical-align: middle; /* Center the title vertically */
+}
+
+
+
+.title a {
+    color: white;
+}
+
+/* Styles for the dropdown menu */
+.dropdown {
+    display: inline-block;
+    float: right;
+    margin-right: 20px;  /* Offset from the right boundary */
+    vertical-align: middle; /* Center the dropdown button vertically */
+}
+
+.dropbtn {
+    background-color: #333;
+    color: white;
+    padding: 20px 16px;
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropbtn div {
+    width: 20px;
+    height: 3px;
+    background-color: white; /* Make sure the hamburger lines are white */
+    margin: 1px 0;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;  /* Light background for dropdown */
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    right: 0; 
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;  /* Light gray hover effect for dropdown links */
+}
+
+.dropbtn:hover, .dropdown:hover .dropbtn {
+    background-color: #111;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
 }
