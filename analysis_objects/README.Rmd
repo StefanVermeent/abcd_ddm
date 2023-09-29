@@ -1,5 +1,5 @@
 ---
-title: "Analysis Objects"
+title: ""
 output: 
   html_document:
     template: ../assets/template.html
