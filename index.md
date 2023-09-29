@@ -5,6 +5,9 @@ output:
     template: assets/template.html
     css: assets/style.css
     keep_md: true
+knit: (function(inputFile, encoding) {
+      rmarkdown::render(inputFile, encoding = encoding, output_file = "index.html")
+      })
 editor_options: 
   markdown: 
     wrap: sentence
