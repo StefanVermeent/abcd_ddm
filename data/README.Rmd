@@ -1,6 +1,9 @@
 ---
-title: "Data"
-output: github_document
+title: ""
+output: 
+  html_document:
+    template: ../assets/template.html
+    css: ../assets/style.css
 editor_options: 
   markdown: 
     wrap: sentence
