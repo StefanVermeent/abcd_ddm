@@ -1,10 +1,3 @@
-install.packages(c('runjags', 'dplyr', 'readr', 'tidyr', 'purrr'))
-library(runjags)
-library(dplyr)
-library(readr)
-library(tidyr)
-library(purrr)
-
 runjags.options(force.summary = TRUE)
 
 lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv"))
@@ -12,12 +5,15 @@ flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv
 pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv"))
 dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv"))
 
+pcps_clean_mod2 <- pcps_clean |> 
+  filter(RT >= 1)
 
-# 1. Overview of Model Specifications ----------------------------------------
+# 1. Overview of Model Specifications and starting values ----------------------------------------
 
-## 1.1 Standard model, no condition effects ----
+## 1.1 Standard model and starting values without condition effects ----
 
-# Note: This model will be used for the Processing Speed and Mental Rotation Task
+# Note: This was the base model for the Processing Speed Task
+# It was the second model for the Flanker Task and Attention Shifting Task.
 
 mod_base_1con <- "model {
   #likelihood function
@@ -28,67 +24,6 @@ mod_base_1con <- "model {
                    delta[subject[t]])
   }
   
-  for (s in 1:nSubjects) {
-    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
-    delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
-    alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
-  }
-  
-  #priors
-  muTau ~ dunif(.0001, 1)
-  muDelta ~ dunif(-10, 10)
-  muAlpha~ dunif(.1, 5) 
-  
-  precAlpha  ~ dgamma(.001, .001)
-  precTau ~ dgamma(.001, .001)
-  precDelta ~ dgamma(.001, .001)
-}"
-
-## 1.2 Standard model including condition effects ----
-
-# Note: This model will be used for the Flanker Task and Attention Shifting Task
-
-mod_base_2con <- "model {
-  #likelihood function
-  for (t in 1:nTrials) {
-    y[t] ~ dwiener(alpha[subject[t]], 
-                   tau[condition[t], subject[t]], 
-                   0.5, 
-                   delta[condition[t], subject[t]])
-  }
-  for (s in 1:nSubjects) {
-    for (c in 1:nCon) {
-      tau[c, s]  ~ dnorm(muTau[c], precTau) T(.0001, 1)
-      delta[c, s] ~ dnorm(muDelta[c] , precDelta) T(-10, 10)
-    }
-    alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
-  }
-  #priors
-  for (c in 1:nCon){ 
-    muTau[c] ~ dunif(.0001, 1)
-    muDelta[c] ~ dunif(-10, 10)
-  } 
-  muAlpha~ dunif(.1, 5) 
-  
-  precAlpha  ~ dgamma(.001, .001)
-  precTau ~ dgamma(.001, .001)
-  precDelta ~ dgamma(.001, .001)
-}"
-
-
-## 1.3 Model with missingness imputation
-
-# Note: This model will be used for the Mental Rotation Task to fix the truncated RT distribution
-
-mod_base_1con_impute <- "model {
- #likelihood function
-  for (t in 1:nTrials) {
-    ybin[t] ~ dinterval(y[t], threshMat[t,]) 
-    y[t] ~ dwiener(alpha[subject[t]], 
-                   tau[subject[t]], 
-                   0.5, 
-                   delta[subject[t]])
-  }
   for (s in 1:nSubjects) {
     tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
     delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
@@ -117,6 +52,38 @@ initfunction_1con <- function(chain){
     .RNG.name = "lecuyer::RngStream",
     .RNG.seed = sample.int(1e10, 1, replace = F)))
 }
+
+## 1.2 Standard model and starting values including condition effects ----
+
+# Note: This was the base model for the Flanker Task and Attention Shifting Task
+
+mod_base_2con <- "model {
+  #likelihood function
+  for (t in 1:nTrials) {
+    y[t] ~ dwiener(alpha[subject[t]], 
+                   tau[condition[t], subject[t]], 
+                   0.5, 
+                   delta[condition[t], subject[t]])
+  }
+  for (s in 1:nSubjects) {
+    for (c in 1:nCon) {
+      tau[c, s]  ~ dnorm(muTau[c], precTau) T(.0001, 1)
+      delta[c, s] ~ dnorm(muDelta[c] , precDelta) T(-10, 10)
+    }
+    alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
+  }
+  #priors
+  for (c in 1:nCon){ 
+    muTau[c] ~ dunif(.0001, 1)
+    muDelta[c] ~ dunif(-10, 10)
+  } 
+  muAlpha~ dunif(.1, 5) 
+  
+  precAlpha  ~ dgamma(.001, .001)
+  precTau ~ dgamma(.001, .001)
+  precDelta ~ dgamma(.001, .001)
+}"
+
 initfunction_2con <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
@@ -130,6 +97,36 @@ initfunction_2con <- function(chain){
     .RNG.seed = sample.int(1e10, 1, replace = F)))
 }
 
+
+## 1.3 Model and starting values with missingness imputation ----
+
+# Note: This was the base model for the Mental Rotation Task to fix the truncated RT distribution
+
+mod_base_1con_impute <- "model {
+ #likelihood function
+  for (t in 1:nTrials) {
+    ybin[t] ~ dinterval(y[t], threshMat[t,]) 
+    y[t] ~ dwiener(alpha[subject[t]], 
+                   tau[subject[t]], 
+                   0.5, 
+                   delta[subject[t]])
+  }
+  for (s in 1:nSubjects) {
+    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
+    delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
+    alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
+  }
+  
+  #priors
+  muTau ~ dunif(.0001, 1)
+  muDelta ~ dunif(-10, 10)
+  muAlpha~ dunif(.1, 5) 
+  
+  precAlpha  ~ dgamma(.001, .001)
+  precTau ~ dgamma(.001, .001)
+  precDelta ~ dgamma(.001, .001)
+}"
+
 initfunction_1con_impute <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
@@ -139,6 +136,46 @@ initfunction_1con_impute <- function(chain){
     precTau = runif(1, .01, 100),
     precDelta = runif(1, .01, 100),
     y = yInit_impute,
+    .RNG.name = "lecuyer::RngStream",
+    .RNG.seed = sample.int(1e10, 1, replace = F)))
+}
+
+## 1.4 Model with larger Non-decision time prior ----
+
+mod_base_1con_pcps <- "model {
+  #likelihood function
+  for (t in 1:nTrials) {
+    y[t] ~ dwiener(alpha[subject[t]], 
+                   tau[subject[t]], 
+                   0.5, 
+                   delta[subject[t]])
+  }
+  
+  for (s in 1:nSubjects) {
+    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 3)
+    delta[s] ~ dnorm(muDelta, precDelta) T(-10, 10)
+    alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
+  }
+  
+  #priors
+  muTau ~ dunif(.0001, 3)
+  muDelta ~ dunif(-10, 10)
+  muAlpha~ dunif(.1, 5) 
+  
+  precAlpha  ~ dgamma(.001, .001)
+  precTau ~ dgamma(.001, .001)
+  precDelta ~ dgamma(.001, .001)
+}"
+
+initfunction_1con_pcps <- function(chain){
+  return(list(
+    muAlpha = runif(1, .2, 4.9),
+    muTau = runif(1, .01, 2.05),
+    muDelta = runif(1, -9.9, 9.9),
+    precAlpha = runif(1, .01, 100),
+    precTau = runif(1, .01, 100),
+    precDelta = runif(1, .01, 100),
+    y = yInit,
     .RNG.name = "lecuyer::RngStream",
     .RNG.seed = sample.int(1e10, 1, replace = F)))
 }
@@ -224,11 +261,12 @@ ddm_lmt_mod1 <- run.jags(method = "parallel",
                          data = lmt_datalist,
                          inits = initfunction_1con_impute,
                          n.chains = nChains,
-                         check.conv = TRUE,
-                         psrf.target = 1.10,
+                       #  check.conv = TRUE,
+                       #  psrf.target = 1.10,
                          adapt = 1000, #how long the samplers "tune"
                          burnin = 2000, #how long of a burn in
                          sample = 1000,
+                         summarise = FALSE,
                          thin = 10, #thin if high autocorrelation to avoid huge files
                          modules = c("wiener", "lecuyer"),
                          plots = F)
@@ -236,12 +274,19 @@ ddm_lmt_mod1 <- run.jags(method = "parallel",
 
 # Extract results
 
+# Extract Rhat
+rhat_lmt_mod1 <- ddm_lmt_mod1$psrf$psrf |>
+  unlist() |>
+  as_tibble(rownames = "parameter")
+
+save(rhat_lmt_mod1, file = "analysis_objects/rhat_lmt_mod1.RData")
+
 #Convert the runjags object to a coda format
 mcmc_lmt_mod1 <- as.matrix(as.mcmc.list(ddm_lmt_mod1), chains = F) |> 
   as_tibble()
 
 
-save(mcmc_lmt_mod1, file = 'analysis_objects/ddm_lmt_mod1.RData')
+save(ddm_lmt_mod1, mcmc_lmt_mod1, file = 'analysis_objects/ddm_lmt_mod1.RData')
 
 
 ### 2.1.2 Model 2: Without imputing missings ----
@@ -277,41 +322,31 @@ ddm_lmt_mod2 <- run.jags(method = "parallel",
                          data = lmt_datalist_noImp,
                          inits = initfunction_1con,
                          n.chains = nChains,
-                         check.conv = TRUE,
-                         psrf.target = 1.10,
+                        # check.conv = TRUE,
+                        # psrf.target = 1.10,
                          adapt = 1000, #how long the samplers "tune"
                          burnin = 2000, #how long of a burn in
                          sample = 1000,
+                         summarise = FALSE,
                          thin = 10, #thin if high autocorrelation to avoid huge files
                          modules = c("wiener", "lecuyer"),
                          plots = F)
 
 # Extract results
 
+# Extract Rhat
+rhat_lmt_mod2 <- ddm_lmt_mod2$psrf$psrf |>
+  unlist() |>
+  as_tibble(rownames = "parameter")
+
+save(rhat_lmt_mod2, file = "analysis_objects/rhat_flanker_mod2.RData")
+
 #Convert the runjags object to a coda format
 mcmc_lmt_mod2 <- as.matrix(as.mcmc.list(ddm_lmt_mod2), chains = F) |> 
   as_tibble()
 
-save(mcmc_lmt_mod2, file = 'analysis_objects/ddm_lmt_mod2.RData')
+save(ddm_lmt_mod2, mcmc_lmt_mod2, file = 'analysis_objects/ddm_lmt_mod2.RData')
 
-
-### 2.1.3 Model 1b: Imputed missings, more iterations than Model 1
-
-# Run Model
-ddm_lmt_mod1b <- run.jags(method = "parallel",
-                         model = mod_base_1con_impute,
-                         monitor = parameters,
-                         data = lmt_datalist,
-                         inits = initfunction_1con_impute,
-                         n.chains = nChains,
-                         check.conv = TRUE,
-                         psrf.target = 1.10,
-                         adapt = 2000, #how long the samplers "tune"
-                         burnin = 4000, #how long of a burn in
-                         sample = 2000,
-                         thin = 20, #thin if high autocorrelation to avoid huge files
-                         modules = c("wiener", "lecuyer"),
-                         plots = F)
 
 ## 2.2 Flanker Task ----
 
@@ -357,11 +392,12 @@ ddm_flanker_mod1 <- run.jags(method = "parallel",
                              data = flanker_datalist,
                              inits = initfunction_2con,
                              n.chains = nChains,
-                             check.conv = TRUE,
-                             psrf.target = 1.10,
+                            # check.conv = TRUE,
+                            # psrf.target = 1.10,
                              adapt = 1000, #how long the samplers "tune"
                              burnin = 2000, #how long of a burn in
                              sample = 1000,
+                             summarise = FALSE,
                              thin = 10, #thin if high autocorrelation to avoid huge files
                              modules = c("wiener", "lecuyer"),
                              plots = F)
@@ -373,15 +409,14 @@ rhat_flanker_mod1 <- ddm_flanker_mod1$psrf$psrf |>
   unlist() |>
   as_tibble(rownames = "parameter")
 
+save(rhat_flanker_mod1, file = "analysis_objects/rhat_flanker_mod1.RData")
+
 
 #Convert the runjags object to a coda format
 mcmc_flanker_mod1 <- as.matrix(as.mcmc.list(ddm_flanker_mod1), chains = F) |> 
   as_tibble()
 
 save(mcmc_flanker_mod1, ddm_flanker_mod1, file = 'analysis_objects/ddm_flanker_mod1.RData')
-
-
-diagMCMC(as.mcmc.list(ddm_flanker_mod1))
 
 
 ### 2.2.2 Model 2: Collapse across conditions ----
@@ -393,16 +428,25 @@ ddm_flanker_mod2 <- run.jags(method = "parallel",
                              data = flanker_datalist,
                              inits = initfunction_1con,
                              n.chains = nChains,
-                             check.conv = TRUE,
-                             psrf.target = 1.10,
+                            # check.conv = TRUE,
+                            # psrf.target = 1.10,
                              adapt = 1000, #how long the samplers "tune"
                              burnin = 2000, #how long of a burn in
                              sample = 1000,
+                             summarise = FALSE,
                              thin = 10, #thin if high autocorrelation to avoid huge files
                              modules = c("wiener", "lecuyer"),
                              plots = F)
 
 # Extract results
+
+# Extract Rhat
+rhat_flanker_mod2 <- ddm_flanker_mod2$psrf$psrf |>
+  unlist() |>
+  as_tibble(rownames = "parameter")
+
+save(rhat_flanker_mod2, file = "analysis_objects/rhat_flanker_mod2.RData")
+
 
 #Convert the runjags object to a coda format
 mcmc_flanker_mod2 <- as.matrix(as.mcmc.list(ddm_flanker_mod2), chains = F) |> 
@@ -410,8 +454,6 @@ mcmc_flanker_mod2 <- as.matrix(as.mcmc.list(ddm_flanker_mod2), chains = F) |>
 
 save(mcmc_flanker_mod2, ddm_flanker_mod2, file = 'analysis_objects/ddm_flanker_mod2.RData')
 
-
-diagMCMC(as.mcmc.list(ddm_flanker_mod2))
 
 ## 2.3 Processing Speed Task ----
 
@@ -453,47 +495,94 @@ ddm_pcps_mod1 <- run.jags(method = "parallel",
                           data = pcps_datalist,
                           inits = initfunction_1con,
                           n.chains = nChains,
-                          check.conv = TRUE,
-                          psrf.target = 1.10,
+                          #check.conv = TRUE,
+                         # psrf.target = 1.10,
                           adapt = 1000, #how long the samplers "tune"
                           burnin = 2000, #how long of a burn in
                           sample = 1000,
+                          summarise = FALSE,
                           thin = 10, #thin if high autocorrelation to avoid huge files
                           modules = c("wiener", "lecuyer"),
                           plots = F)
 
 # Extract results
 
+# Extract Rhat
+rhat_pcps_mod1 <- ddm_pcps_mod1$psrf$psrf |>
+  unlist() |>
+  as_tibble(rownames = "parameter")
+
+save(rhat_pcps_mod1, file = "analysis_objects/rhat_pcps_mod1.RData")
+
 #Convert the runjags object to a coda format
 mcmc_pcps_mod1 <- as.matrix(as.mcmc.list(ddm_pcps_mod1), chains = F) |> 
   as_tibble()
 
-save(mcmc_pcps_mod1, file = 'analysis_objects/ddm_pcps_mod1.RData')
+save(ddm_pcps_mod1, mcmc_pcps_mod1, file = 'analysis_objects/ddm_pcps_mod1.RData')
 
-### 2.3.2 Model 1b: Fit with 40.000 iterations
 
-ddm_pcps_mod1b <- run.jags(method = "parallel",
-                           model = mod_base_1con,
-                           monitor = parameters,
-                           data = pcps_datalist,
-                           inits = initfunction_1con,
-                           n.chains = nChains,
-                           check.conv = TRUE,
-                           psrf.target = 1.10,
-                           adapt = 2000, #how long the samplers "tune"
-                           burnin = 4000, #how long of a burn in
-                           sample = 4000,
-                           thin = 40, #thin if high autocorrelation to avoid huge files
-                           modules = c("wiener", "lecuyer"),
-                           plots = F)
+### 2.3.2 Model 2: Standard fit with 10.000 samples per chain, remove RTs <= 1s ----
+
+# Create numeric participant IDs
+pcps_id_matches_mod2 <- pcps_clean_mod2 |> 
+  distinct(subj_idx) |> 
+  mutate(subj_idx_num = 1:n())
+
+pcps_clean_mod2 <- pcps_clean_mod2 |> 
+  left_join(pcps_id_matches_mod2)
+
+# Store RTs and condition per trial (incorrect RTs are coded negatively)
+pcps_y          <- round(ifelse(pcps_clean_mod2$correct == 0, (pcps_clean_mod2$RT*-1), pcps_clean_mod2$RT),3)
+yInit             <- rep(NA, length(pcps_y))
+
+#Create numbers for JAGS
+pcps_nTrials    <- nrow(pcps_clean_mod2)
+pcps_nSubjects  <- length(unique(pcps_clean_mod2$subj_idx))
+
+#Create a list of the data; this gets sent to JAGS
+pcps_datalist_mod2 <- list(y = pcps_y, subject = pcps_clean_mod2$subj_idx_num,
+                      nTrials = pcps_nTrials, nSubjects = pcps_nSubjects)
+
+# JAGS Specifications
+
+#Create list of parameters to be monitored
+parameters <- c("alpha", "tau", "delta", "muAlpha",
+                "muTau", "muDelta")
+
+nUseSteps = 1000 # Specify number of steps to run
+nChains = 3 # Specify number of chains to run (one per processor)
+
+# Run Model
+ddm_pcps_mod2 <- run.jags(method = "parallel",
+                          model = mod_base_1con_pcps,
+                          monitor = parameters,
+                          data = pcps_datalist_mod2,
+                          inits = initfunction_1con_pcps,
+                          n.chains = nChains,
+                          #check.conv = TRUE,
+                          # psrf.target = 1.10,
+                          adapt = 1000, #how long the samplers "tune"
+                          burnin = 2000, #how long of a burn in
+                          sample = 1000,
+                          summarise = FALSE,
+                          thin = 10, #thin if high autocorrelation to avoid huge files
+                          modules = c("wiener", "lecuyer"),
+                          plots = F)
 
 # Extract results
 
+# Extract Rhat
+rhat_pcps_mod2 <- ddm_pcps_mod2$psrf$psrf |>
+  unlist() |>
+  as_tibble(rownames = "parameter")
+
+save(rhat_pcps_mod2, file = "analysis_objects/rhat_pcps_mod2.RData")
+
 #Convert the runjags object to a coda format
-mcmc_pcps_mod1b <- as.matrix(as.mcmc.list(ddm_pcps_mod1b), chains = F) |> 
+mcmc_pcps_mod2 <- as.matrix(as.mcmc.list(ddm_pcps_mod2), chains = F) |> 
   as_tibble()
 
-save(mcmc_pcps_mod1b, ddm_pcps_mod1b, file = 'analysis_objects/ddm_pcps_mod1b.RData')
+save(ddm_pcps_mod2, mcmc_pcps_mod2, file = 'analysis_objects/ddm_pcps_mod2.RData')
 
 
 ## 2.4 Attention Shifting Task ----
@@ -540,14 +629,24 @@ ddm_dccs_mod1 <- run.jags(method = "parallel",
                           data = dccs_datalist,
                           inits = initfunction_2con,
                           n.chains = nChains,
+                          # check.conv = TRUE,
+                          # psrf.target = 1.10,
                           adapt = 1000, #how long the samplers "tune"
                           burnin = 2000, #how long of a burn in
                           sample = 1000,
+                          summarise = FALSE,
                           thin = 10, #thin if high autocorrelation to avoid huge files
                           modules = c("wiener", "lecuyer"),
                           plots = F)
 
 # Extract results
+
+# Extract Rhat
+rhat_dccs_mod1 <- ddm_dccs_mod1$psrf$psrf |>
+  unlist() |>
+  as_tibble(rownames = "parameter")
+
+save(rhat_dccs_mod1, file = "analysis_objects/rhat_dccs_mod1.RData")
 
 #Convert the runjags object to a coda format
 mcmc_dccs_mod1 <- as.matrix(as.mcmc.list(ddm_dccs_mod1), chains = F) |> 
@@ -565,11 +664,12 @@ ddm_dccs_mod2 <- run.jags(method = "parallel",
                           data = dccs_datalist,
                           inits = initfunction_1con,
                           n.chains = nChains,
-                          check.conv = TRUE,
-                          psrf.target = 1.10,
+                         # check.conv = TRUE,
+                         # psrf.target = 1.10,
                           adapt = 1000, #how long the samplers "tune"
                           burnin = 2000, #how long of a burn in
                           sample = 1000,
+                          summarise = FALSE,
                           thin = 10, #thin if high autocorrelation to avoid huge files
                           modules = c("wiener", "lecuyer"),
                           plots = F)
@@ -581,3 +681,10 @@ mcmc_dccs_mod2 <- as.matrix(as.mcmc.list(ddm_dccs_mod2), chains = F) |>
   as_tibble()
 
 save(ddm_dccs_mod2, mcmc_dccs_mod2, file = 'analysis_objects/ddm_dccs_mod2.RData')
+
+# Extract Rhat
+rhat_dccs_mod2 <- ddm_dccs_mod2$psrf$psrf |>
+  unlist() |>
+  as_tibble(rownames = "parameter")
+
+save(rhat_dccs_mod2, file = "analysis_objects/rhat_dccs_mod2.RData")
