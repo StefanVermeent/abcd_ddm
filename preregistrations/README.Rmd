@@ -1,5 +1,5 @@
 ---
-title: "2022-9-9: Preregistration of Drift Diffusion data checks"
+title: ""
 output: 
   html_document:
     template: ../assets/template.html
@@ -11,7 +11,7 @@ link-citations: true
 
 ## 1. Description
 
-This document details initial planned data checks of the cognitive task data. These data checks are planned prior to the submission of the registered report. See below and the [README file](https://github.com/stefanvermeent/abcd_ddm) for more information on how we minimized the chance of bias.
+This document details initial planned data checks of the cognitive task data. These data checks are planned prior to the submission of the registered report. See below and the [Open Science Workflow](https://stefanvermeent.github.io/abcd_ddm/opensci_workflow/README.html) for more information on how we minimized the chance of bias.
 
 ## 2. Aim
 
@@ -26,7 +26,7 @@ To investigate whether the cognitive tasks that we identified as being suitable 
 
 ### 3.1 Reading in the data
 
-These data checks are performed prior to submitting the registered report. To prevent researcher bias, we developed an automated workflow that is based on automated tracking via Github. In short, the workflow is as follows (for more details, see the [README file](https://github.com/stefanvermeent/abcd_ddm)):
+These data checks are performed prior to submitting the registered report. To prevent researcher bias, we developed an automated workflow that is based on automated tracking via Github. In short, the workflow is as follows (for more details, see [here](https://stefanvermeent.github.io/abcd_ddm/opensci_workflow/README.html)):
 
 -   Only the necessary data files (i.e., those containing the trial-level task data) will be loaded into R for further cleaning and processing.
 -   Files that contain the data of several cognitive tasks will be read partially, one task at the time.

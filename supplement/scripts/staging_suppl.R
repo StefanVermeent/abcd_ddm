@@ -1,10 +1,11 @@
-library(ggsci)
 
-# Load objects ------------------------------------------------------------
+# 1. Load objects ------------------------------------------------------------
 lmt_clean     <- readr::read_csv(paste0("data/lmt_clean", data_suffix, ".csv")) |> mutate(task = 1)
 flanker_clean <- readr::read_csv(paste0("data/flanker_clean", data_suffix, ".csv")) |> mutate(task = 2)
 dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv")) |> mutate(task = 3)
 pcps_clean    <- readr::read_csv(paste0("data/pcps_clean", data_suffix, ".csv")) |> mutate(task = 4)
+
+
 
 load('analysis_objects/power.RData')
 load('analysis_objects/ddm_sim1_results.RData')
@@ -13,10 +14,37 @@ load('analysis_objects/ddm_sim3_results.RData')
 load("analysis_objects/ddm_sim4_results.RData")
 load("analysis_objects/ddm_sim5_results.RData")
 
+load('analysis_objects/ddm_flanker_mod1_parsed.RData')
+load('analysis_objects/ddm_flanker_mod2_parsed.RData')
+load('analysis_objects/ddm_lmt_mod1_parsed.RData')
+load('analysis_objects/ddm_lmt_mod2_parsed.RData')
+load('analysis_objects/ddm_dccs_mod1_parsed.RData')
+load('analysis_objects/ddm_dccs_mod2_parsed.RData')
+load('analysis_objects/ddm_pcps_mod1_parsed.RData')
+load('analysis_objects/ddm_pcps_mod2_parsed.RData')
 
+load('analysis_objects/ddm_flanker_mod1_orig_parsed.RData')
+load('analysis_objects/ddm_flanker_mod2_orig_parsed.RData')
+load('analysis_objects/ddm_lmt_mod1_orig_parsed.RData')
+load('analysis_objects/ddm_lmt_mod2_orig_parsed.RData')
+load('analysis_objects/ddm_dccs_mod1_orig_parsed.RData')
+load('analysis_objects/ddm_dccs_mod2_orig_parsed.RData')
+load('analysis_objects/ddm_pcps_mod1_orig_parsed.RData')
+load('analysis_objects/ddm_pcps_mod2_orig_parsed.RData')
 
+load('analysis_objects/rhat_flanker_mod1.RData')
+load('analysis_objects/rhat_flanker_mod2.RData')
+load('analysis_objects/rhat_lmt_mod1.RData')
+load('analysis_objects/rhat_lmt_mod2.RData')
+load('analysis_objects/rhat_dccs_mod1.RData')
+load('analysis_objects/rhat_dccs_mod2.RData')
+load('analysis_objects/rhat_pcps_mod1.RData')
+load('analysis_objects/rhat_pcps_mod2.RData')
 
-# Power analysis ----------------------------------------------------------
+load('analysis_objects/results_sem_training.RData')
+load('analysis_objects/results_sem_test.RData')
+
+# 2. Power analysis ----------------------------------------------------------
 
 power_plot <- ggplot(power, aes(n, power, group = lhs, color = Type)) +
   geom_point() +
@@ -36,12 +64,11 @@ power_plot <- ggplot(power, aes(n, power, group = lhs, color = Type)) +
   )
 
 
-# DDM simulations ---------------------------------------------------------
+# 3. DDM simulations ---------------------------------------------------------
 
-## Results of simulations with 6 trials ----
-  
+## 3.1 Simulation 1 ------------------------------------------------------------
 
-# Simulation 1 ------------------------------------------------------------
+### Convergence ----
 
 conv_sim1_data <- ddm_sim1_traces |> 
   rename(
@@ -76,8 +103,7 @@ distr_plot_sim1 <- conv_sim1_data |>
   ) +
   guides(fill = 'none')
 
-## Parameter Recovery ----
-
+### Parameter Recovery ----
 recov_plot_sim1 <- ddm_sim1_data |> 
   ggplot(aes(simulated, estimated)) +
   geom_point() +
@@ -97,9 +123,9 @@ ddm_sim1_cor <- ddm_sim1_cor |>
   as.list()
 
 
-# Simulation 2 ------------------------------------------------------------
+## 3.2 Simulation 2 ------------------------------------------------------------
 
-## Convergence ----
+### Convergence ----
 
 conv_sim2_data <- ddm_sim2_traces |> 
   rename(
@@ -137,7 +163,7 @@ distr_plot_sim2 <- conv_sim2_data |>
     fill = "Condition"
   ) 
 
-## Parameter Recovery ----
+### Parameter Recovery ----
 
 recov_plot_sim2 <- ddm_sim2_data |> 
   mutate(condition = ifelse(is.na(condition), 'fixed', condition)) |> 
@@ -161,9 +187,9 @@ ddm_sim2_cor <- ddm_sim2_cor |>
 
 
 
-# Simulation 3 ------------------------------------------------------------
+## 3.3 Simulation 3 ------------------------------------------------------------
 
-## Convergence ----
+### Convergence ----
 
 conv_sim3_data <- ddm_sim3_traces |> 
   rename(
@@ -201,7 +227,7 @@ distr_plot_sim3 <- conv_sim3_data |>
     fill = "Condition"
   ) 
 
-## Parameter Recovery ----
+### Parameter Recovery ----
 
 recov_plot_sim3 <- ddm_sim3_data |> 
   mutate(condition = ifelse(is.na(condition), 'fixed', condition)) |> 
@@ -224,7 +250,7 @@ ddm_sim3_cor <- ddm_sim3_cor |>
   as.list()
 
 
-# Simulation 4 ------------------------------------------------------------
+## 3.4 Simulation 4 ----
 
 shrink_hist_sim4 <- ddm_sim4_data |> 
   mutate(
@@ -338,7 +364,7 @@ points_sim4 <-
 
 
 
-# Simulation 5 ------------------------------------------------------------
+## 3.5 Simulation 5 ----
 
 data_compare_sim5 <- 
   list(
@@ -393,9 +419,7 @@ cor_sim5 <- ddm_sim5_data |>
   )
     
 
-
-
-# Descriptives ------------------------------------------------------------
+# 4. Descriptives ------------------------------------------------------------
 
 descriptives <- list()
 
@@ -433,48 +457,490 @@ descriptives$task_descriptives_table <-
 
 
 
-# Stage all results -------------------------------------------------------
+# 5. DDM model fit -----------------------------------------------------------
+
+## 5.1 R^ values ----
+
+rhat <- 
+  tribble(
+    ~task,                           ~rhat,
+    "Flanker - Model 1",             max(rhat_flanker_mod1$`Point est.`, na.rm = T),
+  #  "Flanker - Model 2",             max(rhat_flanker_mod2$`Point est.`, na.rm = T),
+  #  "Mental Rotation - Model 1",     max(rhat_lmt_mod1$`Point est.`, na.rm = T),
+  #  "Mental Rotation - Model 2",     max(rhat_lmt_mod2$`Point est.`, na.rm = T),
+    "Attention Shifting - Model 1",  max(rhat_dccs_mod1$`Point est.`, na.rm = T),
+    "Attention Shifting - Model 2",  max(rhat_dccs_mod2$`Point est.`, na.rm = T),
+    "Processing Speed - Model 1",    max(rhat_pcps_mod1$`Point est.`, na.rm = T),
+  #  "Processing Speed - Model 2",    max(rhat_pcps_mod2$`Point est.`, na.rm = T),
+  ) |> 
+  mutate(rhat = formatC(x = rhat, digits = 3, width = 3, flag = "0", format = 'f'))
+
+## 5.2 Fit statistics ----  
+
+ddm_fit_table <- bind_rows(
+  flanker_mod1_fit |> 
+    group_by(condition, percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Flanker - Model 1'),
+  flanker_mod2_fit |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Flanker - Model 2'),
+  lmt_mod1_fit |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Mental Rotation - Model 1'),
+  lmt_mod2_fit |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Mental Rotation - Model 2'),
+  dccs_mod1_fit |> 
+    group_by(condition, percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Attention Shifting - Model 1'),
+  dccs_mod2_fit |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Attention Shifting - Model 2'),
+  pcps_mod1_fit |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Processing Speed - Model 1'),
+  pcps_mod2_fit |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Processing Speed - Model 2'),
+) |> 
+  pivot_wider(names_from = 'percentile', values_from = c('r_RT', 'r_acc')) |> 
+  select(task, condition, contains("RT_RT"), r_acc_RT_25) %>%
+  mutate(across(-c(task, condition), ~formatC(x = ., digits = 2, width = 3, flag = "0", format = 'f'))) |> 
+  left_join(rhat) |> 
+  flextable::flextable() |> 
+  flextable::autofit() |> 
+  flextable::set_header_labels(
+    task = "Task",
+    condition = 'Condition',
+    r_RT_RT_25 = "25th Percentile",
+    r_RT_RT_50 = "50th Percentile",
+    r_RT_RT_75 = "75th Percentile",
+    r_acc_RT_25 = "Accuracy",
+    rhat        = "R^"
+  )
+
+## 5.3 Fit statistics (original) ----
+
+ddm_fit_orig_table <- bind_rows(
+  flanker_mod1_fit_orig |> 
+    group_by(condition, percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Flanker - Model 1'),
+  flanker_mod2_fit_orig |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Flanker - Model 2'),
+  lmt_mod1_fit_orig |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Mental Rotation - Model 1'),
+  dccs_mod1_fit_orig |> 
+    group_by(condition, percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Attention Shifting - Model 1'),
+  dccs_mod2_fit_orig |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Attention Shifting - Model 2'),
+  pcps_mod1_fit_orig |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Processing Speed - Model 1'),
+  pcps_mod2_fit_orig |> 
+    group_by(percentile) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Processing Speed - Model 2'),
+) |> 
+  pivot_wider(names_from = 'percentile', values_from = c('r_RT', 'r_acc')) |> 
+  select(task, condition, contains("RT_RT"), r_acc_RT_25) %>%
+  mutate(across(-c(task, condition), ~formatC(x = ., digits = 2, width = 3, flag = "0", format = 'f'))) |> 
+  left_join(rhat) |> 
+  flextable::flextable() |> 
+  flextable::autofit() |> 
+  flextable::set_header_labels(
+    task = "Task",
+    condition = 'Condition',
+    r_RT_RT_25 = "25th Percentile",
+    r_RT_RT_50 = "50th Percentile",
+    r_RT_RT_75 = "75th Percentile",
+    r_acc_RT_25 = "Accuracy",
+    rhat        = "R^"
+  )
+
+## 5.4 Fit statistics at different levels op adversity ----
+
+# Load IVs
+mnlfa_ivs     <- readr::read_csv("data/iv_data.csv") |> 
+  mutate(
+    dep_mnlfa_c   = scale(dep_mnlfa),
+    threat_mnlfa_c = scale(threat_mnlfa),
+    dep_mnlfa_cat = case_when(
+      dep_mnlfa_c < -1 ~ "< -1SD",
+      dep_mnlfa_c > 1 ~ "> 1SD",
+      dep_mnlfa_c > -1 & dep_mnlfa_c < 1 ~ "≥1*SD*≤"
+    ),
+    threat_mnlfa_cat = case_when(
+      threat_mnlfa_c < -1 ~ "< -1SD",
+      threat_mnlfa_c > 1 ~ "> 1SD",
+      threat_mnlfa_c > -1 & threat_mnlfa_c < 1 ~ "≥1*SD*≤"
+    ),
+    across(c(dep_mnlfa_c, threat_mnlfa_c), as.numeric)
+  )
+
+ddm_fit_subgroup_threat_table <- bind_rows(
+  flanker_mod2_fit |> 
+    left_join(mnlfa_ivs) |> 
+    group_by(percentile, threat_mnlfa_cat) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Flanker - Model 2'),
+  lmt_mod1_fit |> 
+    left_join(mnlfa_ivs) |> 
+    group_by(percentile, threat_mnlfa_cat) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Mental Rotation - Model 1'),
+  dccs_mod2_fit |> 
+    left_join(mnlfa_ivs) |> 
+    group_by(percentile, threat_mnlfa_cat) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Attention Shifting - Model 2'),
+  pcps_mod2_fit |> 
+    left_join(mnlfa_ivs) |> 
+    group_by(percentile, threat_mnlfa_cat) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Processing Speed - Model 2'),
+) |> 
+  pivot_wider(names_from = 'percentile', values_from = c('r_RT', 'r_acc')) |> 
+  select(task, threat_mnlfa_cat, contains("RT_RT"), r_acc_RT_25) %>%
+  mutate(across(-c(task), ~formatC(x = ., digits = 2, width = 3, flag = "0", format = 'f'))) |> 
+  filter(!str_detect(threat_mnlfa_cat, "NA")) |> 
+  flextable::flextable() |> 
+  flextable::autofit() |> 
+  flextable::set_header_labels(
+    task = "Task",
+    threat_mnlfa_cat = "Household threat",
+    r_RT_RT_25 = "25th Percentile",
+    r_RT_RT_50 = "50th Percentile",
+    r_RT_RT_75 = "75th Percentile",
+    r_acc_RT_25 = "Accuracy",
+    rhat        = "R^"
+  )
+
+ddm_fit_subgroup_dep_table <- bind_rows(
+  flanker_mod2_fit |> 
+    left_join(mnlfa_ivs) |> 
+    group_by(percentile, dep_mnlfa_cat) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Flanker - Model 2'),
+  lmt_mod1_fit |> 
+    left_join(mnlfa_ivs) |> 
+    group_by(percentile, dep_mnlfa_cat) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Mental Rotation - Model 1'),
+  dccs_mod2_fit |> 
+    left_join(mnlfa_ivs) |> 
+    group_by(percentile, dep_mnlfa_cat) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Attention Shifting - Model 2'),
+  pcps_mod2_fit |> 
+    left_join(mnlfa_ivs) |> 
+    group_by(percentile, dep_mnlfa_cat) |> 
+    summarise(
+      r_RT = cor(RT_sim, RT),
+      r_acc = cor(acc_sim, acc)) |> 
+    ungroup() |> 
+    mutate(task = 'Processing Speed - Model 2'),
+) |> 
+  pivot_wider(names_from = 'percentile', values_from = c('r_RT', 'r_acc')) |> 
+  select(task, dep_mnlfa_cat, contains("RT_RT"), r_acc_RT_25) %>%
+  mutate(across(-c(task), ~formatC(x = ., digits = 2, width = 3, flag = "0", format = 'f'))) |> 
+  filter(!str_detect(dep_mnlfa_cat, "NA")) |> 
+  flextable::flextable() |> 
+  flextable::autofit() |> 
+  flextable::set_header_labels(
+    task = "Task",
+    dep_mnlfa_cat = "Material deprivation",
+    r_RT_RT_25 = "25th Percentile",
+    r_RT_RT_50 = "50th Percentile",
+    r_RT_RT_75 = "75th Percentile",
+    r_acc_RT_25 = "Accuracy",
+    rhat        = "R^"
+  )
+
+
+
+## 5.5 Convergence Figures ----
+
+ddm_conv_lmt_fig <- 
+  lmt_mod1_traces |> 
+  mutate(
+    parameter = case_when(
+      parameter == "a" ~ "Boundary separation",
+      str_detect(parameter, "v") ~ "Drift rate",
+      str_detect(parameter, "t0") ~ "Non-decision time"
+    )
+  ) |>  
+  ggplot(aes(n, value, group = n, color = factor(chains))) +
+  geom_line() +
+  facet_wrap(~parameter, scales = 'free') + 
+  theme_classic() +
+  scale_color_uchicago() +
+  labs(
+    x = "",
+    y = "",
+    color = "Chain"
+  ) +
+  guides(fill = 'none')
+
+ddm_conv_flanker_fig <- 
+  bind_rows(
+    flanker_mod1_traces |> mutate(model = "Model 1"),
+    flanker_mod2_traces |> mutate(model = "Model 2")
+  ) |> 
+  mutate(
+   parameter = case_when(
+      parameter == "t01" ~ "t (con)",
+      parameter == "t02" ~ "t (incon)",
+      parameter == "t0" ~  "t",
+      parameter == "v1" ~ "v (con)",
+      parameter == "v2" ~ "v (incon)",
+      parameter == "v" ~ "v",
+      parameter == "a" ~ "a"
+    )) |> 
+  unite(col = "parameter", c(model, parameter), sep = ": ") |> 
+  ggplot(aes(n, value, color = factor(chains))) +
+  geom_line() +
+  facet_wrap(~parameter, scales = 'free', ncol=4) +
+  theme_classic() +
+  scale_color_uchicago() +
+  labs(
+    x = "",
+    y = "",
+    color = "Chain"
+  )
+
+ddm_conv_dccs_fig <- 
+  bind_rows(
+    dccs_mod1_traces |> mutate(model = "Model 1"),
+    dccs_mod2_traces |> mutate(model = "Model 2")
+  ) |> 
+  mutate(
+    parameter = case_when(
+      parameter == "t01" ~ "t (rep)",
+      parameter == "t02" ~ "t (sw)",
+      parameter == "t0" ~  "t",
+      parameter == "v1" ~ "v (rep)",
+      parameter == "v2" ~ "v (sw)",
+      parameter == "v" ~ "v",
+      parameter == "a" ~ "a"
+    )) |> 
+  unite(col = "parameter", c(model, parameter), sep = ": ") |> 
+  ggplot(aes(n, value, color = factor(chains))) +
+  geom_line() +
+  facet_wrap(~parameter, scales = 'free', ncol=4) +
+  theme_classic() +
+  scale_color_uchicago() +
+  labs(
+    x = "",
+    y = "",
+    color = "Chain"
+  )
+
+ddm_conv_pcps_fig <- 
+  bind_rows(
+    pcps_mod1_traces |> mutate(model = "Model 1"),
+    pcps_mod2_traces |> mutate(model = "Model 2")
+  ) |> 
+  mutate(
+    parameter = case_when(
+      parameter == "t0" ~  "t",
+      parameter == "v" ~ "v",
+      parameter == "a" ~ "a"
+    )) |> 
+  unite(col = "parameter", c(model, parameter), sep = ": ") |> 
+  ggplot(aes(n, value, color = factor(chains))) +
+  geom_line() +
+  facet_wrap(~parameter, scales = 'free', ncol=3) +
+  theme_classic() +
+  scale_color_uchicago() +
+  labs(
+    x = "",
+    y = "",
+    color = "Chain"
+  )
+
+
+
+# 6. SEM fit --------------------------------------------------------------
+
+## 6.1 Training set ----
+
+summary(training_sem_sub_a_cluster, fit.measures = TRUE, standardized = TRUE)
+
+## 6.2 Test set ----
+
+test_factor_loadings |> 
+  select(lhs, rhs, est, se, z, pvalue, std.all) |> 
+  bind_rows(
+    parameterEstimates(test_sem_full_cluster) |> 
+      filter(op == "~~", str_detect(lhs, "_l$"), lhs == rhs) |> 
+      select(lhs, rhs, est, se, z, pvalue)
+  ) |> 
+  as_tibble() |> 
+  mutate(
+    rhs = case_when(
+      str_detect(rhs, "pcps_(v|a|t)") ~ "Processing Speed",
+      str_detect(rhs, "dccs_(v|a|t)") ~ "Attention Shifting",
+      str_detect(rhs, "flanker_(v|a|t)") ~ "Flanker",
+      str_detect(rhs, "rotation_(v|a|t)") ~ "Mental Rotation",
+    )
+  ) |>
+  add_row(.before = 1, rhs = "Factor loadings") |> 
+  add_row(.before = 2, rhs = "Task-general drift rate") |> 
+  add_row(.before = 6, rhs = "Task-general boundary separation") |> 
+  add_row(.before = 11, rhs = "Task-general non-decision time") |> 
+  add_row(.before = 16, rhs = "Residual variances") |> 
+  add_row(.before = 17, rhs = "Task-specific drift rate") |> 
+  add_row(.before = 21, rhs = "Task-specific boundary separation") |> 
+  add_row(.before = 26, rhs = "Task-specific non-decision time") |> 
+  select(-lhs) |> 
+  mutate(
+    z = as.numeric(z),
+    std.all = as.numeric(std.all)) |> 
+  mutate(across(c(est, se, z, std.all), ~formatC(x = ., digits = 2, width = 3, flag = "0", format = 'f'))) |> 
+  mutate(across(c(pvalue), ~formatC(x = ., digits = 3, width = 3, flag = "0", format = 'f'))) |> 
+  mutate(pvalue = ifelse(str_trim(pvalue) == "0", "<.001", pvalue)) |> 
+  mutate(across(everything(), ~ifelse(str_detect(., " NA"), "", .))) |> 
+  flextable::flextable() |> 
+  flextable::autofit() |> 
+  flextable::bold(i = c(1,2,  6, 11, 16, 17, 21, 26)) |> 
+  flextable::merge_h(i = 1:6)
+  
+# 7. Stage all results -------------------------------------------------------
 
 staged_sim_results_supp <- 
   list(
-    power_plot = power_plot,
+    power_plot                 = power_plot,
     
-    ddm_sim1_convergence = conv_sim1_data,
-    ddm_sim1_traces_plot = traces_plot_sim1,
-    ddm_sim1_distr_plot  = distr_plot_sim1,
-    ddm_sim1_cor         = ddm_sim1_cor,
-    ddm_sim1_recov       = recov_plot_sim1,
+    ddm_sim1_convergence       = conv_sim1_data,
+    ddm_sim1_traces_plot       = traces_plot_sim1,
+    ddm_sim1_distr_plot        = distr_plot_sim1,
+    ddm_sim1_cor               = ddm_sim1_cor,
+    ddm_sim1_recov             = recov_plot_sim1,
     
-    ddm_sim2_convergence = conv_sim2_data,
-    ddm_sim2_traces_plot = traces_plot_sim2,
-    ddm_sim2_distr_plot  = distr_plot_sim2,
-    ddm_sim2_cor         = ddm_sim2_cor,
-    ddm_sim2_recov       = recov_plot_sim2,
+    ddm_sim2_convergence       = conv_sim2_data,
+    ddm_sim2_traces_plot       = traces_plot_sim2,
+    ddm_sim2_distr_plot        = distr_plot_sim2,
+    ddm_sim2_cor               = ddm_sim2_cor,
+    ddm_sim2_recov             = recov_plot_sim2,
     
-    ddm_sim3_convergence = conv_sim3_data,
-    ddm_sim3_traces_plot = traces_plot_sim3,
-    ddm_sim3_distr_plot  = distr_plot_sim3,
-    ddm_sim3_cor         = ddm_sim3_cor,
-    ddm_sim3_recov       = recov_plot_sim3,
+    ddm_sim3_convergence       = conv_sim3_data,
+    ddm_sim3_traces_plot       = traces_plot_sim3,
+    ddm_sim3_distr_plot        = distr_plot_sim3,
+    ddm_sim3_cor               = ddm_sim3_cor,
+    ddm_sim3_recov             = recov_plot_sim3,
     
-    ddm_sim4_cor         = ddm_sim4_cor,
-    ddm_sim4_hist        = shrink_hist_sim4,
-    ddm_sim4_dist        = dist_sim4,
-    ddm_sim4_dev_plot    = deviation_sim4,
-    ddm_sim4_mod_dev_v   = mod_dev_v_sim4,
-    ddm_sim4_mod_dev_a   = mod_dev_a_sim4,
-    ddm_sim4_mod_dev_t   = mod_dev_t_sim4,
-    ddm_sim4_mod_dev_v2  = mod_dev_v2_sim4,
-    ddm_sim4_mod_dev_t2  = mod_dev_t2_sim4,
-    ddm_sim4_mod_dev_a2  = mod_dev_a2_sim4,
-    ddm_sim4_fit         = fit_sim4, 
-    ddm_sim4_simslopes   = ss2_sim4, 
-    ddm_sim4_points_plot = points_sim4,
+    ddm_sim4_cor               = ddm_sim4_cor,
+    ddm_sim4_hist              = shrink_hist_sim4,
+    ddm_sim4_dist              = dist_sim4,
+    ddm_sim4_dev_plot          = deviation_sim4,
+    ddm_sim4_mod_dev_v         = mod_dev_v_sim4,
+    ddm_sim4_mod_dev_a         = mod_dev_a_sim4,
+    ddm_sim4_mod_dev_t         = mod_dev_t_sim4,
+    ddm_sim4_mod_dev_v2        = mod_dev_v2_sim4,
+    ddm_sim4_mod_dev_t2        = mod_dev_t2_sim4,
+    ddm_sim4_mod_dev_a2        = mod_dev_a2_sim4,
+    ddm_sim4_fit               = fit_sim4, 
+    ddm_sim4_simslopes         = ss2_sim4, 
+    ddm_sim4_points_plot       = points_sim4,
     
-    ddm_sim5_cor         = cor_sim5,
-    ddm_sim5_data_compare = data_compare_sim5,
+    ddm_sim5_cor               = cor_sim5,
+    ddm_sim5_data_compare      = data_compare_sim5,
     
-    descriptives         = descriptives$task_descriptives_table
+    descriptives               = descriptives$task_descriptives_table,
+    
+    ddm_fit_table              = ddm_fit_table,
+    
+    ddm_fit_subgroup_dep_table = ddm_fit_subgroup_dep_table,
+    ddm_fit_subgroup_dep_table = ddm_fit_subgroup_dep_table,
+    
+    ddm_conv_flanker_fig       = ddm_conv_flanker_fig,
+    ddm_conv_dccs_fig          = ddm_conv_dccs_fig,
+    ddm_conv_lmt_fig           = ddm_conv_lmt_fig,
+    ddm_conv_pcps_fig          = ddm_conv_pcps_fig
   )
 
 save(staged_sim_results_supp, file = 'supplement/staged_sim_results_supp.RData')

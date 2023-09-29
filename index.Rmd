@@ -27,14 +27,14 @@ Do you want to download or clone the materials for this project? Go to [https://
 The names of each folder are intended to be self-explanatory.
 There are eight top-level folders to organize the inputs and outputs of this project:
 
-1.  [`Open Science Workflow`](opensci_workflow/): Statement on and explanation of our Open Science Workflow.
-2.  [`Preregistrations`](preregistrations/): The preregistration for the analyses done prior to Stage 1 submission.
-3.  [`Registered Report`](registered_report/): The Registered Report written in R markdown.
-4.  [`Supplement`](supplement/): a supplemental text (to be submitted with the manuscript) documenting all secondary analyses in detail.
-5.  [`Scripts`](scripts/): R-scripts that read, analyze, and produce all analysis objects.
-6.  [`Data`](data/): Folder in which real ABCD data can be placed to make the analyses fully reproducible. Note that we cannot openly share the raw data on the open repository. Contains synthetic data to facilitate computational reproducibility in the absence of ABCD access.
-7.  [`Analysis Objects`](analysis_objects/): Folder containing all analysis objects.
-8.  [`Codebooks`](codebooks): lists of variable names, labels, and value labels (where applicable).
+1.  [`Open Science Workflow`](https://stefanvermeent.github.io/abcd_ddm/opensci_workflow/README.html): Statement on and explanation of our Open Science Workflow.
+2.  [`Preregistrations`](https://stefanvermeent.github.io/abcd_ddm/preregistrations/README.html): The preregistration for the analyses done prior to Stage 1 submission.
+3.  [`Registered Report`](https://stefanvermeent.github.io/abcd_ddm/registered_report/README.html): The Registered Report written in R markdown.
+4.  [`Supplement`](https://stefanvermeent.github.io/abcd_ddm/supplement/README.html): a supplemental text (to be submitted with the manuscript) documenting all secondary analyses in detail.
+5.  [`Scripts`](https://stefanvermeent.github.io/abcd_ddm/scripts/README.html): R-scripts that read, analyze, and produce all analysis objects.
+6.  [`Data`](https://stefanvermeent.github.io/abcd_ddm/data/README.html): Folder in which real ABCD data can be placed to make the analyses fully reproducible. Note that we cannot openly share the raw data on the open repository. Contains synthetic data to facilitate computational reproducibility in the absence of ABCD access.
+7.  [`Analysis Objects`](https://stefanvermeent.github.io/abcd_ddm/analysis_objects/README.html): Folder containing all analysis objects.
+8.  [`Codebooks`](https://stefanvermeent.github.io/abcd_ddm/codebooks/README.html): lists of variable names, labels, and value labels (where applicable).
 
 Click on each of the folders to get more details.
 
