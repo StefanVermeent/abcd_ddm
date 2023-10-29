@@ -5,9 +5,6 @@ output:
     template: assets/template.html
     css: assets/style.css
     keep_md: true
-knit: (function(inputFile, encoding) {
-      rmarkdown::render(inputFile, encoding = encoding, output_file = "index.html")
-      })
 editor_options: 
   markdown: 
     wrap: sentence
@@ -17,6 +14,8 @@ editor_options:
 
 ```{r setup, include=F, echo=F}
 library(tidyverse)
+library(gert)
+library(glue)
 #source('scripts/dependencies.R')
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
@@ -41,6 +40,48 @@ There are eight top-level folders to organize the inputs and outputs of this pro
 8.  [`Codebooks`](https://stefanvermeent.github.io/abcd_ddm/codebooks/README.html): lists of variable names, labels, and value labels (where applicable).
 
 Click on each of the folders to get more details.
+
+## Overview of project milestones
+
+Below is an overview of all the project milestones, such as first-time data access, submissions, and revisions.
+Data access events were automatically captured using custom code, which over the course of this project was collected in the R package `projectlog` [https://stefanvermeent.github.io/projectlog/](https://stefanvermeent.github.io/projectlog/).
+For more information about how tracking worked, Go to the [Open science workflow tab](https://stefanvermeent.github.io/abcd_ddm/opensci_workflow/README.html).
+
+```{r results ='asis', echo = FALSE}
+x <- gert::git_log() |> 
+  select(commit, author, time, message) |>
+  # Some custom coding because we switched to using the projectlog package for the final data_access event
+  mutate(message = ifelse(str_detect(message, "first-time access to ivs"), str_c("[[data_access]] ", message), message)) |> 
+  (function(.) filter(., str_detect(string = .$message, pattern = "^\\[\\[")))() |> 
+  separate(message, into = c("message", "data_hash", 'code'), sep = "\n") |> 
+  separate(message, into = c("milestone", "description"), sep = "\\]\\]\\s") %>% 
+  mutate(
+    milestone = map_chr(milestone, function(milestone) {
+      milestone |> 
+        str_remove("\\[\\[") |>
+        str_replace("_", " ") |> 
+        str_to_title()
+    }),
+    data_hash = str_remove(data_hash, "^object_hash ")
+  ) |> 
+  select(time, commit, milestone, description, code, data_hash) |> 
+  mutate(
+    code = str_replace_all(code, "\\|\\>", "\\|\\>\\\n"),
+    link_to_git = paste0(
+      "<anonymized repository>"
+     # gert::git_remote_list()$url |> str_remove(string = _, pattern = "\\.git$"), "/tree/", commit)
+    )
+  ) |>
+  arrange(time) |> 
+  glue_data("  - **[{time}]({link_to_git}): {description}**
+        - **Milestone:** {milestone}
+        - **Data MD5 hash**: {data_hash}
+        - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/{commit}.R)
+        \n
+    ")
+x
+
+```
 
 ## How to reproduce this repository {#reproduce}
 

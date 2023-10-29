@@ -5,9 +5,6 @@ output:
     template: assets/template.html
     css: assets/style.css
     keep_md: true
-knit: (function(inputFile, encoding) {
-      rmarkdown::render(inputFile, encoding = encoding, output_file = "index.html")
-      })
 editor_options: 
   markdown: 
     wrap: sentence
@@ -36,6 +33,48 @@ There are eight top-level folders to organize the inputs and outputs of this pro
 8.  [`Codebooks`](https://stefanvermeent.github.io/abcd_ddm/codebooks/README.html): lists of variable names, labels, and value labels (where applicable).
 
 Click on each of the folders to get more details.
+
+## Overview of project milestones
+
+Below is an overview of all the project milestones, such as first-time data access, submissions, and revisions.
+Data access events were automatically captured using custom code, which over the course of this project was collected in the R package `projectlog` [https://stefanvermeent.github.io/projectlog/](https://stefanvermeent.github.io/projectlog/).
+For more information about how tracking worked, Go to the [Open science workflow tab](https://stefanvermeent.github.io/abcd_ddm/opensci_workflow/README.html).
+
+- **[2022-12-08 09:34:04](<anonymized repository>): Access family ids**
+    - **Milestone:** Data Access
+    - **Data MD5 hash**: 335c000784108004113778a186cf34c7
+    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/153e7d4ea4e633f34f4b04c531999c335e602757.R)
+    
+
+- **[2022-12-08 10:04:00](<anonymized repository>): read family ids including info on waves.**
+    - **Milestone:** Data Access
+    - **Data MD5 hash**: 7a422f847f70b13c8388c2d437a0cefc
+    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/46e752f3255c245140d0bdf13c14fc956159c93b.R)
+    
+
+- **[2022-12-23 10:04:18](<anonymized repository>): Stage 1 submission of Registered Report to Developmental Science**
+    - **Milestone:** Submission
+    - **Data MD5 hash**: 
+    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/1e43ddebd8c142d8b8b9d5794362c2b5adb794de.R)
+    
+
+- **[2023-04-28 14:01:24](<anonymized repository>): Revision of Stage 1 Registered Report for Developmental Science**
+    - **Milestone:** Revision
+    - **Data MD5 hash**: 
+    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/f0373590a6a2433d2f3eadba815b97c0adcf53e1.R)
+    
+
+- **[2023-07-17 09:31:09](<anonymized repository>): Revision 2 of Stage 1 Registered Report for Developmental Science**
+    - **Milestone:** Revision
+    - **Data MD5 hash**: 
+    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/1606a17fb4349843fd88566bb3ea3c868a9fc316.R)
+    
+
+- **[2023-08-01 12:08:29](<anonymized repository>): first-time access to ivs with mnlfa correction**
+    - **Milestone:** Data Access
+    - **Data MD5 hash**: 01189ac84ccf49b95c2c82f2f3f89cef
+    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/81bed689986fbaadc625206c899b90fadf0b2600.R)
+    
 
 ## How to reproduce this repository {#reproduce}
 
