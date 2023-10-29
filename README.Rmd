@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
 ```
 <br>
+
 This repository contains data, code, and output for a manuscript entitled "Cognitive deficits and enhancements in youth from adverse conditions: An integrative assessment using Drift Diffusion Modeling in the ABCD study". The manuscript has received Stage 1 In-Principle acceptance at *Developmental Science*.
 
 Do you want to download or clone the materials for this project? Go to [https://github.com/stefanvermeent/abcd_ddm](https://github.com/stefanvermeent/abcd_ddm)
