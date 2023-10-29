@@ -1,0 +1,4 @@
+Variable,Label,Values
+subj_idx,Unique subject identifier,
+rel_family_id,Unique family identifier,
+set,Indicates whether child belongs to the training set or test set,

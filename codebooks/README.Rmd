@@ -1,0 +1,45 @@
+---
+title: ""
+output: 
+  html_document:
+    template: ../assets/template.html
+    css: ../assets/style.css
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+# Codebooks
+
+Below you can find the codebooks of the data sets used for the primary analyses. To download them, go [here](https://github.com/stefanvermeent/abcd_ddm/tree/main/codebooks).
+
+## ddm_data
+
+```{r, include = FALSE, echo = FALSE, warning = FALSE, message=TRUE}
+library(readr)
+ddm_data <- read_csv("ddm_data.csv")
+```
+
+```{r}
+ddm_data
+```
+
+## iv_data
+
+```{r, include = FALSE, echo = FALSE, warning = FALSE, message=TRUE}
+iv_data <- read_csv("iv_data.csv")
+```
+
+```{r}
+iv_data
+```
+
+## test_set
+
+```{r, include = FALSE, echo = FALSE, warning = FALSE, message=TRUE}
+test_set <- read_csv("test_set.csv")
+```
+
+```{r}
+test_set
+```
