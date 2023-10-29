@@ -95,7 +95,6 @@ set_flextable_defaults(
 All scripts and materials needed to reproduce the findings are available on the article's Github repository [(https://anonymous.4open.science/r/anon-255D/README.md)](https://anonymous.4open.science/r/anon-255D/README.md).
 We also include instructions on how to reproduce each step of our analyses.
 To ensure computational reproducibility, we provide synthetic (i.e., simulated) data files with the same characteristics as the raw data.
-The raw data supporting the findings of this study will be made available upon Stage 2 via [https://doi.org/10.15154/1528297](https://doi.org/10.15154/1528297).
 
 Data used in the preparation of this article were obtained from the Adolescent Brain Cognitive Development^SM^ (ABCD) Study (https://abcdstudy.org), held in the NIMH Data Archive (NDA). 
 This is a multisite, longitudinal study designed to recruit more than 10,000 children age 9-10 and follow them over 10 years into early adulthood. 
@@ -391,10 +390,11 @@ We collapsed youth race into 4 levels (White, Black, Hispanic, Other) and subseq
 We dichotomized youth sex such that 1 = Female and 0 = Male.
 We used youth age (in months) as a continuous variable and centered on the mean.
 
-## Proposed Analysis Pipeline {#meth_analyses}
+## Analysis Pipeline {#meth_analyses}
 
-### Planned main analyses {#meth_proposed}
+### Primary analyses {#meth_proposed}
 
+The approved Stage 1 Protocol for this manuscript can be found on the Open Science Framework ([https://osf.io/4n8qr](https://osf.io/4n8qr)).
 Before conducting analyses, we split the full sample up in a training set (*n* = 1,500) and a test set (*n* \≈ 8,500).
 We conducted our main analyses in three steps (each discussed in more detail below): (1) fitting the DDM to the cognitive task data; (2) fitting the SEM model to the adversity and DDM data and optimize it where necessary based on the training set; (3) Refitting the model to the test data and interpret the regression coefficients.
 We conducted a simulation-based power analysis based on the main SEM model (see Figure 3), with standardized regression coefficients of 0.06, 0.08 and 0.1 and the alpha level set to .05.
@@ -455,7 +455,7 @@ Even if we increased the number of simulated trials, the real data still only ha
 The fact that correlations for both RTs and accuracy were high across all tasks (all ≥ .80, with many >.90) increased our confidence that the estimated diffusion model parameters provided a good account of the observed data.
 The supplemental materials present model fit results for both the preregistered approach and the updated approach.
 
-Table 1 shows bivariate correlations between DDM parameters and adversity measures.
+Table 2 shows bivariate correlations between DDM parameters and adversity measures.
 Both material deprivation and household threat showed small, negative associations with drift rates across all four tasks, suggesting that participants with more adversity exposure processed information more slowly.
 In addition, both material deprivation and household threat were positively associated with boundary separation (indicating more response caution) in all tasks except Mental Rotation, although most of these correlations were very small.
 Finally, material deprivation and household threat showed a small, negative correlation with non-decision times on the Mental Rotation Task, but not with non-decision times on the other tasks.
@@ -694,7 +694,7 @@ knitr::include_graphics("images/fig4.png")
 
 ```{r}
 #| label: Figure5
-#| fig-width: 6.25
+#| fig-width: 6.5
 #| fig-height: 7
 #| dpi: 600
 #| out-width: 6in
@@ -708,7 +708,7 @@ fig5
 
 ```{r}
 #| label: Figure6
-#| fig-width: 6.25
+#| fig-width: 6.8
 #| fig-height: 4
 #| dpi: 600
 #| out-width: 6in

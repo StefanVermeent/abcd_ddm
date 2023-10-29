@@ -334,7 +334,7 @@ fig5 <- test_reg_coef |>
   theme_classic() +
   theme(
     legend.position = "bottom",
-    legend.text = element_text(size = 11.7),
+    legend.text = element_text(size = 10),
     panel.spacing.x = unit(2, "lines"),
     panel.spacing.y = unit(2, "lines"),
     axis.line.x = element_blank(),
@@ -367,13 +367,13 @@ fig6 <- test_reg_coef_expl |>
     eq_pvalue_discr = ifelse(eq_pvalue < .05, "eq", "non-eq"),
     lhs = case_when(
       str_detect(lhs, "general") ~ "Task-general",
-      str_detect(lhs, "flanker") ~ "Flanker",
-      str_detect(lhs, "dccs") ~ "Attention Shifting",
-      str_detect(lhs, "lmt") ~ "Mental Rotation",
+      str_detect(lhs, "flanker") ~ "Inhibition Task",
+      str_detect(lhs, "dccs") ~ "Attention Shifting Task",
+      str_detect(lhs, "lmt") ~ "Mental Rotation Task",
       TRUE ~ lhs
     ),
     rhs = ifelse(rhs == "dep_mnlfa", "Material deprivation", "Household threat"),
-    lhs = factor(lhs, levels = c("Filler1", "Task-general", "Flanker", "Attention Shifting", "Mental Rotation", "Filler2")),
+    lhs = factor(lhs, levels = c("Filler1", "Task-general", "Inhibition Task", "Attention Shifting Task", "Mental Rotation Task", "Filler2")),
     xmin = "Filler1",
     xmax = "Filler2",
     sig_star = case_when(
@@ -394,7 +394,7 @@ fig6 <- test_reg_coef_expl |>
   ) +
   geom_hline(aes(yintercept = 0), size = 0.7) +
   geom_vline(aes(xintercept = 2.5), linetype = "dashed") +
-  geom_errorbar(aes(ymin = ci.lower, ymax = ci.upper), width = 0.2, size = 1) +
+  geom_errorbar(aes(ymin = ci.lower, ymax = ci.upper, color = lhs), width = 0.2, size = 1) +
   geom_point(aes(color = lhs, shape = eq_pvalue_discr), fill = "white", size = 3, stroke = 1.5) +
   geom_text(
     aes(y = sig_pos, label = sig_star),
@@ -404,17 +404,22 @@ fig6 <- test_reg_coef_expl |>
   scale_shape_manual(values = c(16,21)) +
   coord_cartesian(xlim = c(2,6)) +
   scale_x_discrete(labels = c("", "Task-general", "Flanker", "Attention Shifting", "Mental Rotation", "")) +
-  ggsci::scale_color_uchicago() +
+  ggsci::scale_color_uchicago(breaks = c('Task-general', 'Inhibition Task', 'Attention Shifting Task', "Mental Rotation Task")) +
   theme_classic() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+    legend.position = "bottom",
+    legend.text = element_text(size = 10),
+    panel.spacing.x = unit(2, "lines"),
+    panel.spacing.y = unit(2, "lines"),
+    axis.line.x = element_blank(),
+    axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     axis.text.y = element_text(size = 12),
     strip.background = element_rect(color = 'white'),
-    strip.text.y = element_text(face = "bold", size = 9.5),
+    strip.text.y = element_text(face = "bold", size = 11),
     strip.text.x = element_text(face = "bold", size = 13)
   ) +
-  guides(color = 'none', shape = 'none', size = 'none') +
+  guides(shape = 'none', size = 'none') +
   labs(
     x = "",
     y = "Standardized regression coefficient"
