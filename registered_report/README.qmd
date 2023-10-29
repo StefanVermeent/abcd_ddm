@@ -9,7 +9,11 @@ editor_options:
     wrap: sentence
 ---
 
+# Registered Report
+
+Below is the full, stage 2 version of the Registered Report. 
+The Accepted Stage 1 protocol can be found [here](https://osf.io/4n8qr)
 
 ```{=html}
-<iframe width="780" height="500" src="https://quarto.org/" title="Quarto Documentation"></iframe>
+<iframe width="780" height="500" src="registered_report.pdf" title="Stage 2 Registered Report"></iframe>
 ```
