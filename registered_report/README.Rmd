@@ -9,7 +9,7 @@ editor_options:
     wrap: sentence
 ---
 
-# Registered Report
+## Registered Report
 
 Below is the full, stage 2 version of the Registered Report. 
 The Accepted Stage 1 protocol can be found [here](https://osf.io/4n8qr)
