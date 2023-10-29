@@ -52,4 +52,5 @@ data_suffix <- ifelse(data == 'synthetic', '_synth', '')
 source('scripts/custom_functions/read-functions.R')
 source('scripts/custom_functions/general-functions.R')
 source('scripts/custom_functions/DBDA2E-utilities.R')
+source('scripts/custom_functions/ddm_functions.R')
 

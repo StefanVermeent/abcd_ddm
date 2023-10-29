@@ -688,3 +688,114 @@ rhat_dccs_mod2 <- ddm_dccs_mod2$psrf$psrf |>
   as_tibble(rownames = "parameter")
 
 save(rhat_dccs_mod2, file = "analysis_objects/rhat_dccs_mod2.RData")
+
+
+# 3. Exploratory DDM models -----------------------------------------------
+
+## 3.1 Flanker Task; separate drift rate and boundary separation per condition
+
+mod_expl_2con <- "model {
+  #likelihood function
+  for (t in 1:nTrials) {
+    y[t] ~ dwiener(alpha[condition[t], subject[t]], 
+                   tau[subject[t]], 
+                   0.5, 
+                   delta[condition[t], subject[t]])
+  }
+  for (s in 1:nSubjects) {
+    for (c in 1:nCon) {
+      delta[c, s] ~ dnorm(muDelta[c] , precDelta) T(-10, 10)
+      alpha[c, s] ~ dnorm(muAlpha[c], precAlpha) T(.1, 5)
+    }
+    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
+  }
+  #priors
+  for (c in 1:nCon){ 
+    muDelta[c] ~ dunif(-10, 10)
+    muAlpha[c] ~ dunif(.1, 5)
+  } 
+  muTau ~ dunif(.0001, 1) 
+  
+  precAlpha  ~ dgamma(.001, .001)
+  precTau ~ dgamma(.001, .001)
+  precDelta ~ dgamma(.001, .001)
+}"
+
+initfunction_expl <- function(chain){
+  return(list(
+    muAlpha = runif(2, .2, 4.9),
+    muTau = runif(1, .01, .05),
+    muDelta = runif(2, -9.9, 9.9),
+    precAlpha = runif(1, .01, 100),
+    precTau = runif(1, .01, 100),
+    precDelta = runif(1, .01, 100),
+    y = yInit,
+    .RNG.name = "lecuyer::RngStream",
+    .RNG.seed = sample.int(1e10, 1, replace = F)))
+}
+
+# Create numeric participant IDs
+flanker_id_matches <- flanker_clean |> 
+  distinct(subj_idx) |> 
+  mutate(subj_idx_num = 1:n())
+
+flanker_clean <- flanker_clean |> 
+  mutate(condition = ifelse(condition == 'congruent', 1, 2)) |>
+  left_join(flanker_id_matches)
+
+# Store RTs and condition per trial (incorrect RTs are coded negatively)
+flanker_y          <- round(ifelse(flanker_clean$correct == 0, (flanker_clean$RT*-1), flanker_clean$RT),3)
+yInit              <- rep(NA, length(flanker_y))
+flanker_condition  <- as.numeric(flanker_clean$condition)
+
+#Create numbers for JAGS
+flanker_nTrials    <- nrow(flanker_clean)
+flanker_nSubjects  <- length(unique(flanker_clean$subj_idx))
+flanker_nCondition <- max(flanker_condition)
+
+#Create a list of the data; this gets sent to JAGS
+flanker_datalist <- list(y = flanker_y, subject = flanker_clean$subj_idx_num, condition = flanker_condition,
+                         nTrials = flanker_nTrials, nCon = flanker_nCondition,
+                         nSubjects = flanker_nSubjects)
+
+# JAGS Specifications
+
+#Create list of parameters to be monitored
+parameters <- c("alpha", "tau", "delta", "muAlpha",
+                "muTau", "muDelta")
+
+nUseSteps = 1000 # Specify number of steps to run
+nChains = 3 # Specify number of chains to run (one per processor)
+
+# Run Model
+ddm_flanker_mod_expl <- run.jags(method = "parallel",
+                                 model = mod_expl_2con,
+                                 monitor = parameters,
+                                 data = flanker_datalist,
+                                 inits = initfunction_expl,
+                                 n.chains = nChains,
+                                 # check.conv = TRUE,
+                                 # psrf.target = 1.10,
+                                 adapt = 1000, #how long the samplers "tune"
+                                 burnin = 2000, #how long of a burn in
+                                 sample = 1000,
+                                 summarise = FALSE,
+                                 thin = 10, #thin if high autocorrelation to avoid huge files
+                                 modules = c("wiener", "lecuyer"),
+                                 plots = F)
+
+# Extract results
+
+# Extract Rhat
+rhat_flanker_mod_expl <- ddm_flanker_mod_expl$psrf$psrf |>
+  unlist() |>
+  as_tibble(rownames = "parameter")
+
+save(rhat_flanker_mod_expl, file = "analysis_objects/rhat_flanker_mod1.RData")
+
+
+#Convert the runjags object to a coda format
+mcmc_flanker_mod_expl <- as.matrix(as.mcmc.list(ddm_flanker_mod_expl), chains = F) |> 
+  as_tibble()
+
+save(mcmc_flanker_mod_expl, ddm_flanker_mod_expl, file = 'ddm_flanker_mod_expl2.RData')

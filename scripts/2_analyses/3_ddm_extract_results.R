@@ -11,6 +11,9 @@ dccs_clean    <- readr::read_csv(paste0("data/dccs_clean", data_suffix, ".csv"))
 pcps_clean_mod2 <- pcps_clean |> 
   filter(RT >= 1)
 
+flanker_clean_mod4 <- flanker_clean |> 
+  filter(RT < 6)
+
 set.seed(37843564)
 lmt_clean_impute <- lmt_clean |> 
   group_by(subj_idx) |> 
@@ -31,6 +34,10 @@ load("analysis_objects/ddm_dccs_mod1.RData")
 load("analysis_objects/ddm_dccs_mod2.RData")
 load("analysis_objects/ddm_pcps_mod1.RData")
 load("analysis_objects/ddm_pcps_mod2.RData")
+
+load("analysis_objects/ddm_flanker_mod_expl3.RData")
+load("analysis_objects/ddm_flanker_mod_expl4.RData")
+load("analysis_objects/ddm_dccs_mod_expl.RData")
 
 # Load ID matches to link DDM IDs to ABCD IDs
 lmt_id_matches <- lmt_clean |> 
@@ -67,7 +74,14 @@ dccs_mod2_traces <- extract_traces(mcmc_dccs_mod2, chains = 3, iterations = 1000
 pcps_mod1_traces <- extract_traces(mcmc_pcps_mod1, chains = 3, iterations = 1000)
 pcps_mod2_traces <- extract_traces(mcmc_pcps_mod2, chains = 3, iterations = 1000)
 
+flanker_mod_expl_traces <- extract_traces_2con_expl(mcmc_flanker_mod_expl, chains = 3, iterations = 1000)
+flanker_mod_expl_traces2 <- extract_traces_2con_expl(mcmc_flanker_mod_expl, chains = 3, iterations = 1000)
+flanker_mod_expl_traces3 <- extract_traces_2con_expl(mcmc_flanker_mod_expl3, chains = 3, iterations = 1000)
+dccs_mod_expl_traces <- extract_traces_2con_expl(mcmc_dccs_mod_expl, chains = 3, iterations = 1000)
+
+
 # 2. Extract parameter estimates ----
+# Primary models
 lmt_mod1_param_est <- extract_ddm_estimates(mcmc = mcmc_lmt_mod1, task_prefix = "rotation_", id_matches = lmt_id_matches)
 lmt_mod2_param_est <- extract_ddm_estimates(mcmc = mcmc_lmt_mod2, task_prefix = "rotation_", id_matches = lmt_id_matches)
 
@@ -79,6 +93,12 @@ dccs_mod2_param_est <- extract_ddm_estimates(mcmc = mcmc_dccs_mod2, task_prefix 
 
 pcps_mod1_param_est <- extract_ddm_estimates(mcmc = mcmc_pcps_mod1, task_prefix = "pcps_", id_matches = pcps_id_matches)
 pcps_mod2_param_est <- extract_ddm_estimates(mcmc = mcmc_pcps_mod2, task_prefix = "pcps_", id_matches = pcps_id_matches_mod2)
+
+# Exploratory models
+flanker_mod_expl_param_est <- extract_ddm_estimates_2con_expl(mcmc = mcmc_flanker_mod_expl, task_prefix = "flanker_", id_matches = flanker_id_matches)
+flanker_mod_expl_param_est2 <- extract_ddm_estimates_2con_expl(mcmc = mcmc_flanker_mod_expl, task_prefix = "flanker_", id_matches = flanker_id_matches)
+flanker_mod_expl_param_est3 <- extract_ddm_estimates_2con_expl(mcmc = mcmc_flanker_mod_expl3, task_prefix = "flanker_", id_matches = flanker_id_matches)
+dccs_mod_expl_param_est <- extract_ddm_estimates_2con_expl(mcmc = mcmc_dccs_mod_expl, task_prefix = "dccs_", id_matches = dccs_id_matches)
 
 # 3. Generate simulated datasets for model fit assessment ----
 
@@ -780,4 +800,149 @@ save(pcps_mod2_fit_orig, file = "analysis_objects/ddm_pcps_mod2_orig_parsed.RDat
 
   
 
+# 6. Exploratory models ---------------------------------------------------
+
+## 6.1 Flanker Task ----
+
+set.seed(284)
+
+flanker_mod_expl_fit3 <- flanker_mod_expl_param_est3 %>%
+  mutate(
+    responses = pmap(., function(subj_idx, flanker_v1, flanker_v2, flanker_a1, flanker_a2, flanker_t1, flanker_t2) {
+      
+      bind_rows(
+        # Condition 1
+        RWiener::rwiener(n=100, alpha=flanker_a1, tau=flanker_t1, beta=0.5, delta=flanker_v1) |> 
+          as_tibble() |> 
+          mutate(
+            condition = "congruent"
+          ),
+        # Condition 2
+        RWiener::rwiener(n=100, alpha=flanker_a2, tau=flanker_t2, beta=0.5, delta=flanker_v2) |> 
+          as_tibble() |> 
+          mutate(
+            condition = 'incongruent'
+          )
+      )
+    })
+  ) |> 
+  unnest(responses) |> 
+  select(subj_idx, condition, choice_sim = resp, RT = q) |> 
+  mutate(choice_sim = ifelse(choice_sim == 'upper', 1, 0)) |> 
+  group_by(subj_idx, condition) |> 
+  summarise(
+    RT_25 = quantile(RT, 0.25),
+    RT_50 = quantile(RT, 0.50),
+    RT_75 = quantile(RT, 0.75),
+    acc_sim   = sum(choice_sim) / n()
+  ) |> 
+  pivot_longer(starts_with("RT"), names_to = "percentile", values_to = "RT_sim") |> 
+  left_join(
+    flanker_clean |> 
+      drop_na(RT) |> 
+      group_by(subj_idx, condition) |> 
+      summarise(
+        RT_25 = quantile(RT, 0.25),
+        RT_50 = quantile(RT, 0.50),
+        RT_75 = quantile(RT, 0.75),
+        acc   = sum(correct, na.rm = T) / n()
+      ) |> 
+      pivot_longer(starts_with("RT"), names_to = "percentile", values_to = "RT")
+  )
+
+save(flanker_mod_expl_param_est3, flanker_mod_expl_traces3, flanker_mod_expl_fit3, file = "analysis_objects/ddm_flanker_mod_expl_parsed3.RData")
+
+flanker_mod_expl_fit3 |> 
+  group_by(condition, percentile) |> 
+  summarise(
+    r_RT = cor(RT_sim, RT)
+  )
+
+flanker_mod_expl_fit3 |> 
+  select(-percentile, -RT_sim, -RT) |> 
+  distinct() |> 
+  group_by(condition) |> 
+  summarise(
+    r_acc = cor(acc_sim, acc)
+  )
+
+## 6.2 Attention Shifting ----
+
+set.seed(284)
+
+dccs_mod_expl_fit <- dccs_mod_expl_param_est %>%
+  mutate(
+    responses = pmap(., function(subj_idx, dccs_v1, dccs_v2, dccs_a1, dccs_a2, dccs_t) {
+      
+      bind_rows(
+        # Condition 1
+        RWiener::rwiener(n=100, alpha=dccs_a1, tau=dccs_t, beta=0.5, delta=dccs_v1) |> 
+          as_tibble() |> 
+          mutate(
+            condition = "repeat"
+          ),
+        # Condition 2
+        RWiener::rwiener(n=100, alpha=dccs_a2, tau=dccs_t, beta=0.5, delta=dccs_v2) |> 
+          as_tibble() |> 
+          mutate(
+            condition = 'switch'
+          )
+      )
+    })
+  ) |> 
+  unnest(responses) |> 
+  select(subj_idx, condition, choice_sim = resp, RT = q) |> 
+  mutate(choice_sim = ifelse(choice_sim == 'upper', 1, 0)) |> 
+  group_by(subj_idx, condition) |> 
+  summarise(
+    RT_25 = quantile(RT, 0.25),
+    RT_50 = quantile(RT, 0.50),
+    RT_75 = quantile(RT, 0.75),
+    acc_sim   = sum(choice_sim) / n()
+  ) |> 
+  pivot_longer(starts_with("RT"), names_to = "percentile", values_to = "RT_sim") |> 
+  left_join(
+    dccs_clean |> 
+      drop_na(RT) |> 
+      group_by(subj_idx, condition) |> 
+      summarise(
+        RT_25 = quantile(RT, 0.25),
+        RT_50 = quantile(RT, 0.50),
+        RT_75 = quantile(RT, 0.75),
+        acc   = sum(correct, na.rm = T) / n()
+      ) |> 
+      pivot_longer(starts_with("RT"), names_to = "percentile", values_to = "RT")
+  )
+
+save(dccs_mod_expl_fit, file = "analysis_objects/ddm_dccs_mod_expl_parsed.RData")
+
+dccs_mod_expl_fit |> 
+  group_by(condition, percentile) |> 
+  summarise(
+    r_RT = cor(RT_sim, RT)
+  )
+
+dccs_mod_expl_fit |> 
+  select(-percentile, -RT_sim, -RT) |> 
+  distinct() |> 
+  group_by(condition) |> 
+  summarise(
+    r_acc = cor(acc_sim, acc)
+  )
+
+# 7. Combine DDM data --------------------------------------------------------
+
+ddm_data_expl <- 
+  reduce(
+    list(
+      dccs_mod_expl_param_est2, 
+      flanker_mod_expl_param_est3,
+      pcps_mod2_param_est,
+      lmt_mod1_param_est
+    ),
+    full_join
+  ) |> 
+  select(subj_idx, everything())
+
+write_csv(ddm_data_expl, "data/ddm_data_expl.csv")
 

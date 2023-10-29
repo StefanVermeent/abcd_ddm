@@ -265,8 +265,7 @@ power_results <-
           sim  = sim,
           n    = n,
           beta = beta
-        ) |> 
-        bind_cols(fitstats)
+        ) 
         
      
       
@@ -279,14 +278,12 @@ plan("sequential")
 power <- power_results |> 
   select(-sim, -n, -beta) |> 
   unnest(results) |> 
-  select(sim, n, beta, lhs, rhs, est, pvalue, cfi, rmsea) |> 
+  select(sim, n, beta, lhs, rhs, est, pvalue) |> 
   drop_na(sim) |> 
   mutate(Type = ifelse(str_detect(lhs, "general"), "General Factor", "Unique Variance")) |> 
   group_by(n, Type, beta, lhs, rhs) |> 
   summarise(
     mean_est = mean(est),
-    mean_cfi = mean(cfi),
-    mean_rmsea = mean(rmsea),
     power    = sum(pvalue < .05)/n()*100
   ) |> 
   ungroup() 
