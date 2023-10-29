@@ -54,6 +54,7 @@ vignettes/*.pdf
 /data/mnlfa_ivs*
 /data/ddm_data.csv
 /data/iv_data.csv
+/data/ddm_data_expl.csv
 
 /analysis_objects/ddm*
 /analysis_objects/results*
