@@ -345,180 +345,225 @@ display: none;
 </nav>
 
 
-<div id="data-processing-scripts" class="section level1">
-<h1>Data Processing Scripts</h1>
-<p>There are four types of R-scripts in this repository, each with a
-separate folder.</p>
+<p><br> This repository contains data, code, and output for a manuscript
+entitled “Cognitive deficits and enhancements in youth from adverse
+conditions: An integrative assessment using Drift Diffusion Modeling in
+the ABCD study”. The manuscript has received Stage 1 In-Principle
+acceptance at <em>Developmental Science</em>.</p>
+<p>Do you want to download or clone the materials for this project? Go
+to <a href="https://github.com/stefanvermeent/abcd_ddm">https://github.com/stefanvermeent/abcd_ddm</a></p>
+<div id="structure" class="section level2">
+<h2>Directory Structure</h2>
+<p>The names of each folder are intended to be self-explanatory. There
+are eight top-level folders to organize the inputs and outputs of this
+project:</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://stefanvermeent.github.io/abcd_ddm/opensci_workflow/README.html"><code>Open Science Workflow</code></a>:
+Statement on and explanation of our Open Science Workflow.</li>
+<li><a href="https://stefanvermeent.github.io/abcd_ddm/preregistrations/README.html"><code>Preregistrations</code></a>:
+The preregistration for the analyses done prior to Stage 1
+submission.</li>
+<li><a href="https://stefanvermeent.github.io/abcd_ddm/registered_report/README.html"><code>Registered Report</code></a>:
+The Registered Report written in R markdown.</li>
+<li><a href="https://stefanvermeent.github.io/abcd_ddm/supplement/README.html"><code>Supplement</code></a>:
+a supplemental text (to be submitted with the manuscript) documenting
+all secondary analyses in detail.</li>
+<li><a href="https://stefanvermeent.github.io/abcd_ddm/scripts/README.html"><code>Scripts</code></a>:
+R-scripts that read, analyze, and produce all analysis objects.</li>
+<li><a href="https://stefanvermeent.github.io/abcd_ddm/data/README.html"><code>Data</code></a>:
+Folder in which real ABCD data can be placed to make the analyses fully
+reproducible. Note that we cannot openly share the raw data on the open
+repository. Contains synthetic data to facilitate computational
+reproducibility in the absence of ABCD access.</li>
+<li><a href="https://stefanvermeent.github.io/abcd_ddm/analysis_objects/README.html"><code>Analysis Objects</code></a>:
+Folder containing all analysis objects.</li>
+<li><a href="https://stefanvermeent.github.io/abcd_ddm/codebooks/README.html"><code>Codebooks</code></a>:
+lists of variable names, labels, and value labels (where
+applicable).</li>
+</ol>
+<p>Click on each of the folders to get more details.</p>
+</div>
+<div id="overview-of-project-milestones" class="section level2">
+<h2>Overview of project milestones</h2>
+<p>Below is an overview of all the project milestones, such as
+first-time data access, submissions, and revisions. Data access events
+were automatically captured using custom code, which over the course of
+this project was collected in the R package <code>projectlog</code> <a href="https://stefanvermeent.github.io/projectlog/">https://stefanvermeent.github.io/projectlog/</a>.
+For more information about how tracking worked, Go to the <a href="https://stefanvermeent.github.io/abcd_ddm/opensci_workflow/README.html">Open
+science workflow tab</a>.</p>
 <ul>
-<li><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/custom_functions"><code>custom_functions/</code></a>:
-Custom R-functions written for this project</li>
-<li><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations"><code>0_simulations/</code></a>:
-Simulation scripts for power and DDM analyses</li>
-<li><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/1_data_prep"><code>1_data_prep/</code></a>:
-Data processing scripts</li>
-<li><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses"><code>2_analyses/</code></a>:
-Primary and exploratory analysis scripts</li>
+<li><strong><a href="anonymized%20repository">2022-12-23 10:04:18</a>:
+Stage 1 submission of Registered Report to Developmental
+Science</strong>
+<ul>
+<li><strong>Milestone:</strong> Submission</li>
+<li><strong>Data MD5 hash</strong>:</li>
+<li><a href="https://anonymous.4open.science/r/anon-255D/.gitlog/1e43ddebd8c142d8b8b9d5794362c2b5adb794de.R">Link
+to code snippet</a></li>
+</ul></li>
+<li><strong><a href="anonymized%20repository">2023-04-28 14:01:24</a>:
+Revision of Stage 1 Registered Report for Developmental Science</strong>
+<ul>
+<li><strong>Milestone:</strong> Revision</li>
+<li><strong>Data MD5 hash</strong>:</li>
+<li><a href="https://anonymous.4open.science/r/anon-255D/.gitlog/f0373590a6a2433d2f3eadba815b97c0adcf53e1.R">Link
+to code snippet</a></li>
+</ul></li>
+<li><strong><a href="anonymized%20repository">2023-07-17 09:31:09</a>:
+Revision 2 of Stage 1 Registered Report for Developmental
+Science</strong>
+<ul>
+<li><strong>Milestone:</strong> Revision</li>
+<li><strong>Data MD5 hash</strong>:</li>
+<li><a href="https://anonymous.4open.science/r/anon-255D/.gitlog/1606a17fb4349843fd88566bb3ea3c868a9fc316.R">Link
+to code snippet</a></li>
+</ul></li>
+<li><strong><a href="anonymized%20repository">2023-08-01 12:08:29</a>:
+first-time access to ivs with mnlfa correction</strong>
+<ul>
+<li><strong>Milestone:</strong> Data Access</li>
+<li><strong>Data MD5 hash</strong>:
+01189ac84ccf49b95c2c82f2f3f89cef</li>
+<li><a href="https://anonymous.4open.science/r/anon-255D/.gitlog/81bed689986fbaadc625206c899b90fadf0b2600.R">Link
+to code snippet</a></li>
+</ul></li>
 </ul>
-<p>Each script takes an input(s) and produces output(s). All outputs are
-stored in <a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/analysis_objects">analysis_objects/</a>.
-The tables below provides an overview of the inputs and outputs of each
-script.</p>
-<div id="simulations" class="section level3">
-<h3>Simulations</h3>
-<table>
-<colgroup>
-<col width="35%" />
-<col width="29%" />
-<col width="35%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>script</th>
-<th>input</th>
-<th>output</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations/ddm_missing_imputation.R">ddm_missing_imputation.R</a></td>
-<td>lmt_cleandata_suffix.csv</td>
-<td>results_sim5.RData<br> ddm_sim5_results.RData</td>
-</tr>
-<tr class="even">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations/ddm_trial_simulations.R">ddm_trial_simulations.R</a></td>
-<td></td>
-<td>ddm_sim1_results.RData<br> ddm_sim2_results.RData<br>
-ddm_sim3_results.RData</td>
-</tr>
-<tr class="odd">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations/ddm_validity_checks.R">ddm_validity_checks.R</a></td>
-<td></td>
-<td>ddm_sim4_results.RData</td>
-</tr>
-<tr class="even">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/0_simulations/power_analysis.R">power_analysis.R</a></td>
-<td></td>
-<td>power.RData</td>
-</tr>
-</tbody>
-</table>
 </div>
-<div id="data-prep" class="section level3">
-<h3>Data Prep</h3>
-<table>
-<colgroup>
-<col width="35%" />
-<col width="29%" />
-<col width="35%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>script</th>
-<th>input</th>
-<th>output</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/1_data_prep/1_preprocessing.R">1_preprocessing.R</a></td>
-<td>baseline_year_1_arm_1’full.names=TRUE<br> NIHTB’full.names=TRUE</td>
-<td>&gt;str_subsetpattern=‘Narrow_Structure’<br>
-NIHTB’full.names=TRUE</td>
-</tr>
-<tr class="even">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/1_data_prep/2_clean_data.R">2_clean_data.R</a></td>
-<td>tasks_raw.RData</td>
-<td>lmt_clean.csv<br> flanker_clean.csv<br> pcps_clean.csv<br>
-dccs_clean.csv<br> exclusions.RData</td>
-</tr>
-<tr class="odd">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/1_data_prep/3_data_subsets.R">3_data_subsets.R</a></td>
-<td>lmt_clean.csv<br> flanker_clean.csv<br> pcps_clean.csv<br>
-dccs_clean.csv</td>
-<td>training_set.csv<br> test_set.csv</td>
-</tr>
-</tbody>
-</table>
+<div id="reproduce" class="section level2">
+<h2>How to reproduce this repository</h2>
+<p>This repository can be reproduced in two ways.</p>
+<p>The first way is by downloading all files locally. You can do this by
+<a href="https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/adding-and-cloning-repositories/cloning-and-forking-repositories-from-github-desktop">cloning
+the repository</a> or by downloading the repository as a
+<code>.zip</code> file. After cloning/downloading, double click on
+<code>abcd.Rproj</code> to open up RStudio.</p>
+<p>The second way is by using <a href="https://docs.docker.com/">Docker</a>. We supply a Docker image
+that instantiates an Rstudio cloud environment with all the required
+dependencies. We provide more information about how to use the Docker
+image below (see <a href="#using_docker">6. Using Docker</a>. In short,
+Docker provides a ‘container’—similar to a virtual machine—with all the
+project dependencies (R packages, software, operating systems)
+pre-loaded in their (historic) versions as they were used when the
+project was created. Thus, Docker ensures that scripts will still
+function as intended even into the future. <strong>Note: It is not
+necessary to use Docker to reproduce our results</strong>. If you’re
+cloning the repository within a couple of years of publication and
+installing the proper dependencies (see step 1 below) you should be able
+to run all scripts without issues. However, some of our scripts might
+stop to function properly over time as other dependencies get updated
+and/or deprecated (e.g., future versions of RStudio) If that case,
+Docker is the solution.</p>
+<p>Below is the exact order these scripts should be ran (irrespective of
+whether you are working with or without Docker):</p>
+<div id="loading-dependencies" class="section level3">
+<h3>1. Loading Dependencies</h3>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/dependencies"><code>/scripts/dependencies.R</code></a>:
+Loads (and installs if necessary) all the necessary R packages as they
+were on 2022-10-15 using the <a href="https://groundhogr.com/"><code>Groundhog</code></a> package. This
+ensures that scripts will continue functioning as intended even after
+packages have been updated. <code>Groundhog</code> is a more
+lightweight, easy-to-use alternative to package dependency managers such
+as <code>renv</code>.</li>
+</ol>
 </div>
-<div id="analyses" class="section level3">
-<h3>Analyses</h3>
-<table>
-<colgroup>
-<col width="35%" />
-<col width="29%" />
-<col width="35%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>script</th>
-<th>input</th>
-<th>output</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/1_ddm_fit.R">1_ddm_fit.R</a></td>
-<td>lmt_cleandata_suffix.csv<br> flanker_cleandata_suffix.csv<br>
-pcps_cleandata_suffix.csv<br> dccs_cleandata_suffix.csv</td>
-<td>rhat_lmt_mod1.RData<br> ddm_lmt_mod1.RData<br>
-rhat_flanker_mod2.RData<br> ddm_lmt_mod2.RData<br>
-rhat_flanker_mod1.RData<br> ddm_flanker_mod1.RData<br>
-rhat_flanker_mod2.RData<br> ddm_flanker_mod2.RData<br>
-rhat_pcps_mod1.RData<br> ddm_pcps_mod1.RData<br>
-rhat_pcps_mod2.RData<br> ddm_pcps_mod2.RData<br>
-rhat_dccs_mod1.RData<br> ddm_dccs_mod1.RData<br> ddm_dccs_mod2.RData<br>
-rhat_dccs_mod2.RData<br> rhat_flanker_mod1.RData<br>
-mcmc_flanker_mod_explddm_flanker_mod_explfile=‘ddm_flanker_mod_expl2.RData’</td>
-</tr>
-<tr class="even">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/2_ivs.R">2_ivs.R</a></td>
-<td>training_setdata_suffix.csv<br> test_setdata_suffix.csv<br>
-mnlfa_ivs.csv</td>
-<td>&gt;</td>
-</tr>
-<tr class="odd">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/3_ddm_extract_results.R">3_ddm_extract_results.R</a></td>
-<td>lmt_cleandata_suffix.csv<br> flanker_cleandata_suffix.csv<br>
-pcps_cleandata_suffix.csv<br> dccs_cleandata_suffix.csv<br>
-ddm_lmt_mod1.RData<br> ddm_lmt_mod2.RData<br> ddm_flanker_mod1.RData<br>
-ddm_flanker_mod2.RData<br> ddm_dccs_mod1.RData<br>
-ddm_dccs_mod2.RData<br> ddm_pcps_mod1.RData<br> ddm_pcps_mod2.RData<br>
-ddm_flanker_mod_expl3.RData<br> ddm_flanker_mod_expl4.RData<br>
-ddm_dccs_mod_expl.RData</td>
-<td>ddm_lmt_mod1_parsed.RData<br> ddm_lmt_mod2_parsed.RData<br>
-ddm_flanker_mod1_parsed.RData<br> ddm_flanker_mod2_parsed.RData<br>
-ddm_dccs_mod1_parsed.RData<br> ddm_dccs_mod2_parsed.RData<br>
-ddm_pcps_mod1_parsed.RData<br> ddm_pcps_mod2_parsed.RData<br>
-ddm_data.csv<br> ddm_lmt_mod1_orig_parsed.RData<br>
-ddm_lmt_mod2_orig_parsed.RData<br>
-ddm_flanker_mod1_orig_parsed.RData<br>
-ddm_flanker_mod2_orig_parsed.RData<br>
-ddm_dccs_mod1_orig_parsed.RData<br> ddm_dccs_mod2_orig_parsed.RData<br>
-ddm_pcps_mod1_orig_parsed.RData<br> ddm_pcps_mod2_orig_parsed.RData<br>
-ddm_flanker_mod_expl_parsed3.RData<br>
-ddm_dccs_mod_expl_parsed.RData<br> ddm_data_expl.csv</td>
-</tr>
-<tr class="even">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/4_sem_training.R">4_sem_training.R</a></td>
-<td>ddm_data.csv’<br> iv_datadata_suffix.csv<br>
-training_setdata_suffix.csv</td>
-<td>results_sem_training.RData</td>
-</tr>
-<tr class="odd">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/5_sem_test.R">5_sem_test.R</a></td>
-<td>ddm_data.csv’<br> iv_datadata_suffix.csv<br>
-test_setdata_suffix.csv</td>
-<td>test_sem_full_clustertest_factor_input:<br>
-results_sem_test.RData</td>
-</tr>
-<tr class="even">
-<td><a href="https://github.com/stefanvermeent/abcd_ddm/tree/main/scripts/2_analyses/6_exploratory.R">6_exploratory.R</a></td>
-<td>test_set.csv<br> iv_data.csv<br> lmt_clean.csv<br> ddm_data.csv’<br>
-test_set.csv<br> results_sem_test.RData’</td>
-<td>exploratory_results.RData</td>
-</tr>
-</tbody>
-</table>
+<div id="data-preparation" class="section level3">
+<h3>2. Data Preparation</h3>
+<p>The data preparation steps are only required when you are using real
+ABCD study data. If you are using the synthetic data, you can skill to
+step 3. You should have the following data files/folders in your
+<code>data</code> folder (Remember to set the <code>data_folder</code>
+object in <a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/dependencies.R"><code>/scripts/dependencies.R</code></a>
+to <code>&quot;data&quot;</code>):</p>
+<ul>
+<li><code>abcd_tbss01.txt</code>: File containing Cognitive summary
+scores (used for Participant ID verification).</li>
+<li><code>abcd_tbi01.txt</code>: File containing TBI data.</li>
+<li><code>abcd_lmtlb01</code>: Folder containing the Little Man Task
+Data.</li>
+<li><code>abcd_tb_tlb01</code>: Folder containing the NIH Toolbox
+Cognitive Data.</li>
+<li><code>acspsw03.txt</code>: File containing Family IDs (used for
+making sure that siblings end up in the same subset).</li>
+</ul>
+<p>After downloading the above files/folders, run the preprocessing
+scripts in the following order:</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/1_data_prep/1_preprocessing.R"><code>1_data_prep/1_preprocessing.R</code></a>:
+Reads and binds individual data files, and fixes participant IDs where
+necessary. Note that this script may take several hours to
+complete.</li>
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/1_data_prep/2_clean_data.R"><code>1_data_prep/2_clean_data.R</code></a>:
+Takes care of trial-level and participant-level exclusions.</li>
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/1_data_prep/3_data_subsets.R"><code>1_data_prep/3_data_subsets.R</code></a>:
+Divides the full dataset into a training and test set.</li>
+</ol>
+</div>
+<div id="primary-analyses" class="section level3">
+<h3>3. Primary Analyses</h3>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/1_ddm_fit.R"><code>1_ddm_fit.R</code></a>:
+Fits the hierarchical Bayesian DDM models to the data of the four
+cognitive tasks and saves the results.</li>
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/2_ivs.R"><code>2_ivs.R</code></a>:
+Prepare the independent variables necessary for the main analyses.</li>
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/3_ddm_extract_results.R"><code>3_ddm_extract_results.R</code></a>:
+Extract and parse the DDM model objects.</li>
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/4_sem_training.R"><code>4_sem_training.R</code></a>:
+Iteratively fits the SEM model to the training set and saves the
+results.</li>
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/5_sem_test.R"><code>5_sem_test.R</code></a>:
+Fits the final SEM model to the test set.</li>
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/scripts/2_analyses/6_exploratory.R"><code>6_exploratory.R</code></a>:
+Exploratory (i.e., not pre-registered) analyses.</li>
+</ol>
+</div>
+<div id="manuscript" class="section level3">
+<h3>4. Manuscript</h3>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/registered_report/scripts/staging.R"><code>registered_report/scripts/staging.R</code></a>:
+Reads and combines all the relevant analysis objects generated by the
+analysis scripts and combines them in a list for the supplemental
+materials.</li>
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/registered_report/registered_report.qmd"><code>registered_report/registered_report.qmd</code></a>:
+loads the staged results list and knits together the manuscript and all
+statistics, tables, and figures computed in previous scripts.</li>
+</ol>
+</div>
+<div id="supplement" class="section level3">
+<h3>5. Supplement</h3>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/supplement/scripts/staging_suppl.R"><code>supplement/scripts/staging_suppl.R</code></a>:
+Reads and combines all the relevant analysis objects generated by the
+analysis scripts and combines them in a list for the supplemental
+materials.</li>
+<li><a href="https://github.com/stefanvermeent/abcd_ddm/blob/main/supplement/supplemental_materials.qmd"><code>supplement/supplemental_materials.qmd</code></a>:
+loads the staged results list and knits together the written supplement
+and all tables and figures computed by the staging script above.</li>
+</ol>
+</div>
+<div id="using_docker" class="section level3">
+<h3>6. Using Docker</h3>
+<p>If you want to create a Docker container in which to run the scripts,
+you will have to follow the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Download and install docker at <a href="https://docs.docker.com/get-docker/" class="uri">https://docs.docker.com/get-docker/</a>.</li>
+<li>If on Windows, open the PowerShell. If on Mac, open the terminal
+through ‘Applications &gt; Utilities &gt; Terminal’.</li>
+<li>On the command line, type:
+<code>docker run --rm -d -e PASSWORD=my_password -p 8787:8787 stefanvermeent/abcd_ddm</code></li>
+<li>Open a browser window and enter: <code>localhost:8787</code> as the
+URL.</li>
+<li>You will be redirected to an Rstudio cloud login page. As the
+username, type <em>rstudio</em>. As the password, type
+<em>my_password</em>, unless you changed it under step 3.</li>
+<li>You should now see an RStudio environment with the required
+dependencies pre-installed and loaded.</li>
+</ol>
+</div>
+<div id="contact" class="section level3">
+<h3>Contact</h3>
+<p>For questions or comments, feel free to contact me at <a href="mailto:p.c.s.vermeent@gmail.com" class="email">p.c.s.vermeent@gmail.com</a>.</p>
 </div>
 </div>
 

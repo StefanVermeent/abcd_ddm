@@ -40,18 +40,6 @@ Below is an overview of all the project milestones, such as first-time data acce
 Data access events were automatically captured using custom code, which over the course of this project was collected in the R package `projectlog` [https://stefanvermeent.github.io/projectlog/](https://stefanvermeent.github.io/projectlog/).
 For more information about how tracking worked, Go to the [Open science workflow tab](https://stefanvermeent.github.io/abcd_ddm/opensci_workflow/README.html).
 
-- **[2022-12-08 09:34:04](<anonymized repository>): Access family ids**
-    - **Milestone:** Data Access
-    - **Data MD5 hash**: 335c000784108004113778a186cf34c7
-    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/153e7d4ea4e633f34f4b04c531999c335e602757.R)
-    
-
-- **[2022-12-08 10:04:00](<anonymized repository>): read family ids including info on waves.**
-    - **Milestone:** Data Access
-    - **Data MD5 hash**: 7a422f847f70b13c8388c2d437a0cefc
-    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/46e752f3255c245140d0bdf13c14fc956159c93b.R)
-    
-
 - **[2022-12-23 10:04:18](<anonymized repository>): Stage 1 submission of Registered Report to Developmental Science**
     - **Milestone:** Submission
     - **Data MD5 hash**: 
