@@ -1,0 +1,18 @@
+---
+title: ""
+output: 
+  html_document:
+    template: ../assets/template.html
+    css: ../assets/style.css
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+## Supplemental Materials
+
+Below are the supplemental materials that belong to the Registered Report. 
+
+```{=html}
+<iframe width="500" height="500" src="supplement.pdf" title="Supplemental Materials"></iframe>
+```

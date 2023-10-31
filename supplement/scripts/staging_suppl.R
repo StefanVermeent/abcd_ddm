@@ -44,6 +44,18 @@ load('analysis_objects/rhat_pcps_mod2.RData')
 load('analysis_objects/results_sem_training.RData')
 load('analysis_objects/results_sem_test.RData')
 
+# set up flextable for tables
+set_flextable_defaults(
+  font.family = "Times", 
+  font.size = 10,
+  font.color = "black",
+  line_spacing = 1,
+  padding.bottom = 1, 
+  padding.top = 1,
+  padding.left = 1,
+  padding.right = 1
+)
+
 # 2. Power analysis ----------------------------------------------------------
 
 power_plot <- ggplot(power, aes(n, power, group = lhs, color = Type)) +
@@ -465,13 +477,13 @@ rhat <-
   tribble(
     ~task,                           ~rhat,
     "Flanker - Model 1",             max(rhat_flanker_mod1$`Point est.`, na.rm = T),
-  #  "Flanker - Model 2",             max(rhat_flanker_mod2$`Point est.`, na.rm = T),
-  #  "Mental Rotation - Model 1",     max(rhat_lmt_mod1$`Point est.`, na.rm = T),
-  #  "Mental Rotation - Model 2",     max(rhat_lmt_mod2$`Point est.`, na.rm = T),
+    "Flanker - Model 2",             max(rhat_flanker_mod2$`Point est.`, na.rm = T),
+    "Mental Rotation - Model 1",     max(rhat_lmt_mod1$`Point est.`, na.rm = T),
+    "Mental Rotation - Model 2",     max(rhat_lmt_mod2$`Point est.`, na.rm = T),
     "Attention Shifting - Model 1",  max(rhat_dccs_mod1$`Point est.`, na.rm = T),
     "Attention Shifting - Model 2",  max(rhat_dccs_mod2$`Point est.`, na.rm = T),
     "Processing Speed - Model 1",    max(rhat_pcps_mod1$`Point est.`, na.rm = T),
-  #  "Processing Speed - Model 2",    max(rhat_pcps_mod2$`Point est.`, na.rm = T),
+    "Processing Speed - Model 2",    max(rhat_pcps_mod2$`Point est.`, na.rm = T),
   ) |> 
   mutate(rhat = formatC(x = rhat, digits = 3, width = 3, flag = "0", format = 'f'))
 
@@ -637,7 +649,9 @@ mnlfa_ivs     <- readr::read_csv("data/iv_data.csv") |>
       threat_mnlfa_c > 1 ~ "> 1SD",
       threat_mnlfa_c > -1 & threat_mnlfa_c < 1 ~ "≥1*SD*≤"
     ),
-    across(c(dep_mnlfa_c, threat_mnlfa_c), as.numeric)
+    across(c(dep_mnlfa_c, threat_mnlfa_c), as.numeric),
+    dep_mnlfa_cat = factor(dep_mnlfa_cat, levels = c("< -1SD", "≥1*SD*≤", "> 1SD")),
+    threat_mnlfa_cat = factor(threat_mnlfa_cat, levels = c("< -1SD", "≥1*SD*≤", "> 1SD")),
   )
 
 ddm_fit_subgroup_threat_table <- bind_rows(
@@ -678,6 +692,9 @@ ddm_fit_subgroup_threat_table <- bind_rows(
   select(task, threat_mnlfa_cat, contains("RT_RT"), r_acc_RT_25) %>%
   mutate(across(-c(task), ~formatC(x = ., digits = 2, width = 3, flag = "0", format = 'f'))) |> 
   filter(!str_detect(threat_mnlfa_cat, "NA")) |> 
+  mutate(
+    threat_mnlfa_cat = str_squish(threat_mnlfa_cat) |> forcats::fct_relevel(.f = _, c("< -1SD", "≥1*SD*≤", "> 1SD"))
+  ) |> 
   flextable::flextable() |> 
   flextable::autofit() |> 
   flextable::set_header_labels(
@@ -766,93 +783,155 @@ ddm_conv_lmt_fig <-
   guides(fill = 'none')
 
 ddm_conv_flanker_fig <- 
-  bind_rows(
-    flanker_mod1_traces |> mutate(model = "Model 1"),
-    flanker_mod2_traces |> mutate(model = "Model 2")
-  ) |> 
+  flanker_mod2_traces |> 
   mutate(
-   parameter = case_when(
-      parameter == "t01" ~ "t (con)",
-      parameter == "t02" ~ "t (incon)",
-      parameter == "t0" ~  "t",
-      parameter == "v1" ~ "v (con)",
-      parameter == "v2" ~ "v (incon)",
-      parameter == "v" ~ "v",
-      parameter == "a" ~ "a"
-    )) |> 
-  unite(col = "parameter", c(model, parameter), sep = ": ") |> 
-  ggplot(aes(n, value, color = factor(chains))) +
+    parameter = case_when(
+      parameter == "a" ~ "Boundary separation",
+      str_detect(parameter, "v") ~ "Drift rate",
+      str_detect(parameter, "t0") ~ "Non-decision time"
+    )
+  ) |>  
+  ggplot(aes(n, value, group = n, color = factor(chains))) +
   geom_line() +
-  facet_wrap(~parameter, scales = 'free', ncol=4) +
+  facet_wrap(~parameter, scales = 'free') + 
   theme_classic() +
   scale_color_uchicago() +
   labs(
     x = "",
     y = "",
     color = "Chain"
-  )
+  ) +
+  guides(fill = 'none')
 
 ddm_conv_dccs_fig <- 
-  bind_rows(
-    dccs_mod1_traces |> mutate(model = "Model 1"),
-    dccs_mod2_traces |> mutate(model = "Model 2")
-  ) |> 
+  dccs_mod2_traces |> 
   mutate(
     parameter = case_when(
-      parameter == "t01" ~ "t (rep)",
-      parameter == "t02" ~ "t (sw)",
-      parameter == "t0" ~  "t",
-      parameter == "v1" ~ "v (rep)",
-      parameter == "v2" ~ "v (sw)",
-      parameter == "v" ~ "v",
-      parameter == "a" ~ "a"
-    )) |> 
-  unite(col = "parameter", c(model, parameter), sep = ": ") |> 
-  ggplot(aes(n, value, color = factor(chains))) +
+      parameter == "a" ~ "Boundary separation",
+      str_detect(parameter, "v") ~ "Drift rate",
+      str_detect(parameter, "t0") ~ "Non-decision time"
+    )
+  ) |>  
+  ggplot(aes(n, value, group = n, color = factor(chains))) +
   geom_line() +
-  facet_wrap(~parameter, scales = 'free', ncol=4) +
+  facet_wrap(~parameter, scales = 'free') + 
   theme_classic() +
   scale_color_uchicago() +
   labs(
     x = "",
     y = "",
     color = "Chain"
-  )
+  ) +
+  guides(fill = 'none')
 
 ddm_conv_pcps_fig <- 
-  bind_rows(
-    pcps_mod1_traces |> mutate(model = "Model 1"),
-    pcps_mod2_traces |> mutate(model = "Model 2")
-  ) |> 
+  pcps_mod2_traces |> 
   mutate(
     parameter = case_when(
-      parameter == "t0" ~  "t",
-      parameter == "v" ~ "v",
-      parameter == "a" ~ "a"
-    )) |> 
-  unite(col = "parameter", c(model, parameter), sep = ": ") |> 
-  ggplot(aes(n, value, color = factor(chains))) +
+      parameter == "a" ~ "Boundary separation",
+      str_detect(parameter, "v") ~ "Drift rate",
+      str_detect(parameter, "t0") ~ "Non-decision time"
+    )
+  ) |>  
+  ggplot(aes(n, value, group = n, color = factor(chains))) +
   geom_line() +
-  facet_wrap(~parameter, scales = 'free', ncol=3) +
+  facet_wrap(~parameter, scales = 'free') + 
   theme_classic() +
   scale_color_uchicago() +
   labs(
     x = "",
     y = "",
     color = "Chain"
-  )
+  ) +
+  guides(fill = 'none')
 
 
+## Parameter distributions ----
+
+ddm_distri_pcps_fig <- pcps_mod2_param_est |> 
+  rename(
+    `Drift rate` = pcps_v,
+    `Boundary separation` = pcps_a,
+    `Non-decision time` = pcps_t
+  ) |> 
+  pivot_longer(-subj_idx, names_to = "parameter", values_to = "value") |> 
+  ggplot(aes(value, fill = parameter)) +
+  geom_histogram() +
+  facet_wrap(~parameter, scales = 'free') +
+  theme_classic() +
+  scale_fill_uchicago() +
+  labs(
+    x = "",
+    y = "Frequency",
+    fill = ""
+  )+
+  guides(fill = "none")
+
+
+ddm_distri_lmt_fig <- lmt_mod1_param_est |> 
+  rename(
+    `Drift rate` = rotation_v,
+    `Boundary separation` = rotation_a,
+    `Non-decision time` = rotation_t
+  ) |> 
+  pivot_longer(-subj_idx, names_to = "parameter", values_to = "value") |> 
+  ggplot(aes(value, fill = parameter)) +
+  geom_histogram() +
+  facet_wrap(~parameter, scales = 'free') +
+  theme_classic() +
+  scale_fill_uchicago() +
+  labs(
+    x = "",
+    y = "Frequency",
+    fill = ""
+  )+
+  guides(fill = "none")
+
+
+ddm_distri_flanker_fig <- flanker_mod2_param_est |> 
+  rename(
+    `Drift rate` = flanker_v,
+    `Boundary separation` = flanker_a,
+    `Non-decision time` = flanker_t
+  ) |> 
+  pivot_longer(-subj_idx, names_to = "parameter", values_to = "value") |> 
+  ggplot(aes(value, fill = parameter)) +
+  geom_histogram() +
+  facet_wrap(~parameter, scales = 'free') +
+  theme_classic() +
+  scale_fill_uchicago() +
+  labs(
+    x = "",
+    y = "Frequency",
+    fill = ""
+  ) +
+  guides(fill = "none")
+
+
+ddm_distri_dccs_fig <- dccs_mod2_param_est |> 
+  rename(
+    `Drift rate` = dccs_v,
+    `Boundary separation` = dccs_a,
+    `Non-decision time` = dccs_t
+  ) |> 
+  pivot_longer(-subj_idx, names_to = "parameter", values_to = "value") |> 
+  ggplot(aes(value, fill = parameter)) +
+  geom_histogram() +
+  facet_wrap(~parameter, scales = 'free') +
+  theme_classic() +
+  scale_fill_uchicago() +
+  labs(
+    x = "",
+    y = "Frequency",
+    fill = ""
+  ) +
+  guides(fill = "none")
 
 # 6. SEM fit --------------------------------------------------------------
 
-## 6.1 Training set ----
+## 6.1 Factor loadings ----
 
-summary(training_sem_sub_a_cluster, fit.measures = TRUE, standardized = TRUE)
-
-## 6.2 Test set ----
-
-test_factor_loadings |> 
+test_sem_loading_table <- test_factor_loadings |> 
   select(lhs, rhs, est, se, z, pvalue, std.all) |> 
   bind_rows(
     parameterEstimates(test_sem_full_cluster) |> 
@@ -862,20 +941,20 @@ test_factor_loadings |>
   as_tibble() |> 
   mutate(
     rhs = case_when(
-      str_detect(rhs, "pcps_(v|a|t)") ~ "Processing Speed",
-      str_detect(rhs, "dccs_(v|a|t)") ~ "Attention Shifting",
-      str_detect(rhs, "flanker_(v|a|t)") ~ "Flanker",
-      str_detect(rhs, "rotation_(v|a|t)") ~ "Mental Rotation",
+      str_detect(rhs, "pcps_(v|a|t)") ~ "Processing Speed Task",
+      str_detect(rhs, "dccs_(v|a|t)") ~ "Attention Shifting Task",
+      str_detect(rhs, "flanker_(v|a|t)") ~ "Inhibition Task",
+      str_detect(rhs, "rotation_(v|a|t)") ~ "Mental Rotation Task",
     )
   ) |>
   add_row(.before = 1, rhs = "Factor loadings") |> 
   add_row(.before = 2, rhs = "Task-general drift rate") |> 
-  add_row(.before = 6, rhs = "Task-general boundary separation") |> 
-  add_row(.before = 11, rhs = "Task-general non-decision time") |> 
-  add_row(.before = 16, rhs = "Residual variances") |> 
-  add_row(.before = 17, rhs = "Task-specific drift rate") |> 
-  add_row(.before = 21, rhs = "Task-specific boundary separation") |> 
-  add_row(.before = 26, rhs = "Task-specific non-decision time") |> 
+  add_row(.before = 7, rhs = "Task-general boundary separation") |> 
+  add_row(.before = 12, rhs = "Task-general non-decision time") |>
+  add_row(.before = 17, rhs = "Residual variances") |> 
+  add_row(.before = 18, rhs = "Task-specific drift rate") |> 
+  add_row(.before = 23, rhs = "Task-specific boundary separation") |> 
+  add_row(.before = 28, rhs = "Task-specific non-decision time") |> 
   select(-lhs) |> 
   mutate(
     z = as.numeric(z),
@@ -885,9 +964,82 @@ test_factor_loadings |>
   mutate(pvalue = ifelse(str_trim(pvalue) == "0", "<.001", pvalue)) |> 
   mutate(across(everything(), ~ifelse(str_detect(., " NA"), "", .))) |> 
   flextable::flextable() |> 
-  flextable::autofit() |> 
-  flextable::bold(i = c(1,2,  6, 11, 16, 17, 21, 26)) |> 
-  flextable::merge_h(i = 1:6)
+  flextable::bold(i = c(1,2,  7, 12, 17, 18, 23, 28)) |> 
+  flextable::merge_h(i = 1:6, part = "body") |> 
+  flextable::align(j = 1, i = 1, align = "center", part = "body") |> 
+  flextable::align(j = 1, i = 17, align = "center", part = "body") |> 
+  flextable::set_header_labels(
+    rhs = "",
+    est = "Estimate\n(unstandardized)",
+    se  = "SE",
+    z = "Z",
+    pvalue = "p",
+    std.all = "Estimate\nstandardized"
+  ) |> 
+  padding(i=c(3:6, 8:11, 13:16, 19:22, 24:27, 29:32), j=1, padding.left=10)  |> 
+  border(i = 32, border.bottom = fp_border_default(), part = "body") |>
+  border(i = 1, border.top = fp_border_default(style = "none", width = 0), part = "header") |> 
+  add_header_row(
+    values = " ",
+    colwidths = 6
+  ) |> 
+  flextable::compose(
+    i = 1, j = 1, 
+    as_paragraph(as_b("Table S6. "), "Factor loadings and unstandardizized residual variances in the test set."),
+    part = "header"
+  ) |> 
+  flextable::autofit()
+
+## 6.2 Covariances ----
+
+test_sem_cor_table <- parameterEstimates(test_sem_full_cluster, standardized = T) |> 
+  as_tibble() |> 
+  filter(op == "~~") |> 
+  filter(lhs != rhs) |> 
+  filter(str_detect(lhs, "_general$") | str_detect(lhs, "_l")) |> 
+  filter(std.all != 0) |> 
+  select(lhs, rhs, std.all, pvalue) %>%
+  mutate(across(c(lhs, rhs), ~case_when(
+    str_detect(., "v_general|v_l$") ~ "Drift rate",
+    str_detect(., "a_general|a_l$") ~ "Boundary separation",
+    str_detect(., "t_general|t_l$") ~ "Non-decision time"
+  ))) |> 
+  unite(c(lhs, rhs), col = "col1", sep = " - ") |> 
+  mutate(std.all = formatC(std.all,  digits = 3, width = 3, flag = "0", format = 'f')) |> 
+  mutate(std.all = case_when(
+    pvalue < .05 & pvalue > .01 ~ str_c(std.all, "*"),
+    pvalue < .01 & pvalue > .001 ~ str_c(std.all, "**"),
+    pvalue < .001 ~ str_c(std.all, "***"),
+    TRUE ~ std.all
+  )) |> 
+  select(-pvalue) |> 
+  add_row(.before = 1, col1 = "Task-general") |> 
+  add_row(.before = 5, col1 = "Task-specific Inhibition Task") |> 
+  add_row(.before = 9, col1 = "Task-specific Attention Shifting Task") |> 
+  add_row(.before = 13, col1 = "Task-specific Mental Rotation Task") |>
+  add_row(.before = 17, col1 = "Task-specific Processing Speed Task") |> 
+  flextable::flextable() |> 
+  bold(i = c(1, 5, 9, 13, 17)) |> 
+  flextable::set_header_labels(
+    col1 = "",
+    std.all = "Correlation"
+  ) |> 
+  padding(i=c(2:4, 6:8, 10:12, 14:16, 18:20), j=1, padding.left=10) |> 
+  border(i = 20, border.bottom = fp_border_default(), part = "body") |>
+  border(i = 1, border.top = fp_border_default(style = "none", width = 0), part = "header") |> 
+  add_header_row(
+    values = " ",
+    colwidths = 2
+  ) |> 
+  flextable::compose(
+    i = 1, j = 1, 
+    as_paragraph(as_b("Table S7. "), "Correlations between latent task-general and task-specific factors in the test set."),
+    part = "header"
+  ) |> 
+  flextable::autofit()
+  
+  
+
   
 # 7. Stage all results -------------------------------------------------------
 
@@ -933,14 +1085,23 @@ staged_sim_results_supp <-
     descriptives               = descriptives$task_descriptives_table,
     
     ddm_fit_table              = ddm_fit_table,
+    ddm_fit_orig_table         = ddm_fit_orig_table,
     
     ddm_fit_subgroup_dep_table = ddm_fit_subgroup_dep_table,
-    ddm_fit_subgroup_dep_table = ddm_fit_subgroup_dep_table,
+    ddm_fit_subgroup_threat_table = ddm_fit_subgroup_threat_table,
     
     ddm_conv_flanker_fig       = ddm_conv_flanker_fig,
     ddm_conv_dccs_fig          = ddm_conv_dccs_fig,
     ddm_conv_lmt_fig           = ddm_conv_lmt_fig,
-    ddm_conv_pcps_fig          = ddm_conv_pcps_fig
+    ddm_conv_pcps_fig          = ddm_conv_pcps_fig,
+    
+    ddm_distri_flanker_fig     = ddm_distri_flanker_fig,
+    ddm_distri_dccs_fig        = ddm_distri_dccs_fig,
+    ddm_distri_lmt_fig         = ddm_distri_lmt_fig,
+    ddm_distri_pcps_fig        = ddm_distri_pcps_fig,
+    
+    test_sem_loading_table     = test_sem_loading_table,
+    test_sem_cor_table         = test_sem_cor_table
   )
 
 save(staged_sim_results_supp, file = 'supplement/staged_sim_results_supp.RData')
