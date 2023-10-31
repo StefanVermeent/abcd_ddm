@@ -101,16 +101,16 @@ For more information about how tracking worked, Go to the [Open science workflow
     - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/46e752f3255c245140d0bdf13c14fc956159c93b.R)
     
 
-- **[2023-07-17 09:31:09](<anonymized repository>): Revision 2 of Stage 1 Registered Report for Developmental Science**
-    - **Milestone:** Revision
-    - **Data MD5 hash**: 
-    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/1606a17fb4349843fd88566bb3ea3c868a9fc316.R)
-    
-
 - **[2023-08-01 12:08:29](<anonymized repository>): first-time access to ivs with mnlfa correction**
     - **Milestone:** Data Access
     - **Data MD5 hash**: 01189ac84ccf49b95c2c82f2f3f89cef
     - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/81bed689986fbaadc625206c899b90fadf0b2600.R)
+    
+
+- **[2023-10-31 12:01:33](<anonymized repository>): Submission of Stage 2 manuscript**
+    - **Milestone:** Submission
+    - **Data MD5 hash**: 
+    - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/9d880d3cf753457f663bb2107d2405d6345b3aee.R)
     
 
 ## How to reproduce this repository {#reproduce}

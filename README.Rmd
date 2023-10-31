@@ -53,6 +53,7 @@ x <- gert::git_log(max = 10000) |>
   select(commit, author, time, message) |>
   # Some custom coding because we switched to using the projectlog package for the final data_access event
   mutate(message = ifelse(str_detect(message, "first-time access to ivs"), str_c("[[data_access]] ", message), message)) |> 
+  mutate(message = ifelse(str_detect(message, "Submission of Stage 2 manuscript"), str_c("[[submission]] ", message), message)) |> 
   (function(.) filter(., str_detect(string = .$message, pattern = "^\\[\\[")))() |> 
   separate(message, into = c("message", "data_hash", 'code'), sep = "\n") |> 
   separate(message, into = c("milestone", "description"), sep = "\\]\\]\\s") %>% 
