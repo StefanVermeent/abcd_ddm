@@ -224,7 +224,7 @@ Such distinctions matter for both deficit- and strength-based approaches (e.g., 
 Structural equation modeling (SEM) can disentangle task-general and task-specific processes. 
 For example, it can estimate shared task variance with latent task-general variables.
 By estimating shared variance across different tasks, we can also obtain more precise estimates of task-specific abilities (i.e., variance unique to specific tasks).
-@bignardi_2022 recently applied this approach to model how socioeconomic status (SES) is related to standard performance measures in three large data sets.
+@bignardi_2023 recently applied this approach to model how socioeconomic status (SES) is related to standard performance measures in three large data sets.
 They used SEM to model the effect of SES on a general factor and task-specific residual variances.
 Lower SES was associated with a lower general ability, but *enhanced* task-specific processing speed, inhibition, and attention shifting.
 However, their analysis looked at shared and unique variance using raw performance measures.
@@ -246,7 +246,7 @@ We analyzed four cognitive abilities that have been studied in relation to adver
 We included *attention shifting* because previous work has reported enhancement of this ability in children and (young) adults with more exposure to environmental unpredictability [based on raw performance switch costs\; @fields_2021; @mittal_2015; @young_2022; but see @nweze_2021]. 
 Theoretically, attention shifting is thought to enable people to rapidly adjust to, and take advantage of, a changing environment (e.g., seize fleeting opportunities). 
 We included *inhibition* because previous research suggests that children with more adverse experiences are worse at inhibiting distracting information [based on raw RT difference scores\; @fields_2021; @mezzacappa_2004; @mittal_2015; @tibu_2016].
-We included *mental rotation* because previous studies have found negative associations between SES and mental rotation ability [based on RTs and accuracy\; @assari_2020; @bignardi_2022]. 
+We included *mental rotation* because previous studies have found negative associations between SES and mental rotation ability [based on RTs and accuracy\; @assari_2020; @bignardi_2023]. 
 To the extent that these performance differences reflect differences in the respective abilities---as they have been interpreted---they should show up in *task-specific drift rates*.
 We also included a measure of *processing speed*, which was not measured in relation to adversity but provided a direct measure of the type of basic processing speed that plays a role in the other tasks. 
 Taken together, the four tasks provided a broad assessment of cognitive domains, which makes them well-suited for isolating task-general processes. 
@@ -263,7 +263,7 @@ Finally, equivalent drift rates across adversity levels would also not be consis
 
 Deficit perspectives can accommodate both lowered task-specific and lowered task-general drift rates.
 On the one hand, past work suggests that adversity impairs specific abilities [e.g., inhibition\; @farah_2006; @fields_2021; @mezzacappa_2004; @mittal_2015]. 
-On the other hand, there is also evidence that adversity affects general cognitive ability [@bignardi_2022]---perhaps through its broad effects on brain regions that are involved across several cognitive abilities [@sheridan_2014]. 
+On the other hand, there is also evidence that adversity affects general cognitive ability [@bignardi_2023]---perhaps through its broad effects on brain regions that are involved across several cognitive abilities [@sheridan_2014]. 
 However, equivalent or enhanced drift rates, whether they be task-specific or task-general, would not be consistent with deficit perspectives; rather, this would suggest that abilities are intact or enhanced.
 
 Our approach adds value in a third way besides separating drift rate from ability-irrelevant factors and isolating task-specific and task-general effects: It allows us to quantify cognitive deficits and enhancements separately within the same model.
@@ -401,7 +401,7 @@ We conducted a simulation-based power analysis based on the main SEM model (see 
 The analysis indicated that we would have more than 90% power for all regression paths with *N* between 2,500 ($\beta$ = 0.1) and 6,500 ($\beta$ = 0.06).
 
 All analyses were conducted in R 4.2.1 [@Rcoreteam_2022].
-The source code can be found on the Github repository ([https://anonymous.4open.science/r/anon-255D/scripts](https://anonymous.4open.science/r/anon-255D/scripts)).
+The source code can be found on the Github repository ([https://anonymous.4open.science/r/anon-255D/scripts/](https://anonymous.4open.science/r/anon-255D/scripts)).
 
 **Step 1: DDM estimation.** The DDM was fit to each cognitive task in a hierarchical Bayesian framework which estimates DDM parameters both on the individual and group level [@vandekerckhove_2011; @wiecki_2013].
 We use code provided by @johnson_2017.
@@ -533,7 +533,7 @@ The finding that most task-specific abilities were unaffected by either type of 
 It suggests that the cognitive abilities of youth with more adversity exposure were comparable with those of their counterparts from low-adversity contexts.
 This is inconsistent with previous interpretations of adversity-related performance differences based on raw performance measures.
 For example, a previous study showed enhanced attention-shifting performance in youth with more exposure to threat [@young_2022; for similar findings with environmental and caregiver unpredictability, see @fields_2021; @mittal_2015].
-In addition, youth from adversity have previously been found to perform worse on inhibition tasks [@farah_2006; @fields_2021; @mezzacappa_2004; @mittal_2015; @noble_2005], and previous investigations in the ABCD study found negative associations between SES and mental rotation [@assari_2020; @bignardi_2022].
+In addition, youth from adversity have previously been found to perform worse on inhibition tasks [@farah_2006; @fields_2021; @mezzacappa_2004; @mittal_2015; @noble_2005], and previous investigations in the ABCD study found negative associations between SES and mental rotation [@assari_2020; @bignardi_2023].
 
 Instead, higher levels of household threat were associated with a lower task-general drift rate.
 We argue that this is likely to reflect a slower basic speed of processing for three reasons.
@@ -545,7 +545,7 @@ While we consider the basic processing speed interpretation most likely given th
 More research is warranted to test these two hypotheses against each other.
 
 Our results align to some extent with two recent investigations.
-First, @bignardi_2022 conducted a study in three large datasets---among which the ABCD study---in which they used SEM to separate task-general variance from task-specific variance.
+First, @bignardi_2023 conducted a study in three large datasets---among which the ABCD study---in which they used SEM to separate task-general variance from task-specific variance.
 They found that SES was positively associated with lower task-general performance in all datasets, but after accounting for task-general performance, found many instances of practically equivalent performance.
 Interestingly, they found negative associations (meaning better performance) between SES and the Flanker and Attention Shifting Task in the ABCD data.
 Second, @young_2023 investigated associations between SES and unpredictability with performance on subtasks of the Woodcock-Johnson achievement task battery, comparing subtask performance to overall performance.
@@ -559,7 +559,7 @@ In contrast, task-specific response caution was *lower* for the Attention Shifti
 This suggests that youth with more exposure to household threat are generally more cautious when processing relatively simple information, but became comparatively *less* cautious when processing conflicting information (i.e., distracting information on the Inhibition Task and changing task-demands on the Attention Shifting Task).
 The task-general increase in response caution was not predicted, and we do not have a clear explanation for it based on previous literature. 
 We might speculate that the task-specific effects is a reasonable responses for youth growing up in threatening environments, as a less stringent threshold for responding to salient environmental information can facilitate rapidly detecting and responding to potential threats [@mittal_2015; @frankenhuis_2016].
-Relatedly, @bignardi_2022 found that raw Flanker and Attention Shifting performance---after accounting for general processes---was negatively associated with SES in the ABCD sample (i.e., youth from lower SES performing relatively better).
+Relatedly, @bignardi_2023 found that raw Flanker and Attention Shifting performance---after accounting for general processes---was negatively associated with SES in the ABCD sample (i.e., youth from lower SES performing relatively better).
 Our findings suggest that these patterns likely reflect lowered response caution, and that they may be primarily driven by threat, as our models assess the effect of threat above and beyond effects of SES.
 This highlights the importance of separating distal (e.g., SES) and proximal (e.g., threat) factors that might drive performance differences [@amso_2017; @dejoseph_2022].
 
