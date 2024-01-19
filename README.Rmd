@@ -54,11 +54,12 @@ x <- gert::git_log(max = 10000) |>
   select(commit, author, time, message) |>
   # Some custom coding because we switched to using the projectlog package for the final data_access event
   mutate(message = ifelse(str_detect(message, "first-time access to ivs"), str_c("[[data_access]] ", message), message)) |> 
-  mutate(message = ifelse(str_detect(message, "Submission of Stage 2 manuscript"), str_c("[[submission]] ", message), message)) |> 
+  mutate(message = ifelse(str_detect(message, "Submission of Stage 2 manuscript"), str_c("[[submission]] ", message), message)) |>
+  mutate(message = ifelse(str_detect(message, "Stage 2 accepted manuscript at Developmental Science"), str_c("[[accepted]] ", message), message)) |>
   (function(.) filter(., str_detect(string = .$message, pattern = "^\\[\\[")))() |> 
   separate(message, into = c("message", "data_hash", 'code'), sep = "\n") |> 
   separate(message, into = c("milestone", "description"), sep = "\\]\\]\\s") %>% 
-  distinct(data_hash, .keep_all = TRUE) %>%
+  distinct(data_hash, description, .keep_all = TRUE) %>%
   mutate(
     milestone = map_chr(milestone, function(milestone) {
       milestone |> 
@@ -72,15 +73,13 @@ x <- gert::git_log(max = 10000) |>
   mutate(
     code = str_replace_all(code, "\\|\\>", "\\|\\>\\\n"),
     link_to_git = paste0(
-      "<anonymized repository>"
-     # gert::git_remote_list()$url |> str_remove(string = _, pattern = "\\.git$"), "/tree/", commit)
-    )
-  ) |>
-  arrange(time) |> 
+       gert::git_remote_list()$url |> str_remove(string = _, pattern = "\\.git$"), "/tree/", commit)
+    ) |>
+  arrange(desc(time)) |> 
   glue_data("  - **[{time}]({link_to_git}): {description}**
         - **Milestone:** {milestone}
         - **Data MD5 hash**: {data_hash}
-        - [Link to code snippet](https://anonymous.4open.science/r/anon-255D/.gitlog/{commit}.R)
+        - [Link to code snippet](https://https://github.com/StefanVermeent/abcd_ddm/tree/main/.projectlog/{commit}.R)
         \n
     ")
 x
