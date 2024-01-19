@@ -40,6 +40,32 @@ mod_base_1con <- "model {
   precDelta ~ dgamma(.001, .001)
 }"
 
+mod_base_1con <- "model {
+  #likelihood function
+  for (t in 1:nTrials) {
+    y[t] ~ dwiener(alpha[subject[t]], 
+                   tau[subject[t]], 
+                   0.5, 
+                   delta[subject[t]])
+  }
+  for (s in 1:nSubjects) {
+   
+    tau[s]  ~ dnorm(muTau, precTau) T(.0001, 1)
+    delta[s] ~ dnorm(muDelta, precDelta) T(-5, 5)
+    alpha[s]  ~ dnorm(muAlpha, precAlpha) T(.1, 5)
+    
+  }
+  
+  #priors
+  muTau ~ dunif(.0001, 1)
+  muDelta ~ dunif(-5, 5)
+  muAlpha~ dunif(.1, 5) 
+  
+  precAlpha  ~ dgamma(.001, .001)
+  precTau ~ dgamma(.001, .001)
+  precDelta ~ dgamma(.001, .001)
+}"
+
 initfunction_1con <- function(chain){
   return(list(
     muAlpha = runif(1, .2, 4.9),
