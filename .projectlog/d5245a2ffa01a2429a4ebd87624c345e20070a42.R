@@ -3,7 +3,7 @@
 ### Description: Read first part of NIH Toolbox data.
 
 
-### For more information on this commit, see the README file, or go to <anonymized repository>
+### For more information on this commit, see the README file, or go to https://github.com/StefanVermeent/abcd_ddm/commit/d5245a2ffa01a2429a4ebd87624c345e20070a42
 
 ### Below is the full code that was used to access the data:
 

@@ -1,4 +1,4 @@
-gert::git_log() |> 
+gert::git_log(max = 10000) |> 
   select(commit, author, time, message) |>
   (function(.) filter(., str_detect(string = .$message, pattern = "^\\[\\[")))() |> 
   separate(message, into = c("message", "hash", 'code'), sep = "\n") |> 
@@ -11,11 +11,11 @@ gert::git_log() |>
         str_replace_all(string = _, "\\|> ", "\\|>\n") |> 
         str_remove(string = _, "^code ") 
       
-    #  url <- gert::git_remote_list()$url |> 
-    #    str_remove(string = _, "\\.git$") |> 
-    #    paste0(paste0("/commit/", commit))
+      url <- gert::git_remote_list()$url |> 
+        str_remove(string = _, "\\.git$") |> 
+        paste0(paste0("/commit/", commit))
       
-      url <- "<anonymized repository>"
+    #  url <- "<anonymized repository>"
       
       script <-
         glue(
@@ -27,7 +27,7 @@ gert::git_log() |>
           {code}"
         )
       
-      writeLines(script, con = paste0(".gitlog/", commit, ".R"))
+      writeLines(script, con = paste0(".projectlog/", commit, ".R"))
     }
   })
 

@@ -3,7 +3,7 @@
 ### Description: Read TBI data for data exclusions.
 
 
-### For more information on this commit, see the README file, or go to <anonymized repository>
+### For more information on this commit, see the README file, or go to https://github.com/StefanVermeent/abcd_ddm/commit/2c0cee2412ffbab57aca72be952001bdde5de7af
 
 ### Below is the full code that was used to access the data:
 
