@@ -251,7 +251,7 @@ table2 <- ddm_data |>
   ) |> 
   flextable::compose(
     i = 1, j = 1, 
-    as_paragraph(as_b("Table 1. "), "Bivariate correlations between DDM parameters and measures of adversity."),
+    as_paragraph(as_b("Table 2. "), "Bivariate correlations between DDM parameters and measures of adversity."),
     part = "header"
   ) |>
   add_footer_row(
@@ -262,7 +262,7 @@ table2 <- ddm_data |>
     values = " ",
     colwidths = 15
   ) |> 
-  compose(
+  flextable::compose(
     i = 1, j = 1, 
     as_paragraph(as_i("Note: "), "Att. Shift. = Attention Shifting; Men. Rot. = Mental Rotation; Proc. Speed = Processing Speed; Mat. Dep. = Material Deprivation; Househ. Thr. = Household Threat\n"), 
     part = "footer"

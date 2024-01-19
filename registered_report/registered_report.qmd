@@ -92,7 +92,7 @@ set_flextable_defaults(
 
 # Data Availability
 
-All scripts and materials needed to reproduce the findings are available on the article's Github repository [(https://anonymous.4open.science/r/anon-255D/README.md)](https://anonymous.4open.science/r/anon-255D/README.md).
+All scripts and materials needed to reproduce the findings are available on the article's Github repository [(https://stefanvermeent.github.io/abcd_ddm/)](https://stefanvermeent.github.io/abcd_ddm/).
 We also include instructions on how to reproduce each step of our analyses.
 To ensure computational reproducibility, we provide synthetic (i.e., simulated) data files with the same characteristics as the raw data.
 
@@ -121,7 +121,7 @@ This study was approved by the Ethics Review Board of the Faculty of Social & Be
 
 # Research Highlights
 
-1. To understand how childhood adversity shapes cognitive abilities, the field needs analytical approaches that can integrate patterns of lowered and enhanced performance.
+1. To understand how childhood adversity shapes cognitive abilities, the field needs analytical approaches that can jointly document and explain patterns of lowered and enhanced performance.
 
 2. Using Drift Diffusion Modeling and Structural Equation Modeling, we analyzed associations between adversity and processing speed, inhibition, attention shifting, and mental rotation.
 
@@ -290,19 +290,19 @@ Our analysis sample includes `r descriptives$precleaning_n$full_n_trial` partici
 
 ## Open Science Statement {#meth_os}
 
-All analysis scripts, materials, and instructions needed to reproduce the findings are available on the article's Github repository [(https://anonymous.4open.science/r/anon-255D/README.md)](https://anonymous.4open.science/r/anon-255D/README.md). 
+All analysis scripts, materials, and instructions needed to reproduce the findings are available on the article's Github repository [(https://stefanvermeent.github.io/abcd_ddm/)](https://stefanvermeent.github.io/abcd_ddm/). 
 The raw study data cannot be shared on public repositories.
 Personal access to the ABCD dataset is required to fully reproduce our analyses and can be requested at [https://nda.nih.gov](https://nda.nih.gov).
 
 We obtained access to the full ABCD data repository and performed initial data cleaning and analyses *prior* to Stage 1 submission.
 However, we preprocessed cognitive task data in isolation to prevent biasing the analyses involving independent variables.
 The goal of these analyses was to assure that the pre-selected cognitive tasks adhered to basic DDM assumptions and had the required trial-level data available in the right format.
-These initial analyses were preregistered ([https://anonymous.4open.science/r/anon-255D/preregistrations/2022-09-20_preregistration_DDM.md](https://anonymous.4open.science/r/anon-255D/preregistrations/2022-09-20_preregistration_DDM.md)).
+These initial analyses were preregistered ([https://stefanvermeent.github.io/abcd_ddm/preregistrations/README.html](https://stefanvermeent.github.io/abcd_ddm/preregistrations/README.html)).
 
 To increase transparency, we developed an automated workflow (using R and Git) to track the data files read into the analysis environment.
 First-time access to any data file was automatically tracked via Git, providing an overview including the timestamp, a description of the data, and the R code that was used to read in the data.
 The supplemental materials provide a detailed description and visual overview of this workflow.
-An overview of the data access history is provided in the repository's README file ([https://anonymous.4open.science/r/anon-255D/README.md](https://anonymous.4open.science/r/anon-255D/README.md)).
+An overview of the data access history is provided in the repository's README file ([https://stefanvermeent.github.io/abcd_ddm/](https://stefanvermeent.github.io/abcd_ddm/)).
 
 ## Exclusion Criteria {#meth_exclusions}
 
@@ -401,7 +401,7 @@ We conducted a simulation-based power analysis based on the main SEM model (see 
 The analysis indicated that we would have more than 90% power for all regression paths with *N* between 2,500 ($\beta$ = 0.1) and 6,500 ($\beta$ = 0.06).
 
 All analyses were conducted in R 4.2.1 [@Rcoreteam_2022].
-The source code can be found on the Github repository ([https://anonymous.4open.science/r/anon-255D/scripts/](https://anonymous.4open.science/r/anon-255D/scripts)).
+The source code can be found on the Github repository ([https://stefanvermeent.github.io/abcd_ddm/scripts/README.html](https://stefanvermeent.github.io/abcd_ddm/scripts/README.html)).
 
 **Step 1: DDM estimation.** The DDM was fit to each cognitive task in a hierarchical Bayesian framework which estimates DDM parameters both on the individual and group level [@vandekerckhove_2011; @wiecki_2013].
 We use code provided by @johnson_2017.
@@ -449,11 +449,11 @@ For regression coefficients falling within these bounds, we therefore used two o
 Based on an assessment of model fit, we selected the following good-fitting DDM models for the substantive analysis: 1) *Mental Rotation Task*, the standard model; 2) *Inhibition Task*, the standard model with one set of parameter estimates across conditions; 3) *Attention Shifting Task*, the standard model with one set of parameter estimates across conditions; 4) *Processing Speed Task*, the standard model, but with RTs < 1 s excluded to solve issues with fast outliers.
 See the supplemental materials for a full overview of the DDM fitting results.
 
-Our model fit procedure deviated from the preregistered plan by simulating 100 trials for each participant instead of the same number of trials as the participants.
-As the number of trials for each task was low, simulating the same number of trials led to a very low number of data points at each RT quantile, making the estimation of RT quantiles rather unreliable.
-Even if we increased the number of simulated trials, the real data still only had a low number of data points at each quantile.
-The fact that correlations for both RTs and accuracy were high across all tasks (all ≥ .80, with many >.90) increased our confidence that the estimated diffusion model parameters provided a good account of the observed data.
-The supplemental materials present model fit results for both the preregistered approach and the updated approach.
+The preregistered simulation-based model fit analysis yielded four (out of 16) correlations between observed and simulated RTs/accuracy that fell below the .80 cut-off: accuracies for Inhibition (.79), Attention Shifting (.73), Processing Speed (.65), and the 75th percentile of RTs for Mental Rotation (.76). 
+However, further analyses showed that all correlations were > .80 when we simulated 100 trials for each task, instead of the same number of trials as the real data. 
+This suggested that the low correlations did not indicate bad parameter recovery, but rather a limitation in the preregistered procedure. 
+Therefore, we decided against further changes to the models or the removal of data points. 
+We provide more details about the model fit procedure, as well as the nature and reason of the deviation, in the supplemental materials (as well as the model fit results for the preregistered and updated approach).
 
 Table 2 shows bivariate correlations between DDM parameters and adversity measures.
 Both material deprivation and household threat showed small, negative associations with drift rates across all four tasks, suggesting that participants with more adversity exposure processed information more slowly.
@@ -529,8 +529,8 @@ The only exception was the negative association between material deprivation and
 Finally, both household threat and material deprivation led to more response caution, although the evidence for material deprivation was weak (not significantly different from zero, but also not practically equivalent to zero).
 We did not find any differences in task-general or task-specific aspects of task preparation and response execution.
 
-The finding that most task-specific abilities were unaffected by either type of adversity was striking in light of the existing literature.
-It suggests that the cognitive abilities of youth with more adversity exposure were comparable with those of their counterparts from low-adversity contexts.
+The finding that most task-specific abilities---after accounting for task-general processing speed---were not affected by either type of adversity was striking in light of the existing literature. 
+It suggests that specific executive functions (i.e., inhibition, attention shifting, mental rotation) of youth with more adversity exposure were comparable with those of youth from low-adversity contexts.
 This is inconsistent with previous interpretations of adversity-related performance differences based on raw performance measures.
 For example, a previous study showed enhanced attention-shifting performance in youth with more exposure to threat [@young_2022; for similar findings with environmental and caregiver unpredictability, see @fields_2021; @mittal_2015].
 In addition, youth from adversity have previously been found to perform worse on inhibition tasks [@farah_2006; @fields_2021; @mezzacappa_2004; @mittal_2015; @noble_2005], and previous investigations in the ABCD study found negative associations between SES and mental rotation [@assari_2020; @bignardi_2023].
@@ -548,20 +548,23 @@ Our results align to some extent with two recent investigations.
 First, @bignardi_2023 conducted a study in three large datasets---among which the ABCD study---in which they used SEM to separate task-general variance from task-specific variance.
 They found that SES was positively associated with lower task-general performance in all datasets, but after accounting for task-general performance, found many instances of practically equivalent performance.
 Interestingly, they found negative associations (meaning better performance) between SES and the Flanker and Attention Shifting Task in the ABCD data.
-Second, @young_2023 investigated associations between SES and unpredictability with performance on subtasks of the Woodcock-Johnson achievement task battery, comparing subtask performance to overall performance.
-Lower SES was associated with lower overall performance, which seemed strongly driven by vocabulary tasks.
-However, most subtasks showed intact performance relative to overall performance, with auditory tasks even showing relative enhancements.
+Second, @young_2023 examined associations between SES and unpredictability with performance on an achievement task battery, comparing specific subtasks to overall performance across tasks. 
+Similar to our findings, lower SES was associated with lower overall performance, but with intact (or even enhanced) performance on most specific subtasks, relative to the overall effect. 
+However, these studies did not separate cognitive abilities from other processes such as response caution.
 
-Household threat (and to a lesser extent material deprivation) was also associated with more general response caution.
-This is an important finding, as more response caution leads to longer response times.
-Traditional assessments focusing only on response times could misinterpret higher response caution as an impaired ability.
-In contrast, task-specific response caution was *lower* for the Attention Shifting and Inhibition Task, although the latter was found to be practically equivalent.
-This suggests that youth with more exposure to household threat are generally more cautious when processing relatively simple information, but became comparatively *less* cautious when processing conflicting information (i.e., distracting information on the Inhibition Task and changing task-demands on the Attention Shifting Task).
-The task-general increase in response caution was not predicted, and we do not have a clear explanation for it based on previous literature. 
-We might speculate that the task-specific effects is a reasonable responses for youth growing up in threatening environments, as a less stringent threshold for responding to salient environmental information can facilitate rapidly detecting and responding to potential threats [@mittal_2015; @frankenhuis_2016].
-Relatedly, @bignardi_2023 found that raw Flanker and Attention Shifting performance---after accounting for general processes---was negatively associated with SES in the ABCD sample (i.e., youth from lower SES performing relatively better).
-Our findings suggest that these patterns likely reflect lowered response caution, and that they may be primarily driven by threat, as our models assess the effect of threat above and beyond effects of SES.
-This highlights the importance of separating distal (e.g., SES) and proximal (e.g., threat) factors that might drive performance differences [@amso_2017; @dejoseph_2022].
+Household threat (and to a lesser extent material deprivation) was also associated with more task-general response caution.
+Traditional assessments could misinterpret this as impaired ability, as it slows down responses. 
+In contrast, task-specific response caution was lower for the Attention Shifting and Inhibition Task (although the latter was practically equivalent). 
+Thus, youth with more exposure to household threat are generally more cautious, but become less cautious specifically when processing conflicting information (i.e., distractions on the Inhibition Task and changing task-demands on the Attention Shifting Task). 
+What might explain these differences? 
+In comparing deficit and adaptation frameworks, we focused mainly on cognitive abilities with a clear performance benchmark (e.g., higher drift rates reflecting better performance). 
+Differences in response caution reflect strategies, not abilities [@frankenhuis_2020]. 
+However, we speculate that these findings could reflect contextually appropriate adaptive responses to threatening conditions.
+Evidence across multiple species suggests that a high probability of threat tends to increase general response caution (prioritizing accuracy over speed), to avoid costly mistakes [@chittka_2009]. 
+However, under acute threat, prioritizing speed over accuracy might be better (e.g., fleeing even though there was no threat).
+Although the Inhibition and Attention Shifting Task did not signal threat, they did evoke competing demands and conflicting information. 
+In real-life settings, such environmental cues could signal a threat, in which case prioritizing speed over accuracy would facilitate rapid detection and responding [@frankenhuis_2016; @mittal_2015]. 
+However, as neither pattern was preregistered, we should calibrate our interpretations accordingly.
 
 ## Strengths, limitations, and future directions
 
@@ -586,7 +589,7 @@ To this end, future research should include measures of candidate processes (e.g
 In addition, neuro imaging data could be linked directly to DDM parameters to investigate which brain networks are associated with differences in task-general drift rates [e.g., @schubert_2020].
 Second, future research could aim to better understand task-general and task-specific differences in response caution.
 For example, do youth from adversity show more task-general response caution due to performance anxiety?
-If so,does such anxiety interfere more with their performance on some tasks than others? 
+If so, does such anxiety interfere more with their performance on some tasks than others? 
 Can training programs targeting anxiety boost their performance?
 Third, our approach could be extended to model developmental trajectories of the cognitive processes as a function of adversity. 
 
