@@ -79,7 +79,7 @@ x <- gert::git_log(max = 10000) |>
   glue_data("  - **[{time}]({link_to_git}): {description}**
         - **Milestone:** {milestone}
         - **Data MD5 hash**: {data_hash}
-        - [Link to code snippet](https://https://github.com/StefanVermeent/abcd_ddm/tree/main/.projectlog/{commit}.R)
+        - [Link to code snippet](https\\://github.com/StefanVermeent/abcd_ddm/blob/main/.projectlog/{commit}.R)
         \n
     ")
 x
